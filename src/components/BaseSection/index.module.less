@@ -1,0 +1,35 @@
+.base-section {
+  border: 1px solid @color-border-main;
+  border-radius: @radius-heavyer;
+  box-shadow: @shadow-main;
+  background: #fff;
+  .head {
+    padding: @gap;
+    border-bottom: 1px solid @color-border-light;
+    .title {
+      font-size: 18px;
+      line-height: 1;
+      &::before {
+        content: "";
+        display: block;
+        width: 6px;
+        height: 1.1em;
+        margin-right: @gap-half;
+        border-radius: 3px;
+        background: @color-primary;
+      }
+    }
+    .badge {
+      margin: 0 auto 0 @gap-qtr;
+    }
+    .fold-icon {
+      font-size: 20px;
+      transition: all @transition-time-main;
+    }
+  }
+  .body {
+    padding: @gap-half @gap;
+    overflow: hidden;
+    transition: all @transition-time-main;
+  }
+}

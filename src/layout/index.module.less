@@ -1,0 +1,17 @@
+.layout {
+  height: 100vh;
+  width: 100vw;
+}
+.right {
+  height: 100vh;
+}
+.main {
+  padding: @gap-half;
+  width: calc(100vw - @asider-width);
+  //用100%会导致BaseCrud表格过宽时，滚动条超过100vw问题，暂时不清楚原因
+  // width: 100%;
+  // flex-basis: 1px;
+  // height: 1px;
+  overflow: auto;
+  // background: red;
+}

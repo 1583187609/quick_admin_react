@@ -1,0 +1,215 @@
+// dialog 相关
+@dialog-top: 2vh;
+
+// layout相关
+@nav-bg-dark-heavy: #141414;
+@nav-bg-dark: #001529;
+@nav-bg-light: #ffffff;
+@nav-text-color-light: #bbb;
+@nav-text-color-dark: #222;
+@header-height: 50px; // header 高度
+@asider-width: 220px; //菜单宽度
+@main-menu-width: 60px;
+@page-tags-height: 32px;
+
+// 间距相关
+@gap-qtr: 4px;
+@gap-half: 8px;
+@gap: 16px;
+@gap-one-half: 24px;
+@gap-two: 32px;
+
+// 主题颜色
+// @color-primary: #ff8000;
+@color-primary: #1677ff;
+@color-danger: #f56c6c;
+@color-info: #909399;
+@color-success: #67c23a;
+@color-warning: #e6a23c;
+
+// 文本颜色
+@color-text-heavyest: #000000;
+@color-text-heavyer: #111111;
+@color-text-heavy: #222222;
+@color-text-main: #333333;
+@color-text-light: #666666;
+@color-text-lighter: #999999;
+@color-text-lightest: #cccccc;
+
+// 背景颜色
+// @color-bg-heavyest: #001529;
+// @color-bg-heavyer: #232324;
+// @color-bg-heavy: #333333;
+// @color-bg-main: #fad7c7;
+// @color-bg-light: #fce3d7;
+// @color-bg-lighter: #fcf1eb;
+// @color-bg-lightest: #fff8f4;
+@color-bg-heavyest: mix(@color-primary, #ffffff, 30%);
+@color-bg-heavyer: mix(@color-primary, #ffffff, 25%);
+@color-bg-heavy: mix(@color-primary, #ffffff, 20%);
+@color-bg-main: mix(@color-primary, #ffffff, 15%);
+@color-bg-light: mix(@color-primary, #ffffff, 10%);
+@color-bg-lighter: mix(@color-primary, #ffffff, 5%);
+@color-bg-white: #f5f5f5;
+
+// 边框颜色
+@color-border-heavyer: #d9d9d9;
+@color-border-heavy: #dcdcdc;
+@color-border-main: #e0e0e0;
+@color-border-light: #e6e6e6;
+@color-border-lighter: #f0f0f0;
+
+//边框简写
+@border-heavyer: 1px solid @color-border-heavyer;
+@border-heavy: 1px solid @color-border-heavy;
+@border-main: 1px solid @color-border-main;
+@border-light: 1px solid @color-border-light;
+@border-lighter: 1px solid @color-border-lighter;
+
+// 边框圆角
+@radius-heavyer: 10px;
+@radius-heavy: 8px;
+@radius-main: 6px;
+@radius-light: 4px;
+@radius-lighter: 2px;
+
+// 盒子高度
+@height-heavyester: 56px;
+@height-heavyest: 52px;
+@height-heavyer: 48px;
+@height-heavy: 44px;
+@height-main: 40px;
+@height-light: 36px;
+@height-lighter: 32px;
+@height-lightest: 28px;
+@height-lightester: 24px;
+
+// 文本行高
+@line-height-heavyest: 2.2em;
+@line-height-heavyer: 2em;
+@line-height-heavy: 1.8em;
+@line-height-main: 1.6em;
+@line-height-light: 1.4em;
+@line-height-lighter: 1.2em;
+@line-height-lightest: 1em;
+
+// 字体大小
+// @font-size-heavyester: 22px;
+// @font-size-heavyest: 20px;
+@font-size-heavyer: 18px;
+@font-size-heavy: 16px;
+@font-size-main: 14px;
+@font-size-light: 13px;
+@font-size-lighter: 12px;
+
+// 盒子阴影
+@shadow-heavy: 0 2px 6px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.08);
+@shadow-main: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+@shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+
+// 动画过渡
+@transition-time-main: 0.3s;
+
+// 其他渐变
+@color-gradient-dark-light: #08dca2;
+@color-gradient-dark-dark: #015db1;
+@color-gradient-dark: linear-gradient(
+  -30deg,
+  @color-gradient-dark-light 0%,
+  @color-gradient-dark-dark 100%
+);
+@color-gradient-light: linear-gradient(135deg, #e2f7f3 0%, #dbe6f0 100%);
+// 背景渐变
+@color-bg-gradient-light: linear-gradient(90deg, #dbecf7 0%, #dafaf4 100%);
+@color-bg-gradient-dark: linear-gradient(
+  -30deg,
+  @color-gradient-dark-light 0%,
+  @color-gradient-dark-dark 100%
+);
+
+// 禁用颜色
+@color-disabled-bg: #eee;
+@color-disabled-border: #ddd;
+@color-disabled-text: #999;
+
+// 文本省略
+.text-ellipsis(@num) {
+  // 当英文单词很长时的换行处理，已全局处理，故不再处理
+  // word-wrap: break-word;
+  // word-break: break-all;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @num;
+}
+
+// 渐变色文字
+.text-gradient() {
+  color: @color-primary;
+  background-image: -webkit-linear-gradient(
+    135deg,
+    @color-gradient-dark-light 0%,
+    @color-gradient-dark-dark 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.opacity-img-box() {
+  box-shadow: 0 0 16px 0px rgba(#fff, 0.2), 0 0 4px 0px rgba(#fff, 0.5);
+  border: 1px solid rgba(#fff, 0.2);
+  background: url() no-repeat 0 0 / cover rgba(#fff, 0.1);
+}
+
+// 阴影与悬浮阴影
+.shadow-main() {
+  box-shadow: @shadow-light;
+  transition: all @transition-time-main;
+  &:hover {
+    box-shadow: @shadow-heavy;
+  }
+}
+
+/**
+* 通过before绘制三角形
+* @param $position 箭头所在位置：top-left ~ bottom-right 的组合
+  $at 箭头所在位置：top,right,bottom,left
+  $near 在position的距离最近的位置 top,right,bottom,left
+* @param $distance $near 在position的距离最近的位置$at的距离
+* @param width 箭头的宽
+* @param height 箭头的高
+* @param bgColor 箭头的背景色
+*/
+// @mixin triangle(
+//   $position: top-right,
+//   $distance: 16px,
+//   $width: 14px,
+//   $height: 16px,
+//   $bgColor: #3b3b3b,
+//   $pseudoPosition: before
+// ) {
+//   $ind: str-index($position, "-");
+//   $at: str-slice($position, 1, $ind - 1);
+//   $near: str-slice($position, $ind + 1);
+//   &::#{$pseudoPosition} {
+//     position: absolute;
+//     #{$near}: $distance;
+
+//     @if $at == "bottom" or $at == "top" {
+//       #{$at}: $height * -1.65;
+//     } @else {
+//       #{$at}: $width * -1.65;
+//     }
+
+//     box-sizing: content-box;
+//     display: block;
+//     width: 0;
+//     height: 0;
+//     content: "";
+//     border-top: $width solid #{if($at == "bottom", $bgColor, transparent)};
+//     border-right: $width solid #{if($at == "left", $bgColor, transparent)};
+//     border-bottom: $width solid #{if($at == "top", $bgColor, transparent)};
+//     border-left: $width solid #{if($at == "right", $bgColor, transparent)};
+//   }
+// }

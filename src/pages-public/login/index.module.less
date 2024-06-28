@@ -1,0 +1,47 @@
+.wrap {
+  height: 100vh;
+  width: 100vw;
+  background: url("@/assets/images/bg/login.jpg") no-repeat 0 0/100% 100% #eee;
+}
+.bounce-in {
+  animation: bounceIn 1.2s;
+}
+.login-box {
+  width: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: @shadow-heavy;
+  background: #fff;
+
+  .head {
+    color: @color-primary;
+    font-weight: 600;
+    font-size: 30px;
+    height: 100px;
+    background: #eee;
+  }
+
+  .body {
+    padding: @gap-two 50px 0;
+  }
+  .foot {
+    padding: @gap 50px @gap-two;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,505 @@
+@import "./_var.less";
+
+/*
+* 重置样式
+* 1、使用阿里 reset.css
+* 2、尽量不要使用通配符*，影响性能
+* width: auto;  //fill-available()、max-content()、min-content()、fit-content();
+**/
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  color: @color-text-main;
+  font-size: @font-size-main; //所有字体大小、行高的参照基准(一般是14px）
+  font-family: "PingFang SC", "Microsoft YaHei", "Gill Sans", "Gill Sans MT",
+    "Calibri", "Trebuchet MS", sans-serif; //根据情况设置多个字体，依次选择字体显示
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* 用于移动端。touch：当手指从触摸屏上移开，会保持一段时间的滚动；auto：当手指从触摸屏上移开，滚动会立即停止。touch解决IOS端，经常遇到元素滚动时卡顿的问题 */
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  box-sizing: border-box;
+  vertical-align: baseline;
+  overscroll-behavior: none; //解决子容器滚动引发父容器滚动问题
+  word-wrap: break-word; //英文自动换行
+  word-break: break-all;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+canvas,
+img {
+  display: block; //兼容老浏览器，还可以解决图片底部多出来5px的间距（因为img标签默认是inline-block类型）display: block;vertical-align: bottom;两种方式均可
+}
+
+body {
+  line-height: 1; //是继承属性
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+input,
+button,
+textarea {
+  caret-color: @color-primary; //修改闪烁的光标的颜色
+  outline: none; //某些版本谷歌浏览器会有难看的黑色的外边框
+}
+
+a {
+  color: @color-text-main;
+  text-decoration: none;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+// input type=number 去除掉右侧的上下箭头
+::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+//修改Chrome记住密码后自动填充表单的黄色背景
+// input:-webkit-autofill {
+//   -webkit-box-shadow: 0 0 0px 1000px white inset;
+// }
+//输入框placeholder样式
+::-webkit-input-placeholder {
+  color: @color-text-light;
+}
+
+//选中文本的背景色
+::selection {
+  color: #fff;
+  background-color: @color-bg-main;
+}
+
+/**
+* 滚动条
+*/
+//滚动条整体样式，高宽分别对应横竖滚动条的尺寸
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+//滚动条里面小方块
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #ddd;
+}
+
+//滚动条里面轨道
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background: #f8f8f8;
+}
+
+//当鼠标放上去时才显示滚动条，否则隐藏滚动条
+.hover-show-scroll {
+  &::-webkit-scrollbar-thumb {
+    box-shadow: none;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+    background: transparent;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      background: #ddd;
+    }
+
+    &::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      background: #eee;
+    }
+  }
+}
+
+//总是隐藏滚动条
+.all-hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/**
+* 常用类
+*/
+//清除浮动
+.clear::after {
+  display: block;
+  clear: both;
+  content: "";
+  visibility: hidden;
+  height: 0;
+}
+
+// //黑白模式（不是彩色的）
+// .un-colourful {
+//   filter: grayscale(1);
+// }
+
+// //禁止选择文本
+// .no-select {
+//   user-select: none;
+// }
+
+// //按钮（鼠标变成手型，暗示可点击）、链接
+// .btn,
+// .link {
+//   cursor: pointer;
+//   color: @color-primary;
+// }
+
+// .btn:hover {
+//   opacity: 0.8;
+// }
+
+// .link:hover {
+//   text-decoration: underline;
+// }
+
+// :hover {
+//   transition: all @transition-time-main;
+// }
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/**
+* 文本省略
+* line-1 ~ line-3
+*/
+.for-line(@i) when (@i <=3) {
+  .line-@{i} {
+    .text-ellipsis(@i);
+  }
+
+  .for-line((@i + 1));
+}
+
+.for-line(1);
+
+/**
+* 弹性布局类
+*/
+@justifyContent: {
+  fs: flex-start;
+  fe: flex-end;
+  c: center;
+  sb: space-between;
+  sa: space-around;
+  // se: space-evenly; //注意space-evenly的兼容性不太好
+};
+
+@alignItems: {
+  fs: flex-start;
+  fe: flex-end;
+  c: center;
+  b: baseline;
+  s: stretch;
+};
+
+@flexDirection: {
+  // r: row;
+  // rr: row-reverse;
+  c: column;
+  // cr: column-reverse;
+};
+
+@flexWrap: {
+  // n: nowrap;
+  w: wrap;
+  // wr: wrap-reverse;
+};
+
+each(@justifyContent, .(@jVal, @jKey) {
+    each(@alignItems, .(@aVal, @aKey) {
+        .f-@{jKey}-@{aKey} {
+          display: flex;
+          justify-content: @jVal;
+          align-items: @aVal;
+        }
+
+        each(@flexDirection, .(@dVal, @dKey) {
+            .f-@{jKey}-@{aKey}-@{dKey} {
+              display: flex;
+              justify-content: @jVal;
+              align-items: @aVal;
+              flex-direction: @dVal;
+            }
+          });
+
+        each(@flexWrap, .(@wVal, @wKey) {
+            .f-@{jKey}-@{aKey}-@{wKey} {
+              display: flex;
+              justify-content: @jVal;
+              align-items: @aVal;
+              flex-wrap: @wVal;
+            }
+          });
+      });
+  });
+
+/**
+* 弹性布局的项目所占的宽度比例
+* f-0 ~ f-3
+*/
+.f-0 {
+  flex-shrink: 0;
+  flex-grow: 0;
+  // flex-basis: 1px;
+}
+
+.for-f(@i) when (@i <=3) {
+  .f-@{i} {
+    flex: @i;
+    // flex-basis: 1px;
+  }
+
+  .for-f((@i + 1)); // 递归调用自身
+}
+
+.for-f(1); // 调用循环,从1，直到<=3
+
+/**
+* 弹性布局的项目之间的间距，只对于弹性布局（flex）和栅格布局（grid）适用
+* 注意：兼容性不是特别好
+* g-2 ~ g-32（只允许偶数）
+*/
+// .for-g(@i) when (@i <= 16) {
+//     @num: @i * 2;
+//     .g-@{num} {
+//         gap: @num*1px;
+//     }
+//     .for-g((@i + 1)); // 递归调用自身
+// }
+// .for-g(1);
+
+.g-qtr {
+  gap: @gap-qtr;
+}
+
+.g-half {
+  gap: @gap-half;
+}
+
+.g-one {
+  gap: @gap;
+}
+
+.g-one-half {
+  gap: @gap-one-half;
+}
+
+.g-two {
+  gap: @gap-two;
+}
+
+/**
+* padding、margin间距
+* p-q ~ ml-t     pt-2 ~ ml-32
+*/
+@gapTypes: {
+  p: padding;
+  m: margin;
+};
+
+@gapDirections: {
+  a: all;
+  t: top;
+  r: right;
+  b: bottom;
+  l: left;
+};
+
+@gapSizes: {
+  q: @gap-qtr;
+  h: @gap-half;
+  o: @gap;
+  oh: @gap-one-half;
+  t: @gap-two;
+};
+
+@gapNumMax: 16;
+
+each(@gapTypes, .(@tVal, @tKey) {
+    each(@gapDirections, .(@dVal, @dKey) {
+        //根据字符串生成：p-q ~ ml-t
+        each(@gapSizes, .(@sVal, @sKey) {
+                .@{tKey}-@{sKey} when (@dKey =a) {
+                    @{tVal}: @sVal;
+                }
+
+                .@{tKey}@{dKey}-@{sKey} when (@dKey =t) {
+                    @{tVal}-@{dVal}: @sVal;
+                }
+
+                .@{tKey}@{dKey}-@{sKey} when (@dKey =r) {
+                    @{tVal}-@{dVal}: @sVal;
+                }
+
+                .@{tKey}@{dKey}-@{sKey} when (@dKey =b) {
+                    @{tVal}-@{dVal}: @sVal;
+                }
+
+                .@{tKey}@{dKey}-@{sKey} when (@dKey =l) {
+                    @{tVal}-@{dVal}: @sVal;
+                }
+            }
+
+        );
+        //根据数字生成 p-2 ~ ml-32
+        .for-g(@i) when (@i <=@gapNumMax) {
+          @num: @i*2;
+
+          .@{tKey}-@{num} when (@dKey =a) {
+            @{tVal}: @num*1px;
+          }
+
+          .@{tKey}@{dKey}-@{num} when (@dKey =t) {
+            @{tVal}-@{dVal}: @num*1px;
+          }
+
+          .@{tKey}@{dKey}-@{num} when (@dKey =r) {
+            @{tVal}-@{dVal}: @num*1px;
+          }
+
+          .@{tKey}@{dKey}-@{num} when (@dKey =b) {
+            @{tVal}-@{dVal}: @num*1px;
+          }
+
+          .@{tKey}@{dKey}-@{num} when (@dKey =l) {
+            @{tVal}-@{dVal}: @num*1px;
+          }
+
+          .for-g((@i + 1)); // 递归调用自身
+        }
+
+        .for-g(0); // 调用循环,从0，直到<=16
+      });
+  });

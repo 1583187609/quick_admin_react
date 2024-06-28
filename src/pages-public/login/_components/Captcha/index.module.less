@@ -1,0 +1,22 @@
+//渐变色文字
+.text-gradient() {
+  color: @color-primary;
+  background-image: -webkit-linear-gradient(135deg, #08dca2 0%, #015db1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.captcha {
+  .text-gradient();
+  cursor: pointer;
+  width: 5em;
+  text-align: center;
+  margin-left: @gap;
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 500;
+  border: @border-main;
+  border-radius: @radius-main;
+  letter-spacing: 0.4em;
+  user-select: none;
+}

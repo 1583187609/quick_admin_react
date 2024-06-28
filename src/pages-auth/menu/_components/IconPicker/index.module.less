@@ -1,0 +1,39 @@
+.list {
+  height: 60vh;
+  min-height: 300px;
+  min-width: 500px;
+  max-width: 1200px;
+  width: 80vw;
+  overflow: auto;
+  .item {
+    cursor: pointer;
+    flex-basis: 110px;
+    margin: @gap-half @gap-qtr;
+    &:hover {
+      color: #000;
+      transform: scale(1.2);
+      transition: 0.3s;
+    }
+    &.active {
+      color: @color-primary;
+      transform: scale(1.2);
+      transition: 0.3s;
+      background: #e6f4ff;
+      .text {
+        color: @color-primary;
+      }
+    }
+    .text {
+      font-weight: 500;
+      margin-top: 2px;
+      font-size: @font-size-light;
+    }
+  }
+}
+.icon-box {
+  cursor: pointer;
+}
+.placeholder {
+  cursor: pointer;
+  color: @color-text-light;
+}

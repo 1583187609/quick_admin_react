@@ -1,0 +1,29 @@
+.header {
+  background: #001529;
+}
+.nickname {
+  color: #999;
+  font-weight: 500;
+  font-size: @font-size-main;
+}
+.toggle-btn {
+  @size: 42px;
+  cursor: pointer;
+  color: #999;
+  transition: 0.3s;
+  height: @size;
+  width: @size;
+  text-align: center;
+  line-height: @size;
+  font-size: 1.4em;
+  &:hover {
+    color: #fff;
+  }
+}
+.pop-btn {
+  display: block;
+  margin-right: 0 !important;
+  &:not(:last-child) {
+    margin-bottom: @gap-half;
+  }
+}

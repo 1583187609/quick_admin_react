@@ -1,0 +1,131 @@
+body {
+  background: #f5f5f5;
+}
+.color-theme {
+  color: @color-primary;
+}
+.color-danger {
+  color: @color-danger;
+}
+
+/**
+* 表格头为多行时的样式调整
+*/
+.ant-table-thead > tr > th[colspan="2"] {
+  padding: 6px 16px;
+}
+.ant-table-thead > tr:nth-child(2) > th {
+  padding: 6px 16px;
+}
+
+/**
+* 表格自适应高度，并自动出现滚动条
+*/
+.f-fs-s-c() {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-direction: column;
+}
+// .f-sb-c() {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+// }
+.f-0() {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.f-1() {
+  flex: 1;
+  flex-basis: 1px;
+}
+.auto-scroll-table {
+  .ant-table-wrapper {
+    width: 100%;
+    .ant-spin-nested-loading {
+      height: 100%;
+      width: 100%;
+      .ant-spin-container {
+        .f-fs-s-c();
+        height: 100%;
+        width: 100%;
+        .ant-table {
+          .f-fs-s-c();
+          .f-1();
+          width: 100%;
+          overflow: auto;
+          .ant-table-container {
+            .f-fs-s-c();
+            width: 100%;
+            height: 100%;
+            .ant-table-header {
+              .f-0();
+            }
+            .ant-table-body {
+              max-height: none !important;
+              overflow: auto !important;
+            }
+          }
+        }
+        .ant-pagination {
+          flex-grow: 0;
+          flex-shrink: 0;
+          margin: @gap-half 0;
+        }
+      }
+    }
+  }
+}
+
+//给同一级别的按钮增加间距，免得手动设置
+.ant-btn {
+  &:not(:last-child) {
+    margin-right: @gap-half;
+  }
+}
+
+// .ant-popover {
+//   // z-index: 10300;
+// }
+
+//布局中header的高度
+.layout-the-head {
+  .ant-menu-horizontal {
+    line-height: @header-height;
+  }
+}
+
+// .ant-form-item {
+//   label {
+//     display: inline-block !important;
+//     line-height: 32px;
+//     width: 100%;
+//     // justify-content: space-around;
+//     // flex: 1;
+//     // .f-sb-c();
+//     background: red;
+//     text-align: justify;
+//     text-align-last: justify;
+//   }
+// }
+.page-tags {
+  .ant-btn-link:disabled {
+    color: rgba(255, 255, 255, 0.25);
+  }
+}
+
+// //只读时表单控件的样式
+// .ant-input-affix-wrapper-readonly {
+//   border: none;
+// }
+// .ant-select
+//   .ant-cascader
+//   .ant-select-in-form-item
+//   .ant-select-status-success
+//   .css-dev-only-do-not-override-w8mnev
+//   .ant-select-single
+//   .ant-select-allow-clear
+//   .ant-select-show-arrow {
+//   border: none;
+// }

@@ -1,0 +1,48 @@
+import { getDictText } from "../dict";
+export default [
+  {
+    role_type_text: getDictText("roleType", 0),
+    role_type: 0,
+    status: 1,
+    status_text: getDictText("enableStatus", 1),
+    create_time: "2023-02-23 10:00:00",
+    update_time: "2023-02-23 10:00:00",
+    remark: "随便的备注内容",
+  },
+  {
+    role_type_text: getDictText("roleType", 1),
+    role_type: 1,
+    status: 1,
+    status_text: getDictText("enableStatus", 1),
+    create_time: "2023-02-27 10:00:00",
+    update_time: "2023-02-27 10:00:00",
+    remark: "随便的备注内容",
+  },
+  {
+    role_type_text: getDictText("roleType", 2),
+    role_type: 2,
+    status: 2,
+    status_text: getDictText("enableStatus", 2),
+    create_time: "2023-02-26 10:00:00",
+    update_time: "2023-02-26 10:00:00",
+    remark: "随便的备注内容",
+  },
+  {
+    role_type_text: getDictText("roleType", 3),
+    role_type: 3,
+    status: 2,
+    status_text: getDictText("enableStatus", 2),
+    create_time: "2023-02-21 10:00:00",
+    update_time: "2023-02-21 10:00:00",
+    remark: "随便的备注内容",
+  },
+  {
+    role_type_text: getDictText("roleType", 4),
+    role_type: 4,
+    status: 2,
+    status_text: getDictText("enableStatus", 2),
+    create_time: "2023-02-21 10:00:00",
+    update_time: "2023-02-21 10:00:00",
+    remark: "随便的备注内容",
+  },
+];

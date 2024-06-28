@@ -1,0 +1,36 @@
+.section-form {
+}
+.section {
+  margin-bottom: @gap-half;
+  .head {
+    border-bottom: @border-main;
+    .title {
+      color: @color-primary;
+      font-weight: 600;
+      &::before {
+        content: "";
+        display: block;
+        height: 1.2em;
+        width: 4px;
+        border-radius: 2px;
+        margin-right: @gap-half;
+        background: @color-primary;
+      }
+    }
+    .fold-btn {
+      padding: 0;
+    }
+    .fold-icon {
+      font-size: 20px;
+      transition: all @transition-time-main;
+    }
+  }
+  .body {
+    padding-top: @gap;
+    overflow: hidden;
+    transition: all @transition-time-main;
+  }
+}
+.bodyer {
+  overflow: auto;
+}
