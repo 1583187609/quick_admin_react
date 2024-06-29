@@ -1,7 +1,7 @@
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { useEffect, useRef, useState } from "react";
-import { GetUserInfo, PostUserSubmit } from "@/api-mock";
+import { GetUserInfo, PostMockCommon } from "@/api-mock";
 // import { useDictMap } from "@/hooks";
 import UploadAvatar from "@/components/upload/UploadAvatar";
 import { CommonObj, OptionItem } from "@/vite-env";
@@ -84,9 +84,9 @@ export default ({ id, pureText, refresh }: Props) => {
   const formRef = useRef();
   // const { getOpts } = useDictMap();
   const [loadData, setLoadData] = useState<CommonObj>();
-  const sexOpts:OptionItem[] = []; // getOpts("sex");
-  const addressOpts:OptionItem[] = []; // getOpts("address");
-  const userTypeOpts:OptionItem[] = []; // getOpts("userType");
+  const sexOpts: OptionItem[] = []; // getOpts("sex");
+  const addressOpts: OptionItem[] = []; // getOpts("address");
+  const userTypeOpts: OptionItem[] = []; // getOpts("userType");
   useEffect(() => {
     if (id) {
       getDetail(id);
@@ -100,7 +100,7 @@ export default ({ id, pureText, refresh }: Props) => {
   }
   //点击提交按钮
   function handleSubmit(data: any, next: (msg?: string) => void): void {
-    PostUserSubmit(data).then((res: CommonObj) => {
+    PostMockCommon(data).then((res: CommonObj) => {
       refresh?.();
       next();
     });

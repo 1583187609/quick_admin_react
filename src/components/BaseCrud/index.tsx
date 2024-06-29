@@ -28,6 +28,7 @@ import { merge } from "lodash";
 import { getUserInfo, omitAttrs, printLog } from "@/utils";
 import StrongText from "./_components/StrongText";
 import s from "./index.module.less";
+import { CommonObj, FetchType } from "@/vite-env";
 
 export interface ExportBtnParams {
   ids: React.Key[];
@@ -65,7 +66,7 @@ interface Props {
   index?: boolean;
   selection?: boolean;
   exportMax?: number; //单次最大导出数量
-  fetch?: FetchFn; //请求方法
+  fetch?: FetchType; //请求方法
   isOmit?: boolean | any[]; //发送请求时，是否过滤掉undefined的字段
   log?: boolean; //是否打印请求数据
   immediateFetch?: boolean; //是否立即请求
@@ -199,12 +200,12 @@ export default forwardRef(
     function getList(args: CommonObj = params.current, cb?: () => void) {
       loadingRef.current = true;
       isOmit && (args = omitAttrs(args)); //剔除掉undefined, ''的属性值
-      console.log(args, "GetList-params------------");
       log && printLog(args, "req");
       fetch?.(args)
         .then((res: CommonObj) => {
-          // console.log(res, "GetList-res----------");
-          setRows(res[resMap.records]);
+          const list = res[resMap.records];
+          log && printLog(JSON.parse(JSON.stringify(list)), "res");
+          setRows(list);
           totalRef.current = res[resMap.total_num];
           cb?.();
         })

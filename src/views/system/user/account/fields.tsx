@@ -1,6 +1,7 @@
 import { ColItem } from "@/components/BaseCrud/_components/QueryTable";
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
+import { CommonObj } from "@/vite-env";
 
 export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
   return [
@@ -13,18 +14,18 @@ export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
       label: "用户姓名",
     },
     {
-      name: "sex",
+      name: "gender",
       label: "性别",
       type: "Select",
       attrs: {
-        options: getOpts("sex"),
+        options: getOpts("Gender"),
       },
     },
     {
       name: "age",
       label: "年龄",
       type: "Custom",
-      custom: <BaseRange />,
+      custom: <BaseRange attrs={{ min: 1, max: 100, maxLength: 3 }} />,
     },
     {
       name: "type",
@@ -45,7 +46,7 @@ export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
   ];
 }
 
-export const getTableFields = ({ getMapText }: CommonObj): ColItem[] => {
+export const getTableFields = ({}: CommonObj): ColItem[] => {
   return [
     {
       name: "id",
@@ -58,12 +59,12 @@ export const getTableFields = ({ getMapText }: CommonObj): ColItem[] => {
       width: 100,
     },
     {
-      name: "sex",
+      name: "gender_text",
       title: "性别",
       width: 100,
-      render(text: any) {
-        return getMapText("sex", text);
-      },
+      // render(text: any) {
+      //   return getMapText("sex", text);
+      // },
     },
     {
       name: "age",
@@ -86,12 +87,12 @@ export const getTableFields = ({ getMapText }: CommonObj): ColItem[] => {
       width: 100,
     },
     {
-      name: "status",
+      name: "status_text",
       title: "账号状态",
       width: 80,
-      render(text: any) {
-        return getMapText("enableStatus", text);
-      },
+      // render(text: any) {
+      //   return getMapText("enableStatus", text);
+      // },
     },
   ];
 };

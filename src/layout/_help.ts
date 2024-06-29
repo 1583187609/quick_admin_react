@@ -1,26 +1,20 @@
 import * as Icons from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import { upperFirst, camelCase } from "lodash";
 import { MenusItem, MenuItem } from "./_components/TheMenu";
+import { CommonObj } from "@/vite-env";
 
 export function handleNavs(navs: MenusItem[] = []): MenuItem[] {
-  return navs?.map((item: any) => {
-    let { path, icon = null, children, label, type } = item;
-    if (icon) {
-      const iconName = upperFirst(camelCase(icon));
-      const Icon: any = Icons[iconName as keyof typeof Icons];
-      icon = React.createElement(Icon);
-    }
-    if (children) {
-      children = handleNavs(children);
-    }
-    const obj = {
+  return navs.map((item: MenusItem) => {
+    let { path, icon = "TwitterOutlined", children, label, type } = item;
+    const obj: CommonObj = {
       key: path,
-      icon,
-      children,
+      icon: React.createElement(Icons[icon] ?? Icons.TwitterOutlined),
       label,
       type,
     };
+    if (children) {
+      obj.children = handleNavs(children) ?? null;
+    }
     return obj as MenuItem;
   });
 }

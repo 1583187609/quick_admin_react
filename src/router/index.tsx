@@ -8,23 +8,23 @@ import React, { createContext, useEffect, useState } from "react";
 import Layout from "@/layout";
 // import { GetUserNavs } from "@/api-mock";
 import { MenusItem } from "@/layout/_components/TheMenu";
-import Login from "@/pages-public/login";
+import Login from "@/views/login";
 import { CommonObj } from "@/vite-env";
-import oldNavs from "../../mock old/data/navs"
-// import oldNavs from "../../mock/data/navs"
+import newNavs from "../../mock/data/navs";
 
 export const MenusContext = createContext<MenusItem[]>([]);
 
-const modules: CommonObj = import.meta.glob("../pages-*/**/**.tsx");
+const modules: CommonObj = import.meta.glob("../views/**/**.tsx");
 
 export const lazyLoad = (path: string) => {
   /**
    * 不能直接使用模板字符串拼接，const Module = React.lazy(() => import(`..${path}`));
    * 故用import.meta.glob导入模块的方式
    * */
-  const Module = React.lazy(modules[`..${path}`]);
+  const Module = React.lazy(modules[`../views${path}`]);
   return <Module />;
 };
+
 //将菜单allMenus处理成路由routes
 function getHandleRoutes(allMenus: MenusItem[]): any[] {
   const routes: any[] = [];
@@ -38,7 +38,7 @@ function getHandleRoutes(allMenus: MenusItem[]): any[] {
       const route: any = {
         path,
       };
-      if (children && children.length) {
+      if (children?.length) {
         route.children = children.map((child) => {
           getRoutes(child);
         });
@@ -65,7 +65,7 @@ export default () => {
       // element: <Navigate to="home" />,
       children: [],
     },
-    // { path: "/login", element: lazyLoad("/pages-public/login/index.tsx") }, //使用懒加载会一直执行，导致页面一直处在加载中状态
+    // { path: "/login", element: lazyLoad("/views/login/index.tsx") }, //使用懒加载会一直执行，导致页面一直处在加载中状态
     { path: "/login", element: <Login /> },
   ]);
 
@@ -75,23 +75,19 @@ export default () => {
 
   function getNavs() {
     // GetUserNavs().then((res: any) => {
-      const res = oldNavs
-      const tempRoutes = getHandleRoutes(res);
-      console.log(tempRoutes,'tempRoutes-----------------')
-      setNavs(res);
-      routes[0].children = [
-        { path: "", element: lazyLoad("/pages-data/home.tsx") },
-        ...tempRoutes,
-        {
-          path: "*",
-          element: lazyLoad("/pages-public/error.tsx"),
-        },
-      ];
-      //重置一下，解决刷新后，初次加载会白屏的问题
-      setRoutes([
-        ...routes,
-        { path: "*", element: lazyLoad("/pages-public/error.tsx") },
-      ]);
+    const res = newNavs.filter((it) => it.path !== "demo"); //.slice(0, 3);
+    const tempRoutes = getHandleRoutes(res);
+    setNavs(res);
+    routes[0].children = [
+      { path: "", element: lazyLoad("/home/index.tsx") },
+      ...tempRoutes,
+      {
+        path: "*",
+        element: lazyLoad("/error.tsx"),
+      },
+    ];
+    //重置一下，解决刷新后，初次加载会白屏的问题
+    setRoutes([...routes, { path: "*", element: lazyLoad("/error.tsx") }]);
     // });
   }
   return (
@@ -101,30 +97,30 @@ export default () => {
       </MenusContext.Provider>
     </>
   );
-  
+
   // return useRoutes([
   //   {
   //     path: "/",
   //     element: <Layout />,
   //     // element: <Navigate to="home" />,
   //     children: [
-  //       { path: "", element: lazyLoad("/pages-data/home") },
-  //       { path: "/workbench", element: lazyLoad("/pages-data/workbench") },
-  //       {
-  //         path: "/analyse/home",
-  //         element: lazyLoad("/pages-data/analyse/home"),
-  //       },
-  //       {
-  //         path: "/analyse/big_screen",
-  //         element: lazyLoad("/pages-data/analyse/big-screen"),
-  //       },
-  //       {
-  //         path: "/user/account",
-  //         element: lazyLoad("/pages-data/user/account"),
-  //       },
-  //       { path: "*", element: lazyLoad("/pages-public/error") },
+  //       { path: "", element: lazyLoad("/home/index.tsx") },
+  //       { path: "/workbench", element: lazyLoad("/home/index.tsx") },
+  //       // {
+  //       //   path: "/analyze/home",
+  //       //   element: lazyLoad("/analyze/home"),
+  //       // },
+  //       // {
+  //       //   path: "/analyze/big_screen",
+  //       //   element: lazyLoad("/analyze/big-screen"),
+  //       // },
+  //       // {
+  //       //   path: "/user/account",
+  //       //   element: lazyLoad("/user/account"),
+  //       // },
+  //       { path: "*", element: lazyLoad("/error") },
   //     ],
   //   },
-  //   { path: "*", element: lazyLoad("/pages-public/error") },
+  //   { path: "*", element: lazyLoad("/error.tsx") },
   // ]);
 };

@@ -2,7 +2,7 @@ import { FieldItem } from "@/components/BaseFormItem";
 import BaseAvatar from "@/components/BaseAvatar";
 import BaseForm from "@/components/form/BaseForm";
 import { useContext, useEffect, useRef, useState } from "react";
-import { GetUserInfo, PostUserSubmit } from "@/api-mock";
+import { GetUserInfo, PostMockCommon } from "@/api-mock";
 // import { useDictMap } from "@/hooks";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import UploadAvatar from "@/components/upload/UploadAvatar";
@@ -87,9 +87,9 @@ export default ({ id, disabled, refresh }: Props) => {
   const formRef = useRef();
   // const { getOpts } = useDictMap();
   const [loadData, setLoadData] = useState<CommonObj>();
-  const sexOpts:OptionItem[] = []; // getOpts("sex");
-  const addressOpts:OptionItem[] = []; // getOpts("address");
-  const userTypeOpts:OptionItem[] = []; // getOpts("userType");
+  const sexOpts: OptionItem[] = []; // getOpts("sex");
+  const addressOpts: OptionItem[] = []; // getOpts("address");
+  const userTypeOpts: OptionItem[] = []; // getOpts("userType");
   useEffect(() => {
     if (id) {
       getDetail(id);
@@ -103,7 +103,7 @@ export default ({ id, disabled, refresh }: Props) => {
   }
   //点击提交按钮
   function handleSubmit(data: any, next: (msg?: string) => void): void {
-    PostUserSubmit(data).then((res: CommonObj) => {
+    PostMockCommon(data).then((res: CommonObj) => {
       refresh?.();
       next();
     });
@@ -122,7 +122,7 @@ export default ({ id, disabled, refresh }: Props) => {
       })}
       loadData={loadData}
       disabled={disabled}
-      // onSubmit={PostUserSubmit}
+      // onSubmit={PostMockCommon}
       onSubmit={handleSubmit as () => void}
     />
   );

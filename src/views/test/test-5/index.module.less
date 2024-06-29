@@ -1,0 +1,21 @@
+.wrap {
+}
+
+.row {
+  &:not(:last-child) {
+    margin-bottom: @gap;
+  }
+  .section {
+    &:not(:last-child) {
+      margin-right: @gap;
+    }
+  }
+}
+.notices {
+  max-height: 300px;
+  overflow: auto;
+  .item {
+    padding: @gap-half 0;
+    border-bottom: @border-light;
+  }
+}

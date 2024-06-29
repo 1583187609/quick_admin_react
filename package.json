@@ -1,8 +1,21 @@
 {
   "name": "Quick Admin React",
-  "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "author": "fanlichuan",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "contributes": ["you"],
+  "bugs": "https://gitee.com/fanlichuan/quick_admin_react/issues",
+  "homepage": "https://gitee.com/fanlichuan/quick_admin_react/#/login",
+  "description": "以快（计算机执行效率、开发效率）为核心的后台管理系统开发模板",
+  "keywords": [
+    "quick",
+    "admin",
+    "react",
+    "AntdDesign",
+    "TypeScript"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

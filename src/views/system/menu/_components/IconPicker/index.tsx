@@ -1,13 +1,14 @@
 import * as Icons from "@ant-design/icons";
-import BaseIcon from "@/components/BaseIcon";
+import BaseIcon, { IconNames } from "@/components/BaseIcon";
 import { useState } from "react";
 import { Tabs } from "antd";
 import BaseModal from "@/components/BaseModal";
+import { CommonObj } from "@/vite-env";
 import s from "./index.module.less";
 
 interface Props {
   id?: string;
-  value?: string;
+  value?: IconNames;
   onChange?: (name: string) => void;
 }
 const icons: string[] = Object.keys(Icons);

@@ -1,3 +1,7 @@
+/**
+ * 全屏加载图标
+ */
+
 import { Spin } from "antd";
 import s from "./index.module.less";
 

@@ -2,19 +2,17 @@ import { PostUserLogin } from "@/api-mock";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
-import { Button, notification } from "antd";
+import { Button } from "antd";
 import { useContext, useRef } from "react";
 import Captcha from "./_components/Captcha";
 import FindPassword from "./_components/FindPassword";
 import Register from "./_components/Register";
-import { handleLoginIn } from "@/store/modules/user";
-import { useDispatch, useSelector } from "react-redux";
-import { userStore, menuStore, dictStore } from "@/store";
+// import { handleLoginIn } from "@/store/modules/user";
+import { useDispatch } from "react-redux";
 import s from "./index.module.less";
-import { MenuItem } from "@/layout/_components/TheMenu";
 import { useRouter } from "@/hooks";
+import { CommonObj } from "@/vite-env";
 
-// const { loginIn } = userStore;
 const initVals = {
   phone: "18483221518",
   psd: "admin123456",
@@ -22,7 +20,6 @@ const initVals = {
 
 const { VITE_APP_NAME } = import.meta.env;
 export default () => {
-  const user = useSelector((state) => state?.user?.userInfo);
   const formRef = useRef();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -46,22 +43,12 @@ export default () => {
     },
   ];
   //登录
-  function handleSubmit(data: CommonObj) {
-    dispatch(handleLoginIn(data) as any).then(
-      async ({ payload }: CommonObj) => {
-        const { navs } = payload;
-        dispatch(menuStore.initAllMenus(navs));
-        // await dispatch(dictStore.initMap([]));
-        router.push("/");
-        notification.success({
-          closeIcon: false,
-          placement: "topRight",
-          message: "登录成功",
-          description: `欢迎回来，${user?.name ?? "XXX"}`,
-          duration: 1.5, //单位：秒
-        });
-      }
-    );
+  function handleSubmit(data: CommonObj, next: () => void) {
+    // PostUserLogin(data).then((res: CommonObj) => {
+    // next();
+    // router.push("/");
+    // dispatch(handleLoginIn(data) as any);
+    // });
   }
   return (
     <div className={`${s.wrap} f-c-c`}>

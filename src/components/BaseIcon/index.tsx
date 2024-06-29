@@ -1,28 +1,28 @@
 import React from "react";
 import * as Icons from "@ant-design/icons";
-import { upperFirst, camelCase } from "lodash";
 import { toCssVal } from "@/utils";
 
 interface Props {
   className?: string;
   onClick?: Function;
-  name?: string;
+  name?: IconNames;
   size?: string | number;
   color?: string;
   title?: string;
 }
 
+export type IconNames = keyof typeof Icons;
+
 export default ({
+  className = "",
   name = "ChromeFilled",
   size = "1em",
   color,
-  className = "",
   title,
   onClick,
 }: Props) => {
-  const iconName = upperFirst(camelCase(name));
-  const Icon: any = Icons[iconName as keyof typeof Icons];
-  return React.createElement(Icon || "div", {
+  const Icon: any = Icons[name] ?? Icons.TwitterOutlined;
+  return React.createElement(Icon, {
     className: `${className}`,
     onClick,
     title,

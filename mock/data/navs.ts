@@ -890,7 +890,7 @@ export default [
         id: "45-2",
         label: "文件体积分析",
         icon: "Position",
-        path: `${getBasePath()}/stats.html`,
+        path: getBasePath(),
         type: 0,
         auth_codes: null,
         status: 1,

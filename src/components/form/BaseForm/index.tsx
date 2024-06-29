@@ -21,6 +21,7 @@ import FormFields from "../_components/FormFields";
 import FormFoot from "../_components/FormFoot";
 import { handleFinish, handleFinishFailed } from "../_utils";
 import s from "./index.module.less";
+import { CommonObj, FetchType } from "@/vite-env";
 
 export type FullType = "autoFull" | "allFull" | ""; //autoFull，撑满时，按钮才固定在底部，否则，跟随移动；allFull：按钮始终固定在底部
 interface Props {

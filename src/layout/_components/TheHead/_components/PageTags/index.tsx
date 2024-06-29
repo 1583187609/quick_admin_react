@@ -23,7 +23,7 @@ export interface MenusDisabledCase {
 interface Props {
   className?: string;
   updatedTitle?: boolean;
-  reload: (cb?: () => void) => void;
+  reload?: (cb?: () => void) => void;
 }
 interface PageTagItem {
   text: string;
@@ -85,7 +85,7 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
   function initDisabled() {
     //必须要使用setTimeout，不然会引起bug（貌似onArrowBtn 中的 ele.scrollTo(left, 0) 是个异步函数，暂不清楚原因）
     setTimeout(() => {
-      if(!scrollRef.current) return
+      if (!scrollRef.current) return;
       const { scrollWidth, clientWidth, offsetWidth, scrollLeft } =
         scrollRef.current;
       const width = clientWidth || offsetWidth;
@@ -148,7 +148,7 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
       cloneTags = [];
       newPath = rootPath;
     } else if (type === "reload") {
-      reload(() => message.success("刷新成功"));
+      reload?.(() => message.success("刷新成功"));
     } else if (type === "copyPath") {
       copyText(cloneTags[ind]?.path || rootPath);
     } else if (type === "copyWholePath") {

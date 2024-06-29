@@ -1,6 +1,7 @@
 import { ColItem } from "@/components/BaseCrud/_components/QueryTable";
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
+import { CommonObj } from "@/vite-env";
 
 export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
   return [
@@ -17,21 +18,21 @@ export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
       label: "性别",
       type: "Select",
       attrs: {
-        options: getOpts("sex"),
+        options: getOpts?.("sex"),
       },
     },
     {
       name: "age",
       label: "年龄",
       type: "Custom",
-      custom: <BaseRange attrs={{ min: 1, max: 100, maxLength: 3 }} />,
+      custom: <BaseRange />,
     },
     {
       name: "type",
       label: "用户类型",
       type: "Select",
       attrs: {
-        options: getOpts("userType"),
+        options: getOpts?.("userType"),
       },
     },
     {
@@ -39,13 +40,13 @@ export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
       label: "账号状态",
       type: "Select",
       attrs: {
-        options: getOpts("enableStatus"),
+        options: getOpts?.("enableStatus"),
       },
     },
   ];
 }
 
-export const getTableFields = ({}: CommonObj): ColItem[] => {
+export const getTableFields = ({ getMapText }: CommonObj): ColItem[] => {
   return [
     {
       name: "id",
@@ -58,12 +59,12 @@ export const getTableFields = ({}: CommonObj): ColItem[] => {
       width: 100,
     },
     {
-      name: "sex_text",
+      name: "sex",
       title: "性别",
       width: 100,
-      // render(text: any) {
-      //   return getMapText("sex", text);
-      // },
+      render(text: any) {
+        return getMapText?.("sex", text);
+      },
     },
     {
       name: "age",
@@ -86,12 +87,12 @@ export const getTableFields = ({}: CommonObj): ColItem[] => {
       width: 100,
     },
     {
-      name: "status_text",
+      name: "status",
       title: "账号状态",
       width: 80,
-      // render(text: any) {
-      //   return getMapText("enableStatus", text);
-      // },
+      render(text: any) {
+        return getMapText?.("enableStatus", text);
+      },
     },
   ];
 };

@@ -42,7 +42,9 @@ export function getRequestParams(req: CommonObj, ignoreKeys = ["phone"]) {
     const valType = typeOf(val);
     const isEmptyStr = val === "";
     const isIgnoreKey = ignoreKeys?.includes(key);
-    const isIgnoreType = ["Null", "Undefined", "Boolean", "Array"].includes(valType);
+    const isIgnoreType = ["Null", "Undefined", "Boolean", "Array"].includes(
+      valType
+    );
     return isEmptyStr || isIgnoreKey || isIgnoreType;
   }
   for (const key in reqParams) {
@@ -98,7 +100,11 @@ export function deleteAttrs(obj = {}, attrs: string[] = []) {
  * @param parse 要转换成的格式，之后再进行对比
  */
 export type ParseRangeItemType = "date";
-export function getIsInDateRange(range: [any, any], now: any, parse?: ParseRangeItemType) {
+export function getIsInDateRange(
+  range: [any, any],
+  now: any,
+  parse?: ParseRangeItemType
+) {
   if (range?.length) {
     let [min, max] = range;
     if (parse === "date") {
@@ -125,7 +131,11 @@ export function filterByConditions(list: any[], byConditions: any[]) {
    * @other byKeys string[] 依据的字段名，示例：['name','nickname']
    * @other keyword string 依据的关键词，示例："范"
    */
-  function isIncludesKeyword(record: CommonObj, condition: CommonObj, key: string) {
+  function isIncludesKeyword(
+    record: CommonObj,
+    condition: CommonObj,
+    key: string
+  ) {
     const {
       type = "blur",
       byKeys,
@@ -202,7 +212,7 @@ export function getOptsFromDict(name: string, ignoreKeys: string[]) {
  */
 export function getDictMapKeys(name: string, val: string | number) {
   if (val === undefined) {
-    return Object.keys(dictMap[name]).map(item => Number(item));
+    return Object.keys(dictMap[name]).map((item) => Number(item));
   } else {
     return [val];
   }
@@ -214,7 +224,11 @@ export function getDictMapKeys(name: string, val: string | number) {
  * @param oldObj object 对象默认（初始）值
  * @return object 返回合并之后的对象
  */
-export function addObj(newObj: CommonObj, oldObj: CommonObj, othObj: CommonObj) {
+export function addObj(
+  newObj: CommonObj,
+  oldObj: CommonObj,
+  othObj: CommonObj
+) {
   // const obj: CommonObj = {};
   // for (const key in oldObj) {
   //   obj[key] = newObj[key] ?? oldObj[key];
@@ -251,9 +265,19 @@ export function getConstructorObj(obj: CommonObj = {}, excludes?: string[]) {
  * 获取NavsTree
  * @param navs object[] 原始导航树数据
  */
-export function getNavsTree(navs: CommonObj[] = []): CommonObj[] {
+export function getNavsTree(navs?: CommonObj[]): CommonObj[] | undefined {
+  if (!navs) return;
   return navs.map((item: CommonObj, ind) => {
-    const { label, component = "", path, children, status, is_cache, type, ...rest } = item;
+    const {
+      label,
+      component = "",
+      path,
+      children,
+      status,
+      is_cache,
+      type,
+      ...rest
+    } = item;
     return {
       name: label,
       menu_path: path,
@@ -280,7 +304,11 @@ export function getNavsTree(navs: CommonObj[] = []): CommonObj[] {
  * @param propsMap object 属性映射
  * @return object 查找到的树节点
  */
-export function findTreeNode(arr: any[], byId: string, propsMap: CommonObj = { id: "id", children: "children" }) {
+export function findTreeNode(
+  arr: any[],
+  byId: string,
+  propsMap: CommonObj = { id: "id", children: "children" }
+) {
   let node = null;
   function getFindInfo(arr: any[], byId: string): any {
     arr?.find((item: any, ind: number) => {
@@ -302,7 +330,10 @@ export function findTreeNode(arr: any[], byId: string, propsMap: CommonObj = { i
  * @example 发布到gitee上的有效地址：https://fanlichuan.gitee.io/quick_admin_vue3/dist/static/imgs/girl-1.jpg
  * @example VsCode Live Sever打开的有效地址：http://127.0.0.1:5500/dist/static/imgs/boy-6.jpg
  */
-export function getBasePath(projectName = "quick_admin_vue3", rootPath = "/dist") {
+export function getBasePath(
+  projectName = "quick_admin_vue3",
+  rootPath = "/dist"
+) {
   const isDev = process.env.NODE_ENV === "development";
   if (isDev) return ""; //开发模式
   const { origin, host } = location;

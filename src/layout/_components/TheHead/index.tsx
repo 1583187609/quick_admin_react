@@ -26,28 +26,30 @@ import { getUserInfo } from "@/utils";
 import s from "./index.module.less";
 import { useDispatch } from "react-redux";
 import { useRouter } from "@/hooks";
+import Breadcrumb from "./_components/Breadcrumb";
+import { CommonObj } from "@/vite-env";
 
 interface Props {
   className?: string;
   groups?: MenusItem[];
   collapsed?: boolean;
-  setCollapsed: (isFold: boolean) => void;
-  onMenuItem: (ind: number, info: CommonObj) => void;
-  reload: (cb?: () => void) => void;
-  rootInd: number;
-  setRootInd: (ind: number) => void;
+  // setCollapsed: (isFold: boolean) => void;
+  // onMenuItem: (ind: number, info: CommonObj) => void;
+  // reload: (cb?: () => void) => void;
+  // rootInd: number;
+  // setRootInd: (ind: number) => void;
 }
 const { VITE_APP_NAME } = import.meta.env;
 export default ({
   className = "",
   collapsed = false,
-  setCollapsed,
+  // setCollapsed,
   groups = [],
-  onMenuItem,
-  reload,
-  rootInd,
-  setRootInd,
-}: Props) => {
+}: // onMenuItem,
+// reload,
+// rootInd,
+// setRootInd,
+Props) => {
   const router = useRouter();
   const userInfo = getUserInfo();
   const dispatch = useDispatch();
@@ -60,51 +62,51 @@ export default ({
       const { id, label, icon, path } = item;
       return { id, label, icon, path };
     }) || [];
-  const rootKey = useMemo(
-    () => findRootKey(groups, pathname, rootInd),
-    [groups, pathname, rootInd]
-  );
+  // const rootKey = useMemo(
+  //   () => findRootKey(groups, pathname, rootInd),
+  //   [groups, pathname, rootInd]
+  // );
   //获取根key
-  function findRootKey(
-    groups: MenusItem[],
-    pathname: string,
-    rootInd: number
-  ): string {
-    setUpdatedTitle(false);
-    if (groups[rootInd]?.children?.length) {
-      function isFind(children: MenusItem[]): boolean {
-        return !!children.find((sItem, sInd) => {
-          const { children = [], path, label } = sItem;
-          if (path === pathname) {
-            document.title = label;
-            setUpdatedTitle(true);
-          }
-          return path === pathname || isFind(children);
-        });
-      }
-      const target = groups.find((gItem, gInd) => {
-        const { children = [] } = gItem;
-        const find = isFind(children);
-        if (find) {
-          setRootInd(gInd); //会触发警告，暂时不知道什么原因引起的
-        }
-        return find;
-      });
-      return target?.path || "";
-    } else {
-      const { path = "", label = VITE_APP_NAME } = groups?.[rootInd] || {};
-      document.title = label;
-      setUpdatedTitle(path !== ""); //处理初始化刷新页面时，会更新页签中的值为pkg.name
-      return path;
-    }
-  }
+  // function findRootKey(
+  //   groups: MenusItem[],
+  //   pathname: string,
+  //   rootInd: number
+  // ): string {
+  //   setUpdatedTitle(false);
+  //   if (groups[rootInd]?.children?.length) {
+  //     function isFind(children: MenusItem[]): boolean {
+  //       return !!children.find((sItem, sInd) => {
+  //         const { children = [], path, label } = sItem;
+  //         if (path === pathname) {
+  //           document.title = label;
+  //           setUpdatedTitle(true);
+  //         }
+  //         return path === pathname || isFind(children);
+  //       });
+  //     }
+  //     const target = groups.find((gItem, gInd) => {
+  //       const { children = [] } = gItem;
+  //       const find = isFind(children);
+  //       if (find) {
+  //         setRootInd(gInd); //会触发警告，暂时不知道什么原因引起的
+  //       }
+  //       return find;
+  //     });
+  //     return target?.path || "";
+  //   } else {
+  //     const { path = "", label = VITE_APP_NAME } = groups?.[rootInd] || {};
+  //     document.title = label;
+  //     setUpdatedTitle(path !== ""); //处理初始化刷新页面时，会更新页签中的值为pkg.name
+  //     return path;
+  //   }
+  // }
   //处理点击菜单选项
-  function handleClickMenuItem<MenuProps>(info: CommonObj) {
-    const { key } = info;
-    const ind: number = newGroups?.findIndex((it) => it.path === key) as number;
-    setRootInd(ind);
-    onMenuItem(ind, info);
-  }
+  // function handleClickMenuItem<MenuProps>(info: CommonObj) {
+  //   const { key } = info;
+  //   const ind: number = newGroups?.findIndex((it) => it.path === key) as number;
+  //   // setRootInd(ind);
+  //   onMenuItem(ind, info);
+  // }
   //退出登录
   function handlePostLogout() {
     dispatch(handleLoginOut({ id: 1 }) as any).then((res: CommonObj) => {
@@ -127,18 +129,19 @@ export default ({
       <div className="f-sb-c">
         <div
           className={`${s["toggle-btn"]} f-0`}
-          onClick={() => setCollapsed(!collapsed)}
+          // onClick={() => setCollapsed(!collapsed)}
         >
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </div>
-        <Menu
+        <Breadcrumb className="f-1" />
+        {/* <Menu
           className="f-1"
           onClick={handleClickMenuItem}
           selectedKeys={[rootKey]}
           mode="horizontal"
           theme="dark"
           items={handleNavs(newGroups)}
-        />
+        /> */}
         <div className="f-0 ml-8 mr-8 f-fe-s">
           <div className={`${s.nickname} f-sa-fe-c`}>
             <div>{userInfo._title}</div>
@@ -186,7 +189,10 @@ export default ({
           </Popover>
         </div>
       </div>
-      <PageTags updatedTitle={updatedTitle} reload={reload} />
+      <PageTags
+        updatedTitle={updatedTitle}
+        //  reload={reload}
+      />
     </div>
   );
 };

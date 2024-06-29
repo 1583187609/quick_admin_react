@@ -1,14 +1,15 @@
 import BaseFormItem, { FieldItem } from "@/components/BaseFormItem";
 import BaseEmpty from "@/components/BaseEmpty";
 import { Row } from "antd";
+import { CommonObj } from "@/vite-env";
 
-export type AlignType = "top" | "middle" | "bootom" | "stretch";
+export type AlignType = "top" | "middle" | "bottom" | "stretch";
 export type ScreenSize = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
 export type JustifyType =
   | "start"
   | "end"
   | "center"
-  | "spance-around"
+  | "space-around"
   | "space-between"
   | "space-evenly";
 
