@@ -1,15 +1,17 @@
 /**
  * 布局Layout文件
  */
+
 import { Outlet } from "react-router-dom";
 import TheMenu, { ResponseMenuItem } from "./_components/TheMenu";
 import TheHead from "./_components/TheHead";
-import { useContext, useEffect, useMemo, useState, Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Spin, Watermark } from "antd";
 import { useRouter, useStoreSpace } from "@/hooks";
 import BaseImg from "@/components/BaseImg";
 import BaseIcon from "@/components/BaseIcon";
 import logoImg from "@/assets/images/logo.svg";
+import useMenu from "@/layout/_hooks";
 import s from "./index.module.less";
 
 interface Props {
@@ -19,21 +21,17 @@ let reloadCb: undefined | (() => void);
 const { VITE_APP_NAME } = import.meta.env;
 
 export default ({ className = "" }: Props) => {
-  const { allMenus, activeIndex, changeActiveIndex } = useStoreSpace("menu");
+  const { allMenus, sideMenus, activeIndex } = useStoreSpace("menu");
+  const { changeActiveIndex } = useMenu();
   // const router = useRouter();
   // const groups = useContext(MenusContext);
-  // const [rootInd, setRootInd] = useState(0);
-  // const [collapsed, setCollapsed] = useState(false);
-  // const [show, setShow] = useState(true);
-  // const currNavs = useMemo(() => {
-  //   return groups?.[rootInd]?.children || [];
-  // }, [groups, rootInd]);
-  // useEffect(() => {
-  //   if (!show) {
-  //     setShow(true);
-  //     reloadCb?.();
-  //   }
-  // }, [show]);
+  const [show, setShow] = useState(true);
+  useEffect(() => {
+    if (!show) {
+      setShow(true);
+      reloadCb?.();
+    }
+  }, [show]);
   //处理点击菜单栏
   // function handleClickMenuItem(ind: number, info: CommonObj) {
   //   const subNavs = groups?.[ind]?.children ?? [];
@@ -67,45 +65,28 @@ export default ({ className = "" }: Props) => {
       <div className={`${className} ${s.layout} f-sb-s`}>
         <div className={`${s["main-menu"]} f-0 f-fs-s f-fs-c-c`}>
           <div className={`f-c-c-c f-0 ${s.logo}`}>
-            <BaseImg
-              src={logoImg}
-              size="60%"
-              style={{ borderRadius: 0 }}
-              to={{ name: "home" }}
-            />
+            <BaseImg src={logoImg} size="60%" style={{ borderRadius: 0 }} to={{ name: "home" }} />
           </div>
           <ul className={`${s.list} f-fs-c-c f-1 all-hide-scroll`}>
-            {allMenus.map((item, ind) => {
+            {allMenus.map((item: ResponseMenuItem, ind: number) => {
               return (
                 <li
-                  className={`${s.item} ${
-                    activeIndex === ind ? s.active : ""
-                  } f-c-c-c`}
-                  onClick={() => changeActiveIndex({ ind })}
+                  className={`${s.item} ${activeIndex === ind ? s.active : ""} f-c-c-c`}
+                  onClick={() => changeActiveIndex(ind)}
                   key={ind}
                 >
-                  <BaseIcon size="20" name={item.icon} />
+                  {<BaseIcon size="20" name={item.icon} />}
                   <span className={`${s.text} line-1`}>{item.label}</span>
                 </li>
               );
             })}
           </ul>
         </div>
-        <TheMenu
-          // collapsed={collapsed}
-          className="f-0"
-          // navs={groups}
-          title={VITE_APP_NAME}
-        />
+        <TheMenu className="f-0" />
         <div className={`${s.right} f-1 f-fs-s-c`}>
           <TheHead
             className="f-0"
-            // groups={groups}
             // onMenuItem={handleClickMenuItem}
-            // collapsed={collapsed}
-            // setCollapsed={setCollapsed}
-            // rootInd={rootInd}
-            // setRootInd={setRootInd}
             // reload={reloadView}
           />
           <div className={`${s.main} f-1 f-fs-s-c`}>
@@ -120,10 +101,7 @@ export default ({ className = "" }: Props) => {
                 />
               }
             >
-              {
-                // show &&
-                <Outlet />
-              }
+              {show && <Outlet />}
             </Suspense>
           </div>
         </div>

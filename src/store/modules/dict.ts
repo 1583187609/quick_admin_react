@@ -1,6 +1,6 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import dict, { DictName } from "@/dict";
-import { cascader, type CascaderName } from "@/dict/cascader";
+import cascader, { type CascaderName } from "@/dict/cascader";
 import { CommonObj } from "@/vite-env";
 
 /**
@@ -23,5 +23,10 @@ export default createSlice({
     dictMap: dict,
     cascaderMap: cascader,
   },
-  reducers: {},
+  reducers: {
+    // 未来可能有如下方法
+    // getDictMap() {},
+    // setDictMap() {},
+    // clearDictMap() {},
+  },
 });

@@ -25,55 +25,52 @@ function getMenuNavs(navs: ResponseMenuItem[], level = 0): ResponseMenuItem[] {
  * @param data
  * @returns
  */
-export const handleLoginIn = createAsyncThunk(
-  "userLoginIn",
-  async (payload: CommonObj, { dispatch, getState, extra }) => {
-    const state = getState();
-    const { remember, ...args } = payload.params;
-    const { router, location } = payload.other;
-    if (remember) {
-      storage.setItem("rememberAccount", args);
-    } else {
-      storage.removeItem("rememberAccount");
-    }
-    return await PostUserLogin(args).then((res) => {
-      const { user, navs, ...rest } = res as CommonObj;
-      const newNavs = getMenuNavs(
-        navs.filter((it: ResponseMenuItem) => {
-          const { auth_codes, path } = it;
-          if (path === "demo") return false; //过滤掉demo示例代码
-          if (!auth_codes) return true;
-          return auth_codes.includes(user.type);
-        })
-      );
-      const { id = "", name = "", nickname = "", type_text = "" } = user;
-      user._title = name || nickname || type_text + id;
-      const expired = Date.now() + expiration;
-      const expiredDate = dayjs(expired).format("YYYY-MM-DD HH:mm:ss");
-      storage.setItem("userInfo", user);
-      storage.setItem("token", user?.token ?? "");
-      storage.setItem("allMenus", newNavs);
-      storage.setItem("expiredDate", expiredDate);
-      let toPath = defaultHomePath;
-      if (location.search) toPath = location.search.slice(10);
-      router.push(toPath);
-      notification.success({
-        closeIcon: false,
-        style: { top: "36px" },
-        placement: "topRight",
-        message: "登录成功",
-        description: `欢迎回来，${user?.name ?? "XXX"}`,
-        duration: 3, //单位：秒
-      });
-      return {
-        user,
-        navs: newNavs,
-        expired,
-        ...rest,
-      };
-    });
+const handleLoginIn = createAsyncThunk("userLoginIn", async (payload: CommonObj, { dispatch, getState, extra }) => {
+  const state = getState();
+  const { remember, ...args } = payload.params;
+  const { router, location } = payload.other;
+  if (remember) {
+    storage.setItem("rememberAccount", args);
+  } else {
+    storage.removeItem("rememberAccount");
   }
-);
+  return await PostUserLogin(args).then(res => {
+    const { user, navs, ...rest } = res as CommonObj;
+    const newNavs = getMenuNavs(
+      navs.filter((it: ResponseMenuItem) => {
+        const { auth_codes, path } = it;
+        if (path === "demo") return false; //过滤掉demo示例代码
+        if (!auth_codes) return true;
+        return auth_codes.includes(user.type);
+      })
+    );
+    const { id = "", name = "", nickname = "", type_text = "" } = user;
+    user._title = name || nickname || type_text + id;
+    const expired = Date.now() + expiration;
+    const expiredDate = dayjs(expired).format("YYYY-MM-DD HH:mm:ss");
+    storage.setItem("userInfo", user);
+    storage.setItem("token", user?.token ?? "");
+    storage.setItem("allMenus", newNavs);
+    storage.setItem("expiredDate", expiredDate);
+    let toPath = defaultHomePath;
+    if (location.search) toPath = location.search.slice(10);
+    router.push(toPath);
+    notification.success({
+      closeIcon: false,
+      style: { top: "36px" },
+      placement: "topRight",
+      message: "登录成功",
+      description: `欢迎回来，${user?.name ?? "XXX"}`,
+      duration: 3, //单位：秒
+    });
+    return {
+      user,
+      navs: newNavs,
+      expired,
+      ...rest,
+    };
+  });
+});
 const handleLoginInAfter = (builder: any) => {
   const { pending, fulfilled, rejected } = handleLoginIn;
   builder.addCase(fulfilled, (state: any, { payload }: CommonObj) => {
@@ -88,36 +85,32 @@ const handleLoginInAfter = (builder: any) => {
 /**
  * 用户登出
  */
-export const handleLoginOut = createAsyncThunk(
-  "userLoginOut",
-  async (payload: CommonObj, { dispatch, getState, extra }) => {
-    const { phone, isFetch = false } = payload.params;
-    const { router, location } = payload.other;
-    return await PostUserLogout({ phone }).then((res: any) => {
-      storage.getKeys().forEach((key: string) => {
-        const isRemove = !["rememberAccount", "set", "hasGuide"].includes(key);
-        if (isRemove) storage.removeItem(key);
-      });
-      storage.clear("session"); //清除sessionStorage的数据
-      menuStore.actions.changeActiveIndex(0);
-      message.success("退出成功！");
-      const { pathname } = location;
-      // const { path, fullPath, name } = route;
-      // router.push({
-      //   name: "login",
-      //   query:
-      //     name !== "login" && path !== defaultHomePath
-      //       ? { redirect: fullPath }
-      //       : undefined,
-      // });
-      let suffix = "";
-      if (!["/login", defaultHomePath].includes(pathname))
-        suffix = `?redirect=${pathname}`;
-      router.push(`/login${suffix}`);
-      return res;
+const handleLoginOut = createAsyncThunk("userLoginOut", async (payload: CommonObj, { dispatch, getState, extra }) => {
+  const { phone, isFetch = false } = payload.params;
+  const { router, location } = payload.other;
+  return await PostUserLogout({ phone }).then((res: any) => {
+    storage.getKeys().forEach((key: string) => {
+      const isRemove = !["rememberAccount", "set", "hasGuide"].includes(key);
+      if (isRemove) storage.removeItem(key);
     });
-  }
-);
+    storage.clear("session"); //清除sessionStorage的数据
+    menuStore.actions.changeActiveIndex(0);
+    message.success("退出成功！");
+    const { pathname } = location;
+    // const { path, fullPath, name } = route;
+    // router.push({
+    //   name: "login",
+    //   query:
+    //     name !== "login" && path !== defaultHomePath
+    //       ? { redirect: fullPath }
+    //       : undefined,
+    // });
+    let suffix = "";
+    if (!["/login", defaultHomePath].includes(pathname)) suffix = `?redirect=${pathname}`;
+    router.push(`/login${suffix}`);
+    return res;
+  });
+});
 
 const handleLoginOutAfter = (builder: any) => {
   const { pending, fulfilled, rejected } = handleLoginOut;
@@ -187,40 +180,9 @@ const userSlice = createSlice({
   //     },
   //   },
   //  }),
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     handleLoginInAfter(builder);
     handleLoginOutAfter(builder);
-    // const { pending, fulfilled, rejected } = handleLoginIn;
-    // builder.addCase(fulfilled, (state, { payload }) => {
-    //   const { user, navs } = payload as CommonObj;
-    //   const _navs = getMenuNavs(
-    //     navs.filter((it: ResponseMenuItem) => {
-    //       const { auth_codes } = it;
-    //       if (!auth_codes) return true;
-    //       return auth_codes.includes(user.type);
-    //     })
-    //   );
-    //   const { id = "", name = "", nickname = "", type_text = "" } = user;
-    //   user._title = name || nickname || type_text + id;
-    //   state.userInfo = user;
-    //   state.expired = Date.now() + expiration;
-    //   storage.setItem("userInfo", user);
-    //   storage.setItem("token", user?.token ?? "");
-    //   storage.setItem("allMenus", _navs);
-    //   storage.setItem(
-    //     "expiredDate",
-    //     dayjs(state.expired).format("YYYY-MM-DD HH:mm:ss")
-    //   );
-    //   // menuStore.initMenus(_navs);
-    //   // router.push("/");
-    //   // ElNotification({
-    //   //   type: "success",
-    //   //   title: "登录成功",
-    //   //   duration: 2000,
-    //   //   dangerouslyUseHTMLString: true,
-    //   //   message: `欢迎回来，<b>${userInfo.value!._title}</b>`,
-    //   // });
-    // });
   },
   // selectors: {
   //   getIsLogin: (state) => state.isLogin,

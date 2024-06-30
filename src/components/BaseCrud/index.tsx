@@ -2,47 +2,24 @@
  * 文件说明-模板文件
  */
 
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useImperativeHandle,
-  forwardRef,
-} from "react";
+import React, { useContext, useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
 import { FieldItem } from "@/components/BaseFormItem";
 import QueryForm from "./_components/QueryForm";
 import QueryTable, { ColItem } from "./_components/QueryTable";
 import ExtraBtns, { ExportFieldItem } from "./_components/ExtraBtns";
-import {
-  BaseBtnType,
-  BtnItem,
-  BtnName,
-  btnsMap,
-  getBtnObj,
-} from "@/components/BaseBtn";
+import { BaseBtnType, BtnItem, BtnName, btnsMap, getBtnObj } from "@/components/BaseBtn";
 import { message, Modal } from "antd";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import ImportModal from "./_components/ImportModal";
 import { merge } from "lodash";
 import { getUserInfo, omitAttrs, printLog } from "@/utils";
 import StrongText from "./_components/StrongText";
-import s from "./index.module.less";
 import { CommonObj, FetchType } from "@/vite-env";
+import { ExportBtnParams, FormAttrs, TableAttrs, ReqMap, ResMap } from "./_types";
+import s from "./index.module.less";
 
-export interface ExportBtnParams {
-  ids: React.Key[];
-  params: CommonObj;
-  fields: ExportFieldItem[];
-}
-export interface FormAttrs {
-  initialValues?: CommonObj;
-  [key: string]: any;
-}
-export interface TableAttrs {
-  rowKey?: React.Key;
-  [key: string]: any;
-}
+export * from "./_types";
+
 interface Props {
   className?: string;
   formAttrs?: FormAttrs;
@@ -51,16 +28,8 @@ interface Props {
   columns?: ColItem[];
   extraBtns?: BaseBtnType[];
   operateBtns?: BaseBtnType[];
-  onExtraBtn?: (
-    name: BtnName,
-    exportBtnParams: ExportBtnParams,
-    next: (msg?: string) => void
-  ) => void;
-  onOperateBtn?: (
-    name: BtnName,
-    row: CommonObj,
-    next: (msg?: string) => void
-  ) => void;
+  onExtraBtn?: (name: BtnName, exportBtnParams: ExportBtnParams, next: (msg?: string) => void) => void;
+  onOperateBtn?: (name: BtnName, row: CommonObj, next: (msg?: string) => void) => void;
   children?: any;
   sort?: boolean;
   index?: boolean;
@@ -75,18 +44,6 @@ interface Props {
   reqMap?: ReqMap; //响应参数的键名映射
   resMap?: ResMap; //是否展示序号列
   filterByAuth?: (auth: number[]) => boolean;
-}
-//请求参数的键名映射
-interface ReqMap {
-  curr_page: string;
-  page_size: string;
-}
-//响应参数的键名映射
-interface ResMap {
-  curr_page: string;
-  page_size: string;
-  total_num: string;
-  records: string;
 }
 let allColumns = [];
 const defaultReqMap: ReqMap = {
@@ -106,8 +63,7 @@ function getBtnModalTips(name: BtnName, num = 0, max: number) {
   const type = attrs?.danger ? "danger" : "primary";
   let tips = (
     <div className="f-fs-b-w">
-      确定<StrongText type={type}>{text}</StrongText>共
-      <StrongText type={type}>{num}</StrongText> 条数据？
+      确定<StrongText type={type}>{text}</StrongText>共<StrongText type={type}>{num}</StrongText> 条数据？
     </div>
   );
   if (name === "export" && num > max) {
@@ -164,7 +120,7 @@ export default forwardRef(
       [`${reqMap.page_size}`]: 20,
     };
     const [newCols, setNewCols] = useState(columns.slice()); //深克隆
-    const newExtraBtns = extraBtns.map((item) => {
+    const newExtraBtns = extraBtns.map(item => {
       const btn: BtnItem = getBtnObj(item);
       if (noPopconfirmBtns.includes(btn.name)) {
         btn.popconfirm = false;
@@ -188,12 +144,7 @@ export default forwardRef(
     }, []);
     //初始化请求数据
     function initFetch() {
-      params.current = merge(
-        {},
-        formAttrs?.initialValues,
-        initPage,
-        extraParams
-      );
+      params.current = merge({}, formAttrs?.initialValues, initPage, extraParams);
       getList();
     }
     //获取表格列表数据
@@ -216,11 +167,7 @@ export default forwardRef(
     //处理点击额外按钮
     function handleExtraBtn(name: BtnName) {
       if (name === "import") {
-        openPopup(
-          { title: "温馨提示", footer: null },
-          <ImportModal />,
-          "modal"
-        );
+        openPopup({ title: "温馨提示", footer: null }, <ImportModal />, "modal");
       } else {
         //要传递的参数信息
         const argsInfo = {
@@ -230,9 +177,7 @@ export default forwardRef(
         };
         //回调函数
         const callback = (msg?: string) => {
-          message.success(
-            msg === undefined ? `${btnsMap[name].text}成功！` : msg
-          );
+          message.success(msg === undefined ? `${btnsMap[name].text}成功！` : msg);
         };
         if (noPopconfirmBtns.includes(name)) {
           Modal.confirm({
@@ -260,7 +205,7 @@ export default forwardRef(
          * name可能undefined，此时是自定义组件，type为 Custom；
          * type 可能为undefined，此时 type 为Input
          */
-        const type = fields.find((it) => it.name === key)?.type;
+        const type = fields.find(it => it.name === key)?.type;
         if (["Select"].includes(type as string)) {
           getList();
         }
@@ -305,9 +250,7 @@ export default forwardRef(
       }
     }
     return (
-      <div
-        className={`${className} ${s["base-crud"]} auto-scroll-table f-1 f-fs-s-c`}
-      >
+      <div className={`${className} ${s["base-crud"]} auto-scroll-table f-1 f-fs-s-c`}>
         <QueryForm
           ref={formRef}
           className="f-0"
@@ -319,9 +262,7 @@ export default forwardRef(
           onReset={() => initFetch()}
           {...formAttrs}
         />
-        {!!children && (
-          <div className={`${s.children} f-0 mt-16`}>{children}</div>
-        )}
+        {!!children && <div className={`${s.children} f-0 mt-16`}>{children}</div>}
         <ExtraBtns
           className="f-0 mt-16"
           onClick={(name: BtnName) => handleExtraBtn(name)}

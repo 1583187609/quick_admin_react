@@ -1,6 +1,7 @@
 import { actions, exposes } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { CommonObj } from "@/vite-env";
+// import user from "@/store/modules/user";
 
 function getReducers(actionsMap: CommonObj, dispatch: any) {
   const map: CommonObj = {};
@@ -17,8 +18,9 @@ function getReducers(actionsMap: CommonObj, dispatch: any) {
 export default (name: string) => {
   if (!name) throw Error("请传入 store 唯一ID名称");
   const dispatch = useDispatch();
+  // console.log(user.selectors, "user--------------");
   return {
-    ...useSelector((state) => state[name]),
+    ...useSelector(state => state[name]),
     ...getReducers(actions[name], dispatch),
     ...getReducers(exposes[name], dispatch),
   };

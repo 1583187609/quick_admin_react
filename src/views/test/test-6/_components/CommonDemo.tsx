@@ -6,6 +6,7 @@ import { CSSProperties } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { counterStore } from "@/store";
 import { Button } from "antd";
+import BaseTag from "@/components/BaseTag";
 
 interface Props {
   className?: string;
@@ -17,7 +18,7 @@ const { addNum, cutNum } = counterStore;
 
 export default ({ className = "", ...restProps }: Props) => {
   const dispatch = useDispatch();
-  const num = useSelector((state) => state.counter.num);
+  const num = useSelector(state => state.counter.num);
   const handleAdd = (num: number) => dispatch(addNum(num));
   const handleCut = (num: number) => dispatch(cutNum(num));
   return (
@@ -33,7 +34,10 @@ export default ({ className = "", ...restProps }: Props) => {
           </Button>
         </div>
       </div>
-      <div className="f-1 f-fs-c-c">第二列</div>
+      <div className="f-1 f-fs-c-c">
+        第二列
+        <BaseTag value={1} />
+      </div>
     </div>
   );
 };

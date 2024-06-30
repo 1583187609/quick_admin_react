@@ -3,11 +3,7 @@ import { FieldItem } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
 import { CommonObj } from "@/vite-env";
 
-export function getFormFields({
-  genderOpts,
-  roleTypeOpts,
-  enableStatusOpts,
-}: CommonObj): FieldItem[] {
+export function getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts }: CommonObj): FieldItem[] {
   return [
     {
       name: "id",
@@ -66,9 +62,6 @@ export const getTableFields = ({}: CommonObj): ColItem[] => {
       name: "gender_text",
       title: "性别",
       width: 100,
-      // render(text: any) {
-      //   return getMapText("sex", text);
-      // },
     },
     {
       name: "age",
@@ -94,9 +87,6 @@ export const getTableFields = ({}: CommonObj): ColItem[] => {
       name: "status_text",
       title: "账号状态",
       width: 80,
-      // render(text: any) {
-      //   return getMapText("enableStatus", text);
-      // },
     },
   ];
 };

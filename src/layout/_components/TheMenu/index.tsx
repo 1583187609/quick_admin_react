@@ -2,7 +2,6 @@
  * 文件说明-模板文件
  */
 import React, { useCallback, useEffect, useState } from "react";
-import BaseImg from "@/components/BaseImg";
 import { useLocation } from "react-router-dom";
 import { Menu } from "antd";
 import type { MenuProps } from "antd";
@@ -11,6 +10,8 @@ import { CommonObj, ShowCodes } from "@/vite-env";
 import { IconNames } from "@/components/BaseIcon";
 import { getMenuNavs } from "@/store/modules/menu";
 import s from "./index.module.less";
+import { defaultHomePath } from "@/utils";
+import useMenu from "@/layout/_hooks";
 
 export type LinkType = 0 | 1 | 2; //1 内部iframe渲染； 2, 新打开一个浏览器标签页展示
 export type AntdMenuItem = Required<MenuProps>["items"][number];
@@ -33,64 +34,35 @@ export type ResponseMenuItem = {
 };
 interface Props {
   className?: string;
-  title?: string;
   defaultSelectedKeys?: string[];
   defaultOpenKeys?: string[];
 }
-export default ({ className = "", title }: Props) => {
+const { VITE_APP_NAME } = import.meta.env;
+const title = VITE_APP_NAME;
+
+export default ({ className = "" }: Props) => {
   const { isFold } = useStoreSpace("base");
-  // const [isFold, setIsFold] = useState(false);
-  // const toggleFold = () => setIsFold(!isFold);
-  const { allMenus, sideMenus } = useStoreSpace("menu");
+  const { seledKeys, openKeys, allMenus, sideMenus, updateState: updateMenuState } = useStoreSpace("menu");
+  const { setActiveKeys } = useMenu();
   const router = useRouter();
   const location = useLocation();
   const { pathname } = location;
-  const [seledKeys, setSeledKeys] = useState<string[]>([]);
-  const [openKeys, setOpenKeys] = useState<string[]>([]);
   useEffect(() => {
-    const { seledKeys, openKeys } = getActiveKeys(allMenus, pathname);
-    setSeledKeys(seledKeys);
-    setOpenKeys(openKeys);
+    setActiveKeys(allMenus, pathname);
   }, [allMenus, pathname]);
-  //获取被选中的菜单keys
-  function getActiveKeys(navs: ResponseMenuItem[], pathName: string) {
-    let openKeys: string[] = [];
-    let seledKeys: string[] = [];
-    function findTarget(arr: any) {
-      return arr.find((item: any) => {
-        const { children, path } = item;
-        if (children) {
-          let target = findTarget(children);
-          if (target) {
-            openKeys = [path];
-            seledKeys = [target.path];
-          }
-          return !!target;
-        } else {
-          let isFind = path === pathName;
-          isFind && (seledKeys = [path]);
-          return isFind;
-        }
-      });
-    }
-    findTarget(navs);
-    return { openKeys, seledKeys };
-  }
+
   const handleSelect = useCallback((info: CommonObj) => {
-    const { key, selectedKeys } = info;
+    const { key, selectedKeys, keyPath } = info;
+    const openKeys = keyPath.slice(1).reverse();
+    updateMenuState({ seledKeys: selectedKeys, openKeys });
     router.push(key);
   }, []);
   const handleOpenChange = useCallback((openKeys: string[]) => {
-    setOpenKeys(openKeys);
+    updateMenuState({ openKeys });
   }, []);
   return (
-    <div
-      className={`${className} ${s.menu} ${isFold ? s.collapsed : ""} f-sb-s-c`}
-    >
-      <div
-        onClick={() => router.push("/")}
-        className={`${s.title} f-0 f-c-c line-2`}
-      >
+    <div className={`${className} ${s.menu} ${isFold ? s.collapsed : ""} f-sb-s-c`}>
+      <div onClick={() => router.push(defaultHomePath)} className={`${s.title} f-0 f-c-c line-2`}>
         {isFold ? title?.slice(0, 1) : title}
       </div>
       <Menu

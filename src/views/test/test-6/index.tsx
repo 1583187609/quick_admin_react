@@ -26,10 +26,10 @@ const items = [
   },
   {
     key: "3",
-    label: "useStore",
+    label: "useStoreSpace",
     children: <StoreDemo />,
   },
 ];
 export default ({ className = "", ...restProps }: Props) => {
-  return <Tabs items={items} defaultActiveKey="2" />;
+  return <Tabs items={items} defaultActiveKey="2" {...restProps} />;
 };

@@ -1,13 +1,9 @@
 /**
  * 页面标签组件
  */
-import {
-  HomeOutlined,
-  DoubleLeftOutlined,
-  DoubleRightOutlined,
-} from "@ant-design/icons";
+import { HomeOutlined, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { storage, copyText } from "@/utils";
+import { storage, copyText, defaultHomePath } from "@/utils";
 import { useEventListener, useRouter } from "@/hooks";
 import { useLocation } from "react-router-dom";
 import PageTagItem from "./TagItem";
@@ -29,29 +25,22 @@ interface PageTagItem {
   text: string;
   path: string;
 }
-const rootPath = "/"; //可能会用"" 或 "/"， 故用个变量存起来
 export default ({ className = "", updatedTitle, reload }: Props) => {
   const location = useLocation();
   const router = useRouter();
   const contMenuIndRef = useRef(-2);
   const scrollRef = useRef<any>(null);
-  const rightDisabled = useRef(true);
-  const leftDisabled = useRef(true);
   const [disabled, setDisabled] = useState({
     left: true,
     right: true,
   });
-  const [tags, setTags] = useState<PageTagItem[]>(
-    storage.getItem("pageTags") || []
-  );
-  const [menusDisabledCase, setMenusDisabledCase] = useState<MenusDisabledCase>(
-    {}
-  );
+  const [tags, setTags] = useState<PageTagItem[]>(storage.getItem("pageTags") || []);
+  const [menusDisabledCase, setMenusDisabledCase] = useState<MenusDisabledCase>({});
   const { pathname } = location;
   function getMenusDisabledCase() {
     const menuInd = contMenuIndRef.current;
-    const menuPath = menuInd < 0 ? rootPath : tags[menuInd].path;
-    const isHome = menuPath === rootPath;
+    const menuPath = menuInd < 0 ? defaultHomePath : tags[menuInd].path;
+    const isHome = menuPath === defaultHomePath;
     const isFirst = menuInd === 0;
     const isLast = menuInd === tags.length - 1;
     const isEmpty = !tags.length;
@@ -70,9 +59,7 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
     };
     return map;
   }
-  useEventListener("beforeunload", () => storage.setItem("pageTags", tags), [
-    tags,
-  ]);
+  useEventListener("beforeunload", () => storage.setItem("pageTags", tags), [tags]);
   // onResize 和 tags 长度变化时，都要执行一次initDisabled 函数
   useEventListener("resize", initDisabled, []);
   useEffect(() => {
@@ -86,8 +73,7 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
     //必须要使用setTimeout，不然会引起bug（貌似onArrowBtn 中的 ele.scrollTo(left, 0) 是个异步函数，暂不清楚原因）
     setTimeout(() => {
       if (!scrollRef.current) return;
-      const { scrollWidth, clientWidth, offsetWidth, scrollLeft } =
-        scrollRef.current;
+      const { scrollWidth, clientWidth, offsetWidth, scrollLeft } = scrollRef.current;
       const width = clientWidth || offsetWidth;
       setDisabled({
         left: scrollLeft <= 0,
@@ -106,8 +92,8 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
   //将路由添加进历史记录
   function addRoute(data: PageTagItem) {
     const { text, path } = data;
-    const target = tags.find((it) => it.path === path);
-    if (!target && path !== rootPath) {
+    const target = tags.find(it => it.path === path);
+    if (!target && path !== defaultHomePath) {
       if (text === "404") {
         data.text = path;
       }
@@ -125,34 +111,34 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
       cloneTags.splice(ind, 1);
       if (isActive) {
         const nextInd = ind < cloneTags.length ? ind : ind - 1;
-        newPath = cloneTags?.[nextInd]?.path || rootPath;
+        newPath = cloneTags?.[nextInd]?.path || defaultHomePath;
       }
     } else if (type === "closeOther") {
       cloneTags = isHome ? [] : cloneTags.slice(menuInd, menuInd + 1);
-      newPath = isHome ? rootPath : cloneTags[0].path;
+      newPath = isHome ? defaultHomePath : cloneTags[0].path;
     } else if (type === "closeToRight") {
       cloneTags = cloneTags.slice(0, ind + 1);
-      const findInd = cloneTags.findIndex((it) => it.path === pathname);
+      const findInd = cloneTags.findIndex(it => it.path === pathname);
       const isExist = findInd > 0 && findInd < cloneTags.length;
       if (!isExist) {
-        newPath = cloneTags.slice(-1)?.[0].path || rootPath;
+        newPath = cloneTags.slice(-1)?.[0].path || defaultHomePath;
       }
     } else if (type === "closeToLeft") {
       cloneTags = cloneTags.slice(ind);
-      const findInd = cloneTags.findIndex((it) => it.path === pathname);
+      const findInd = cloneTags.findIndex(it => it.path === pathname);
       const isExist = findInd > 0 && findInd < cloneTags.length;
       if (!isExist) {
         newPath = cloneTags[0].path;
       }
     } else if (type === "closeAll") {
       cloneTags = [];
-      newPath = rootPath;
+      newPath = defaultHomePath;
     } else if (type === "reload") {
       reload?.(() => message.success("刷新成功"));
     } else if (type === "copyPath") {
-      copyText(cloneTags[ind]?.path || rootPath);
+      copyText(cloneTags[ind]?.path || defaultHomePath);
     } else if (type === "copyWholePath") {
-      const path = isHome ? rootPath : cloneTags[menuInd]!.path;
+      const path = isHome ? defaultHomePath : cloneTags[menuInd]!.path;
       copyText(window.location.origin + path);
     } else if (type === "closeSaved") {
       message.warning("暂未开通关闭已保存功能");
@@ -171,10 +157,10 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
   return (
     <div className={`${className} ${s["page-tags"]} page-tags f-sb-c`}>
       <PageTagItem
-        onClick={() => router.push(rootPath)}
+        onClick={() => router.push(defaultHomePath)}
         className={`${s["tag-item"]} f-0`}
         style={{ marginInlineStart: 8, marginInlineEnd: 0 }}
-        active={pathname === rootPath}
+        active={pathname === defaultHomePath}
         icon={<HomeOutlined />}
         closable={false}
         onClose={(type: CloseMenuType) => handleClose(type, -1)}
@@ -195,10 +181,7 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
           icon={<DoubleLeftOutlined />}
           disabled={disabled.left}
         />
-        <div
-          className={`${s["scroll-bar"]} all-hide-scroll f-1`}
-          ref={scrollRef}
-        >
+        <div className={`${s["scroll-bar"]} all-hide-scroll f-1`} ref={scrollRef}>
           {tags.map((item: any, ind: number) => {
             return (
               <PageTagItem

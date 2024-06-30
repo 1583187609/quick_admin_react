@@ -10,10 +10,10 @@ interface Props {
   style?: CSSProperties;
   [key: string]: any;
 }
-export default ({ className = "", ...restProps }: Props) => {
+export default ({ className = "", children, ...restProps }: Props) => {
   return (
     <div className={`${className}`} {...restProps}>
-      模板文件
+      模板文件{children}
     </div>
   );
 };

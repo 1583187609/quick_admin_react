@@ -19,12 +19,14 @@ import {
   ExclamationCircleFilled,
   UserOutlined,
   InfoCircleOutlined,
+  RedoOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
 import { defaultHomePath, getUserInfo } from "@/utils";
 import { useDispatch } from "react-redux";
 import { useRouter, useStoreSpace } from "@/hooks";
-import Breadcrumb from "./_components/Breadcrumb";
+import PathBreadcrumb from "./_components/PathBreadcrumb";
 import { CommonObj } from "@/vite-env";
 import s from "./index.module.less";
 
@@ -41,54 +43,43 @@ const { VITE_APP_NAME } = import.meta.env;
 export default ({ className = "" }: Props) => {
   const { isFold, toggleFold } = useStoreSpace("base");
   const { userInfo, handleLoginOut } = useStoreSpace("user");
+  const { activeIndex, allMenus } = useStoreSpace("menu");
   const router = useRouter();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const { pathname } = location;
   const { openPopup } = useContext(PopupContext);
   const [updatedTitle, setUpdatedTitle] = useState(false); //是否更新了document.title
-  // const newGroups: ResponseMenuItem[] =
-  //   groups?.map((item: ResponseMenuItem, ind: number) => {
-  //     const { id, label, icon, path } = item;
-  //     return { id, label, icon, path };
-  //   }) || [];
-  // const rootKey = useMemo(
-  //   () => findRootKey(groups, pathname, rootInd),
-  //   [groups, pathname, rootInd]
-  // );
-  //获取根key
-  // function findRootKey(
-  //   groups: ResponseMenuItem[],
-  //   pathname: string,
-  //   rootInd: number
-  // ): string {
-  //   setUpdatedTitle(false);
-  //   if (groups[rootInd]?.children?.length) {
-  //     function isFind(children: ResponseMenuItem[]): boolean {
-  //       return !!children.find((sItem, sInd) => {
-  //         const { children = [], path, label } = sItem;
-  //         if (path === pathname) {
-  //           document.title = label;
-  //           setUpdatedTitle(true);
-  //         }
-  //         return path === pathname || isFind(children);
-  //       });
-  //     }
-  //     const target = groups.find((gItem, gInd) => {
-  //       const { children = [] } = gItem;
-  //       const find = isFind(children);
-  //       if (find) {
-  //         setRootInd(gInd); //会触发警告，暂时不知道什么原因引起的
-  //       }
-  //       return find;
-  //     });
-  //     return target?.path || "";
-  //   } else {
-  //     const { path = "", label = VITE_APP_NAME } = groups?.[rootInd] || {};
-  //     document.title = label;
-  //     setUpdatedTitle(path !== ""); //处理初始化刷新页面时，会更新页签中的值为pkg.name
-  //     return path;
-  //   }
-  // }
+  const rootKey = useMemo(() => findRootKey(allMenus, pathname, activeIndex), [allMenus, pathname, activeIndex]);
+  // 获取根key
+  function findRootKey(groups: ResponseMenuItem[], pathname: string, rootInd: number): string {
+    setUpdatedTitle(false);
+    if (groups[rootInd]?.children?.length) {
+      function isFind(children: ResponseMenuItem[]): boolean {
+        return !!children.find((sItem, sInd) => {
+          const { children = [], path, label } = sItem;
+          if (path === pathname) {
+            document.title = label;
+            setUpdatedTitle(true);
+          }
+          return path === pathname || isFind(children);
+        });
+      }
+      const target = groups.find((gItem, gInd) => {
+        const { children = [] } = gItem;
+        const find = isFind(children);
+        // if (find) {
+        //   setRootInd(gInd); //会触发警告，暂时不知道什么原因引起的
+        // }
+        return find;
+      });
+      return target?.path || "";
+    } else {
+      const { path = "", label = VITE_APP_NAME } = groups?.[rootInd] || {};
+      document.title = label;
+      setUpdatedTitle(path !== ""); //处理初始化刷新页面时，会更新页签中的值为pkg.name
+      return path;
+    }
+  }
   //处理点击菜单选项
   // function handleClickMenuItem<MenuProps>(info: CommonObj) {
   //   const { key } = info;
@@ -116,7 +107,7 @@ export default ({ className = "" }: Props) => {
         <div className={`${s["toggle-btn"]} f-0`} onClick={() => toggleFold()}>
           {isFold ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </div>
-        <Breadcrumb className="f-1" />
+        <PathBreadcrumb className="f-1" />
         {/* <Menu
           className="f-1"
           onClick={handleClickMenuItem}
@@ -137,9 +128,7 @@ export default ({ className = "" }: Props) => {
               <>
                 <Button
                   className={`${s["pop-btn"]}`}
-                  onClick={() =>
-                    openPopup("个信息", <UserInfo id={1} />, "drawer")
-                  }
+                  onClick={() => openPopup("个人信息", <UserInfo id={1} />, "drawer")}
                   icon={<UserOutlined />}
                   type="link"
                 >
@@ -147,22 +136,30 @@ export default ({ className = "" }: Props) => {
                 </Button>
                 <Button
                   className={`${s["pop-btn"]}`}
-                  onClick={() =>
-                    openPopup("关于系统", <SystemInfo />, "drawer")
-                  }
+                  onClick={() => openPopup("刷新系统", "【刷新系统】暂未开发", "drawer")}
+                  icon={<RedoOutlined />}
+                  type="link"
+                >
+                  刷新系统
+                </Button>
+                <Button
+                  className={`${s["pop-btn"]}`}
+                  onClick={() => openPopup("系统设置", "【系统设置】暂未开发", "drawer")}
+                  icon={<SettingOutlined />}
+                  type="link"
+                >
+                  系统设置
+                </Button>
+                <Button
+                  className={`${s["pop-btn"]}`}
+                  onClick={() => openPopup("关于系统", <SystemInfo />, "drawer")}
                   icon={<InfoCircleOutlined />}
                   type="link"
                 >
                   关于系统
                 </Button>
                 <Divider className="m-0" />
-                <Button
-                  className={`${s["pop-btn"]}`}
-                  onClick={openLogoutDialog}
-                  icon={<PoweroffOutlined />}
-                  type="link"
-                  danger
-                >
+                <Button className={`${s["pop-btn"]}`} onClick={openLogoutDialog} icon={<PoweroffOutlined />} type="link" danger>
                   退出登录
                 </Button>
               </>
