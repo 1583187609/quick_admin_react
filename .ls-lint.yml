@@ -1,0 +1,27 @@
+ls:
+  .dir: kebab-case | snake_case | regex:__[a-z0-9]+__
+  .vue: PascalCase
+  .js: kebab-case
+  .ts: kebab-case
+  .d.ts: kebab-case
+  .css: kebab-case | snake_case
+  .scss: kebab-case | snake_case
+  .less: kebab-case | snake_case
+  .md: SCREAMING_SNAKE_CASE
+  .zh.md: PascalCase
+  .en.md: PascalCase
+
+ignore:
+  - node_modules
+  - dist
+  - .git
+  - .vscode
+  - .hbuilderx
+  - .idea
+  - .npmrc
+  - .stylelintignore
+  - postcss.config.ts
+  - .eslintrc.cjs
+  - .prettierrc.cjs
+  - babel.config.ts
+  - vite.config.ts

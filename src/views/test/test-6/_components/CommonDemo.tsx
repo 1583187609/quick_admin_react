@@ -1,9 +1,9 @@
 /**
- * 借助map、connect 实现store的使用
+ * hook常规做法实现store的使用
  */
 
 import { CSSProperties } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { counterStore } from "@/store";
 import { Button } from "antd";
 
@@ -12,27 +12,14 @@ interface Props {
   style?: CSSProperties;
   [key: string]: any;
 }
-// 获取store中的数据的方法
-const mapState = (state: any) => {
-  const { counter } = state;
-  return {
-    num: counter.num,
-  };
-};
-// 修改store中的数据的方法
-const mapDispatch = (dispatch: any) => {
-  const { addNum, cutNum } = counterStore;
-  return {
-    handleAdd: (num: number) => dispatch(addNum(num)),
-    handleCut: (num: number) => dispatch(cutNum(num)),
-  };
-};
 
-export default connect(
-  mapState,
-  mapDispatch
-)(({ className = "", num, handleAdd, handleCut, ...restProps }: Props) => {
-  // const dispatch = useDispatch();
+const { addNum, cutNum } = counterStore;
+
+export default ({ className = "", ...restProps }: Props) => {
+  const dispatch = useDispatch();
+  const num = useSelector((state) => state.counter.num);
+  const handleAdd = (num: number) => dispatch(addNum(num));
+  const handleCut = (num: number) => dispatch(cutNum(num));
   return (
     <div className={`${className} f-sb-s`} {...restProps}>
       <div className="f-1 f-c-c-c">
@@ -49,4 +36,4 @@ export default connect(
       <div className="f-1 f-fs-c-c">第二列</div>
     </div>
   );
-});
+};

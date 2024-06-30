@@ -5,20 +5,14 @@ import { GetUserInfo, PostMockCommon } from "@/api-mock";
 // import { useDictMap } from "@/hooks";
 import UploadAvatar from "@/components/upload/UploadAvatar";
 import { CommonObj, OptionItem } from "@/vite-env";
-import { useStoreSpace } from "@/hooks";
+import { useDictMap, useStoreSpace } from "@/hooks";
 
 interface Props {
   id?: string;
   pureText?: boolean;
   refresh?: () => void;
 }
-function getFields({
-  isAdd = false,
-  genderOpts,
-  regionOpts,
-  roleTypeOpts,
-  formRef,
-}: CommonObj): FieldItem[] {
+function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRef }: CommonObj): FieldItem[] {
   return [
     {
       name: "avatar",
@@ -82,12 +76,12 @@ function getFields({
 }
 
 export default ({ id, pureText, refresh }: Props) => {
-  const { getOpts } = useStoreSpace("dict");
+  const { getOpts, getCascaderOpts } = useDictMap();
   const formRef = useRef();
   const [loadData, setLoadData] = useState<CommonObj>();
-  const genderOpts = [] ?? getOpts("Gender");
-  const regionOpts = [] ?? getOpts("Region");
-  const roleTypeOpts = [] ?? getOpts("RoleType");
+  const genderOpts = getOpts("Gender");
+  const regionOpts = getCascaderOpts("Region");
+  const roleTypeOpts = getOpts("RoleType");
   useEffect(() => {
     if (id) {
       getDetail(id);

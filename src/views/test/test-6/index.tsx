@@ -21,7 +21,7 @@ const items = [
   },
   {
     key: "2",
-    label: "常规",
+    label: "常规（hooks）",
     children: <CommonDemo />,
   },
   {
@@ -31,5 +31,5 @@ const items = [
   },
 ];
 export default ({ className = "", ...restProps }: Props) => {
-  return <Tabs items={items} defaultActiveKey="3" />;
+  return <Tabs items={items} defaultActiveKey="2" />;
 };

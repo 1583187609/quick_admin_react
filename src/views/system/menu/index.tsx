@@ -13,12 +13,9 @@ import { message } from "antd";
 import { useContext } from "react";
 import AddEdit from "./AddEdit";
 import { CommonObj } from "@/vite-env";
-import { useStoreSpace } from "@/hooks";
+import { useDictMap, useStoreSpace } from "@/hooks";
 
-function getFields({
-  enableStatusOpts,
-  yesNoStatusOpts,
-}: CommonObj): FieldItem[] {
+function getFields({ enableStatusOpts, yesNoStatusOpts }: CommonObj): FieldItem[] {
   return [
     {
       name: "name",
@@ -75,10 +72,9 @@ function getCols(): ColItem[] {
 }
 export default () => {
   const { openPopup } = useContext(PopupContext);
-  const dictStore = useStoreSpace("dict");
-  const { getOpts } = dictStore;
-  const enableStatusOpts = [] ?? getOpts("EnableStatus");
-  const yesNoStatusOpts = [] ?? getOpts("YesNoStatus");
+  const { getOpts } = useDictMap();
+  const enableStatusOpts = getOpts("EnableStatus");
+  const yesNoStatusOpts = getOpts("YesNoStatus");
   // useEffect(() => {
   //   openPopup("新增", <AddEdit />);
   // }, []);
@@ -111,11 +107,7 @@ export default () => {
       columns={getCols()}
       fetch={GetAuthMenuList}
       extraBtns={["add", "delete"]}
-      operateBtns={[
-        "edit",
-        "delete",
-        (row: CommonObj) => (true ? "forbid" : "enable"),
-      ]}
+      operateBtns={["edit", "delete", (row: CommonObj) => (true ? "forbid" : "enable")]}
       onExtraBtn={handleExtraBtn}
       onOperateBtn={handleOperateBtn}
       selection

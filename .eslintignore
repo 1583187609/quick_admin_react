@@ -1,0 +1,23 @@
+# 注释说明
+node_modules
+dist
+/public
+/scripts
+*.d.ts
+.vscode
+md5.ts
+# *.sh
+# *.md
+# *.woff
+# *.ttf
+# .idea
+# /docs
+.husky
+# .local
+# /bin
+# .eslintrc.js
+package.json
+.eslintrc.cjs
+prettier.cjs
+# /src/mock/*
+stats.html

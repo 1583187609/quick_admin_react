@@ -49,7 +49,6 @@ export default createSlice({
      * @produce 相当于既定义了组件中 dispatch 使用的同步 Action（函数名就相当于 Action 的类型），也定义了 Reducer 更新状态函数（函数体就相当于 Reducer 更新 State）
      */
     addNum: (state, { type, payload }) => {
-      console.log(payload, "addNum-----------------------");
       state.num += payload; // 可以直接使用赋值的方式修改 State，不再需要每一次都返回一个新的 state
     },
     // 减少
@@ -73,5 +72,8 @@ export default createSlice({
         console.log("fulfilled--------------");
         // state.num = payload;
       });
+  },
+  selectors: {
+    selectItems: (state) => state.num,
   },
 });

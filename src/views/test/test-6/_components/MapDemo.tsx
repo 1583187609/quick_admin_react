@@ -32,7 +32,6 @@ export default connect(
   mapState,
   mapDispatch
 )(({ className = "", num, handleAdd, handleCut, ...restProps }: Props) => {
-  // const dispatch = useDispatch();
   return (
     <div className={`${className} f-sb-s`} {...restProps}>
       <div className="f-1 f-c-c-c">

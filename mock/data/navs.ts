@@ -1,4 +1,4 @@
-import { MenusItem } from "@/layout/_components/SideMenu/_types";
+import { ResponseMenuItem } from "@/layout/_components/SideMenu/_types";
 import Mock from "mockjs";
 import { getBasePath } from "../utils";
 import platformCfg from "../_platform";
@@ -1220,4 +1220,4 @@ export default [
       },
     ],
   },
-] as MenusItem[];
+] as ResponseMenuItem[];

@@ -2,11 +2,7 @@
  * 文件说明-模板文件
  */
 
-import {
-  DeleteUserList,
-  PostMockCommonExport,
-  GetMockCommonList,
-} from "@/api-mock";
+import { DeleteUserList, PostMockCommonExport, GetMockCommonList } from "@/api-mock";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { BtnName } from "@/components/BaseBtn";
 import BaseCrud, { ExportBtnParams } from "@/components/BaseCrud";
@@ -15,22 +11,18 @@ import React, { useContext, useRef } from "react";
 import AddEdit from "./_components/AddEdit";
 import { getFormFields, getTableFields } from "./fields";
 import { CommonObj } from "@/vite-env";
-import { useStoreSpace } from "@/hooks";
+import { useDictMap, useStoreSpace } from "@/hooks";
 
 export default () => {
   const { openPopup } = useContext(PopupContext);
   const crudRef = useRef(null);
-  const { getOpts } = useStoreSpace("dict");
-  const genderOpts = [] ?? getOpts("Gender");
-  const roleTypeOpts = [] ?? getOpts("RoleType");
-  const enableStatusOpts = [] ?? getOpts("EnableStatus");
+  const { getOpts } = useDictMap();
+  const genderOpts = getOpts("Gender");
+  const roleTypeOpts = getOpts("RoleType");
+  const enableStatusOpts = getOpts("EnableStatus");
   // useEffect(() => {}, []);
   //处理额外按钮
-  function onExtraBtn(
-    name: BtnName,
-    { params, ids, fields }: ExportBtnParams,
-    next: (msg?: string) => void
-  ) {
+  function onExtraBtn(name: BtnName, { params, ids, fields }: ExportBtnParams, next: (msg?: string) => void) {
     const nameMap: CommonObj = {
       add: () => openPopup("新增", <AddEdit refresh={refresh} />),
       delete: () => handleDelete(ids, next),

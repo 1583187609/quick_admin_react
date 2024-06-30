@@ -6,12 +6,12 @@
 import { useRoutes, Navigate } from "react-router-dom";
 import React, { createContext, useEffect, useState } from "react";
 import Layout from "@/layout";
-import { MenusItem } from "@/layout/_components/TheMenu";
+import { ResponseMenuItem } from "@/layout/_components/TheMenu";
 import Login from "@/views/login";
 import { CommonObj } from "@/vite-env";
 import { useStoreSpace } from "@/hooks";
 
-export const MenusContext = createContext<MenusItem[]>([]);
+export const MenusContext = createContext<ResponseMenuItem[]>([]);
 
 const modules: CommonObj = import.meta.glob("../views/**/**.tsx");
 
@@ -25,14 +25,14 @@ export const lazyLoad = (path: string) => {
 };
 
 //将菜单allMenus处理成路由routes
-function getHandleRoutes(menus: MenusItem[]): any[] {
+function getHandleRoutes(menus: ResponseMenuItem[]): any[] {
   const routes: any[] = [];
-  menus.map((menu: MenusItem) => {
+  menus.map((menu: ResponseMenuItem) => {
     const { children } = menu;
     children?.map((child) => {
       getRoutes(child);
     });
-    function getRoutes(menu: MenusItem) {
+    function getRoutes(menu: ResponseMenuItem) {
       const { label, path, component, children } = menu;
       const route: any = {
         path,

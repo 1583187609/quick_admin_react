@@ -9,12 +9,12 @@ import type { MenuProps } from "antd";
 import { useRouter, useStoreSpace } from "@/hooks";
 import { CommonObj, ShowCodes } from "@/vite-env";
 import { IconNames } from "@/components/BaseIcon";
-import { getHandleNavs } from "@/store/modules/menu";
+import { getMenuNavs } from "@/store/modules/menu";
 import s from "./index.module.less";
 
 export type LinkType = 0 | 1 | 2; //1 内部iframe渲染； 2, 新打开一个浏览器标签页展示
-export type MenuItem = Required<MenuProps>["items"][number];
-export type MenusItem = {
+export type AntdMenuItem = Required<MenuProps>["items"][number];
+export type ResponseMenuItem = {
   id: string;
   label: string; //导航文字
   icon: IconNames; //首字母大写，Antd中有效的图标均可，例：TwitterOutlined
@@ -27,7 +27,7 @@ export type MenusItem = {
   disabled?: ShowCodes; //是否禁用：0否 1是
   order?: number; //显示的位置顺序，数值越大越靠后，支持负数
   component?: string;
-  children?: MenusItem[];
+  children?: ResponseMenuItem[];
   create_time?: string; //创建时间
   update_time?: string; //修改时间
 };
@@ -53,7 +53,7 @@ export default ({ className = "", title }: Props) => {
     setOpenKeys(openKeys);
   }, [allMenus, pathname]);
   //获取被选中的菜单keys
-  function getActiveKeys(navs: MenusItem[], pathName: string) {
+  function getActiveKeys(navs: ResponseMenuItem[], pathName: string) {
     let openKeys: string[] = [];
     let seledKeys: string[] = [];
     function findTarget(arr: any) {
@@ -103,7 +103,7 @@ export default ({ className = "", title }: Props) => {
         mode="inline"
         theme="dark"
         inlineCollapsed={isFold}
-        items={getHandleNavs(sideMenus)}
+        items={getMenuNavs(sideMenus)}
       />
     </div>
   );

@@ -1,20 +1,21 @@
 import { storage, isProd, defaultHomePath, defaultIconName } from "@/utils";
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
-import { MenusItem } from "@/layout/_components/SideMenu/Index.vue";
+import { ResponseMenuItem } from "@/layout/_components/SideMenu/_types";
 import { PostUserLogin, PostUserLogout } from "@/api-mock";
-import { menuStore, dictStore } from "@/store";
-import dayjs from "dayjs";
 import { message, notification } from "antd";
 import { CommonObj } from "@/vite-env";
+import menuStore from "@/store/modules/menu";
+import dayjs from "dayjs";
 
 const expiration = 24 * 60 * 60 * 1000; // 过期时间，单位：秒，默认24小时不登录即会过期
-function getHandleNavs(navs: MenusItem[], level = 0): MenusItem[] {
+
+function getMenuNavs(navs: ResponseMenuItem[], level = 0): ResponseMenuItem[] {
   if (!navs) return [];
-  return navs.map((item: MenusItem) => {
-    const { icon, children = [] } = item;
+  return navs.map((item: ResponseMenuItem) => {
+    const { icon = defaultIconName, children = [] } = item;
     //为了保持统一及美观，对于嵌套两层以上的菜单项不展示图标
-    item.icon = level > 1 ? "" : icon || defaultIconName;
-    item.children = getHandleNavs(children, level + 1);
+    item.icon = level > 1 ? null : icon;
+    item.children = getMenuNavs(children, level + 1);
     return item;
   });
 }
@@ -28,15 +29,61 @@ export const handleLoginIn = createAsyncThunk(
   "userLoginIn",
   async (payload: CommonObj, { dispatch, getState, extra }) => {
     const state = getState();
-    const { remember, ...params } = payload;
+    const { remember, ...args } = payload.params;
+    const { router, location } = payload.other;
     if (remember) {
-      storage.setItem("rememberAccount", params);
+      storage.setItem("rememberAccount", args);
     } else {
       storage.removeItem("rememberAccount");
     }
-    return await PostUserLogin(params);
+    return await PostUserLogin(args).then((res) => {
+      const { user, navs, ...rest } = res as CommonObj;
+      const newNavs = getMenuNavs(
+        navs.filter((it: ResponseMenuItem) => {
+          const { auth_codes, path } = it;
+          if (path === "demo") return false; //过滤掉demo示例代码
+          if (!auth_codes) return true;
+          return auth_codes.includes(user.type);
+        })
+      );
+      const { id = "", name = "", nickname = "", type_text = "" } = user;
+      user._title = name || nickname || type_text + id;
+      const expired = Date.now() + expiration;
+      const expiredDate = dayjs(expired).format("YYYY-MM-DD HH:mm:ss");
+      storage.setItem("userInfo", user);
+      storage.setItem("token", user?.token ?? "");
+      storage.setItem("allMenus", newNavs);
+      storage.setItem("expiredDate", expiredDate);
+      let toPath = defaultHomePath;
+      if (location.search) toPath = location.search.slice(10);
+      router.push(toPath);
+      notification.success({
+        closeIcon: false,
+        style: { top: "36px" },
+        placement: "topRight",
+        message: "登录成功",
+        description: `欢迎回来，${user?.name ?? "XXX"}`,
+        duration: 3, //单位：秒
+      });
+      return {
+        user,
+        navs: newNavs,
+        expired,
+        ...rest,
+      };
+    });
   }
 );
+const handleLoginInAfter = (builder: any) => {
+  const { pending, fulfilled, rejected } = handleLoginIn;
+  builder.addCase(fulfilled, (state: any, { payload }: CommonObj) => {
+    const { user, navs, expired } = payload as CommonObj;
+    state.userInfo = user;
+    state.isLogin = true;
+    state.expired = expired;
+    menuStore.actions.initMenus(navs);
+  });
+};
 
 /**
  * 用户登出
@@ -44,19 +91,17 @@ export const handleLoginIn = createAsyncThunk(
 export const handleLoginOut = createAsyncThunk(
   "userLoginOut",
   async (payload: CommonObj, { dispatch, getState, extra }) => {
-    const { isFetch = false } = payload;
-    console.log(payload, "payload-----------");
-    const state = getState();
-    function handleClear() {
+    const { phone, isFetch = false } = payload.params;
+    const { router, location } = payload.other;
+    return await PostUserLogout({ phone }).then((res: any) => {
       storage.getKeys().forEach((key: string) => {
-        if (!["rememberAccount", "set", "hasGuide"].includes(key))
-          storage.removeItem(key);
+        const isRemove = !["rememberAccount", "set", "hasGuide"].includes(key);
+        if (isRemove) storage.removeItem(key);
       });
       storage.clear("session"); //清除sessionStorage的数据
-      // dictStore.clearMap();
-      // state.expired = Date.now();
-      // state.userInfo = null;
-      // menuStore.changeActiveIndex(0);
+      menuStore.actions.changeActiveIndex(0);
+      message.success("退出成功！");
+      const { pathname } = location;
       // const { path, fullPath, name } = route;
       // router.push({
       //   name: "login",
@@ -65,12 +110,23 @@ export const handleLoginOut = createAsyncThunk(
       //       ? { redirect: fullPath }
       //       : undefined,
       // });
-    }
-    handleClear();
-    if (!isFetch) return;
-    return await PostUserLogout({ phone: state.userInfo!.phone });
+      let suffix = "";
+      if (!["/login", defaultHomePath].includes(pathname))
+        suffix = `?redirect=${pathname}`;
+      router.push(`/login${suffix}`);
+      return res;
+    });
   }
 );
+
+const handleLoginOutAfter = (builder: any) => {
+  const { pending, fulfilled, rejected } = handleLoginOut;
+  builder.addCase(fulfilled, (state: any, { payload }: CommonObj) => {
+    state.isLogin = false;
+    state.userInfo = null;
+    state.expired = Date.now();
+  });
+};
 
 interface UserInitState {
   isLogin: boolean;
@@ -79,7 +135,7 @@ interface UserInitState {
 }
 const initialState: UserInitState = {
   isLogin: false,
-  userInfo: null,
+  userInfo: storage.getItem("userInfo"),
   expired: new Date(storage.getItem("expiredDate")).getTime() || Date.now(),
 };
 
@@ -122,38 +178,49 @@ const userSlice = createSlice({
     //   }
     // ),
   },
+  //   extraReducers: {
+  //     [handleLoginIn.fulfilled]: (state, action) => {
+  //       state.posts = action.payload.data;
+  //     },
+  //     [handleLoginIn.rejected]: (state, action) => {
+  //      state.posts = [];
+  //     },
+  //   },
+  //  }),
   extraReducers: (builder) => {
-    const { pending, fulfilled, rejected } = handleLoginIn;
-    builder.addCase(fulfilled, (state, { payload }) => {
-      const { user, navs } = payload as CommonObj;
-      const _navs = getHandleNavs(
-        navs.filter((it: MenusItem) => {
-          const { auth_codes } = it;
-          if (!auth_codes) return true;
-          return auth_codes.includes(user.type);
-        })
-      );
-      const { id = "", name = "", nickname = "", type_text = "" } = user;
-      user._title = name || nickname || type_text + id;
-      state.userInfo = user;
-      state.expired = Date.now() + expiration;
-      storage.setItem("userInfo", user);
-      storage.setItem("token", user?.token ?? "");
-      storage.setItem("allMenus", _navs);
-      storage.setItem(
-        "expiredDate",
-        dayjs(state.expired).format("YYYY-MM-DD HH:mm:ss")
-      );
-      // menuStore.initAllMenus(_navs);
-      // router.push("/");
-      // ElNotification({
-      //   type: "success",
-      //   title: "登录成功",
-      //   duration: 2000,
-      //   dangerouslyUseHTMLString: true,
-      //   message: `欢迎回来，<b>${userInfo.value!._title}</b>`,
-      // });
-    });
+    handleLoginInAfter(builder);
+    handleLoginOutAfter(builder);
+    // const { pending, fulfilled, rejected } = handleLoginIn;
+    // builder.addCase(fulfilled, (state, { payload }) => {
+    //   const { user, navs } = payload as CommonObj;
+    //   const _navs = getMenuNavs(
+    //     navs.filter((it: ResponseMenuItem) => {
+    //       const { auth_codes } = it;
+    //       if (!auth_codes) return true;
+    //       return auth_codes.includes(user.type);
+    //     })
+    //   );
+    //   const { id = "", name = "", nickname = "", type_text = "" } = user;
+    //   user._title = name || nickname || type_text + id;
+    //   state.userInfo = user;
+    //   state.expired = Date.now() + expiration;
+    //   storage.setItem("userInfo", user);
+    //   storage.setItem("token", user?.token ?? "");
+    //   storage.setItem("allMenus", _navs);
+    //   storage.setItem(
+    //     "expiredDate",
+    //     dayjs(state.expired).format("YYYY-MM-DD HH:mm:ss")
+    //   );
+    //   // menuStore.initMenus(_navs);
+    //   // router.push("/");
+    //   // ElNotification({
+    //   //   type: "success",
+    //   //   title: "登录成功",
+    //   //   duration: 2000,
+    //   //   dangerouslyUseHTMLString: true,
+    //   //   message: `欢迎回来，<b>${userInfo.value!._title}</b>`,
+    //   // });
+    // });
   },
   // selectors: {
   //   getIsLogin: (state) => state.isLogin,
@@ -161,6 +228,11 @@ const userSlice = createSlice({
 });
 
 export default userSlice;
+
+export const expose: CommonObj = {
+  handleLoginIn,
+  handleLoginOut,
+};
 
 // 导出操作以在应用程序中使用
 // export const { addItem, removeItem, updateQuantity } = userSlice.actions;

@@ -1,7 +1,7 @@
 import BaseAvatar from "@/components/BaseAvatar";
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
-import { useStoreSpace } from "@/hooks";
+import { useDictMap, useStoreSpace } from "@/hooks";
 import { getUserInfo } from "@/utils";
 import { CommonObj } from "@/vite-env";
 import { useEffect, useState } from "react";
@@ -76,8 +76,8 @@ function getFields({ regionOpts }: CommonObj): FieldItem[] {
   ];
 }
 export default ({ id }: Props) => {
-  const { getOpts } = useStoreSpace("dict");
-  const regionOpts = [] ?? getOpts("Region");
+  const { getOpts, getCascaderOpts } = useDictMap();
+  const regionOpts = getCascaderOpts("Region");
   const [loadData, setLoadData] = useState<CommonObj>({});
   useEffect(() => {
     getDetail(id);
@@ -90,12 +90,7 @@ export default ({ id }: Props) => {
   return (
     <>
       <BaseAvatar style={{ margin: "0 auto 32px" }} />
-      <BaseForm
-        initialValues={{ sex: 0 }}
-        style={{ width: "450px" }}
-        fields={getFields({ regionOpts })}
-        loadData={loadData}
-      />
+      <BaseForm initialValues={{ sex: 0 }} style={{ width: "450px" }} fields={getFields({ regionOpts })} loadData={loadData} />
     </>
   );
 };

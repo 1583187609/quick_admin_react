@@ -1,31 +1,27 @@
-import { PostUserLogin } from "@/api-mock";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
-import { Button, notification } from "antd";
+import { Button } from "antd";
 import { useContext, useRef } from "react";
 import Captcha from "./_components/Captcha";
 import FindPassword from "./_components/FindPassword";
 import Register from "./_components/Register";
-import { handleLoginIn } from "@/store/modules/user";
-import { useDispatch, useSelector } from "react-redux";
-import { userStore, menuStore, dictStore } from "@/store";
-import { MenuItem } from "@/layout/_components/TheMenu";
-import { useRouter } from "@/hooks";
+import { useRouter, useStoreSpace } from "@/hooks";
 import { CommonObj } from "@/vite-env";
+import { useLocation } from "react-router-dom";
 import s from "./index.module.less";
 
+const { VITE_APP_NAME } = import.meta.env;
 const initVals = {
   phone: "18483221518",
   psd: "superAdmin123456",
 };
 
-const { VITE_APP_NAME } = import.meta.env;
 export default () => {
-  const user = useSelector((state) => state?.user?.userInfo);
+  const { handleLoginIn } = useStoreSpace("user");
   const formRef = useRef();
   const router = useRouter();
-  const dispatch = useDispatch();
+  const location = useLocation();
   const { openPopup } = useContext(PopupContext);
   const fields: FieldItem[] = [
     { name: "phone", label: "账号", valid: "phone", required: true },
@@ -45,24 +41,6 @@ export default () => {
       rules: [{ min: 4, message: "验证码长度不足4位" }],
     },
   ];
-  //登录
-  function handleSubmit(data: CommonObj) {
-    dispatch(handleLoginIn(data) as any).then(
-      async ({ payload }: CommonObj) => {
-        const { navs } = payload;
-        const newNavs = navs.filter((it) => it.path !== "demo");
-        dispatch(menuStore.initAllMenus(newNavs));
-        router.push("/");
-        notification.success({
-          closeIcon: false,
-          placement: "topRight",
-          message: "登录成功",
-          description: `欢迎回来，${user?.name ?? "XXX"}`,
-          duration: 1.5, //单位：秒
-        });
-      }
-    );
-  }
   return (
     <div className={`${s.wrap} f-c-c`}>
       <div className={`${s["bounce-in"]} ${s["login-box"]}`}>
@@ -72,7 +50,9 @@ export default () => {
           initialValues={initVals}
           size="large"
           fields={fields}
-          onSubmit={handleSubmit}
+          onSubmit={(params: CommonObj) =>
+            handleLoginIn({ params, other: { router, location } })
+          }
           submitText="登录"
           className={`${s.body}`}
         />

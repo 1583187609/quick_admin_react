@@ -11,7 +11,7 @@ import { storage, copyText } from "@/utils";
 import { useEventListener, useRouter } from "@/hooks";
 import { useLocation } from "react-router-dom";
 import PageTagItem from "./TagItem";
-import { MenusItem } from "@/layout/_components/TheMenu";
+import { ResponseMenuItem } from "@/layout/_components/TheMenu";
 import { CloseMenuType } from "./TagItem/menus";
 import { Button, message } from "antd";
 import s from "./index.module.less";

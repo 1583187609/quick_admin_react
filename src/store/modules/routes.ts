@@ -1,10 +1,12 @@
 // import { useUserStore, useRouteStore, useBaseStore } from "@/store";
 // import { useRoute, useRouter } from "vue-router";
-import { LinkType, MenusItem } from "@/layout/_components/SideMenu/_types";
+import {
+  LinkType,
+  ResponseMenuItem,
+} from "@/layout/_components/SideMenu/_types";
 import { createSlice } from "@reduxjs/toolkit";
 import { defaultHomePath, storage } from "@/utils";
 import { camelCase } from "lodash";
-import { baseStore, menuStore } from "@/store";
 
 export interface RouteItem {
   path: string;
@@ -27,10 +29,10 @@ const modules = import.meta.glob("../../views/**/*.tsx");
  * @notice //0目录 1菜单（显示） 2菜单（不显示）3外链（暂未使用）
  * @returns
  */
-function getFlatMenus(menus?: MenusItem[]): MenusItem[] {
-  const _menus: MenusItem[] = [];
-  function flatMenus(menus: MenusItem[] = []) {
-    menus.forEach((menu: MenusItem) => {
+function getFlatMenus(menus?: ResponseMenuItem[]): ResponseMenuItem[] {
+  const _menus: ResponseMenuItem[] = [];
+  function flatMenus(menus: ResponseMenuItem[] = []) {
+    menus.forEach((menu: ResponseMenuItem) => {
       const { type, auth_codes, children } = menu;
       if (type === 0) {
         flatMenus(children);
@@ -47,7 +49,7 @@ function getFlatMenus(menus?: MenusItem[]): MenusItem[] {
  * @param menu 单个菜单数据
  * @returns
  */
-function getRoute(menu: MenusItem): RouteItem {
+function getRoute(menu: ResponseMenuItem): RouteItem {
   const { label, path, auth_codes, link_type, component, icon, is_cache } =
     menu;
   return {
@@ -66,19 +68,20 @@ function getRoute(menu: MenusItem): RouteItem {
 export default createSlice({
   name: "route",
   initialState: {
-    isCreatedRoute: false, //路由是否已创建完毕
+    // path: "", // 初始路由
+    isCreatedRoute: false, // 路由是否已创建完毕
   },
   reducers: {
-    // // 初始化菜单
-    // initAllMenus: (state, { payload = [] }) => {
-    //   console.log(payload, "init-menus------------");
-    //   state.allMenus = payload;
+    // 跳转路由
+    // push(state, { type, payload }) {
+    //   state.path = payload;
+    //   console.log(payload, "path-------------要跳转的路由");
     // },
     /**
      * 创建路由
      */
     // createRoutes(menus = menuStore.allMenus) {
-    //   const routes = getFlatMenus(menus).map((it: MenusItem) => getRoute(it));
+    //   const routes = getFlatMenus(menus).map((it: ResponseMenuItem) => getRoute(it));
     //   routes.forEach((item: any) => {
     //     router.addRoute("layout", item);
     //   });

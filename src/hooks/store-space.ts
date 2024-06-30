@@ -1,4 +1,4 @@
-import { actions } from "@/store";
+import { actions, exposes } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { CommonObj } from "@/vite-env";
 
@@ -20,5 +20,6 @@ export default (name: string) => {
   return {
     ...useSelector((state) => state[name]),
     ...getReducers(actions[name], dispatch),
+    ...getReducers(exposes[name], dispatch),
   };
 };

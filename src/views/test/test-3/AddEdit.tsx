@@ -12,13 +12,7 @@ interface Props {
   disabled?: boolean;
   refresh?: () => void;
 }
-function getFields({
-  isAdd = false,
-  genderOpts,
-  regionOpts,
-  roleTypeOpts,
-  formRef,
-}: CommonObj): FieldItem[] {
+function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRef }: CommonObj): FieldItem[] {
   return [
     {
       name: "avatar",
@@ -84,11 +78,11 @@ function getFields({
 
 export default ({ id, disabled, refresh }: Props) => {
   const formRef = useRef();
-  const { getOpts } = useStoreSpace("dict");
+  const { getOpts, getCascaderOpts } = useStoreSpace("dict");
   const [loadData, setLoadData] = useState<CommonObj>();
-  const genderOpts = [] ?? getOpts("Gender");
-  const regionOpts = [] ?? getOpts("Region");
-  const roleTypeOpts = [] ?? getOpts("RoleType");
+  const genderOpts = getOpts("Gender");
+  const regionOpts = getCascaderOpts("Region");
+  const roleTypeOpts = getOpts("RoleType");
   useEffect(() => {
     if (id) {
       getDetail(id);

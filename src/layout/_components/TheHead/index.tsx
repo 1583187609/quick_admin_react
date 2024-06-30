@@ -5,8 +5,8 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { message, Popover, Divider } from "antd";
 import { Menu, Button, Modal } from "antd";
-import { getHandleNavs } from "@/store/modules/menu";
-import { MenusItem } from "../TheMenu";
+import { getMenuNavs } from "@/store/modules/menu";
+import { ResponseMenuItem } from "../TheMenu";
 import PageTags from "./_components/PageTags";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import UserInfo from "./_components/UserInfo";
@@ -21,8 +21,7 @@ import {
   InfoCircleOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
-import { handleLoginOut } from "@/store/modules/user";
-import { getUserInfo } from "@/utils";
+import { defaultHomePath, getUserInfo } from "@/utils";
 import { useDispatch } from "react-redux";
 import { useRouter, useStoreSpace } from "@/hooks";
 import Breadcrumb from "./_components/Breadcrumb";
@@ -36,27 +35,19 @@ interface Props {
   // rootInd: number;
   // setRootInd: (ind: number) => void;
 }
+
 const { VITE_APP_NAME } = import.meta.env;
-export default ({
-  className = "",
-}: // setCollapsed,
-// onMenuItem,
-// reload,
-// rootInd,
-// setRootInd,
-Props) => {
+
+export default ({ className = "" }: Props) => {
   const { isFold, toggleFold } = useStoreSpace("base");
-  // const [isFold, setIsFold] = useState(false);
-  // const toggleFold = () => setIsFold(!isFold);
+  const { userInfo, handleLoginOut } = useStoreSpace("user");
   const router = useRouter();
-  const userInfo = getUserInfo();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { openPopup } = useContext(PopupContext);
-  const location = useLocation();
-  const { pathname } = location;
   const [updatedTitle, setUpdatedTitle] = useState(false); //是否更新了document.title
-  // const newGroups: MenusItem[] =
-  //   groups?.map((item: MenusItem, ind: number) => {
+  // const newGroups: ResponseMenuItem[] =
+  //   groups?.map((item: ResponseMenuItem, ind: number) => {
   //     const { id, label, icon, path } = item;
   //     return { id, label, icon, path };
   //   }) || [];
@@ -66,13 +57,13 @@ Props) => {
   // );
   //获取根key
   // function findRootKey(
-  //   groups: MenusItem[],
+  //   groups: ResponseMenuItem[],
   //   pathname: string,
   //   rootInd: number
   // ): string {
   //   setUpdatedTitle(false);
   //   if (groups[rootInd]?.children?.length) {
-  //     function isFind(children: MenusItem[]): boolean {
+  //     function isFind(children: ResponseMenuItem[]): boolean {
   //       return !!children.find((sItem, sInd) => {
   //         const { children = [], path, label } = sItem;
   //         if (path === pathname) {
@@ -105,20 +96,17 @@ Props) => {
   //   // setRootInd(ind);
   //   onMenuItem(ind, info);
   // }
-  //退出登录
-  function handlePostLogout() {
-    dispatch(handleLoginOut({ id: 1 }) as any).then((res: CommonObj) => {
-      message.success("退出成功！");
-      router.push("/login");
-    });
-  }
   //打开退出登录对话框
   function openLogoutDialog() {
     Modal.confirm({
       title: "温馨提示",
       icon: <ExclamationCircleFilled />,
       content: "确定退出登录吗？",
-      onOk: handlePostLogout,
+      onOk: () =>
+        handleLoginOut({
+          params: { phone: "18483221518" },
+          other: { router, location },
+        }),
       onCancel() {},
     });
   }
@@ -135,12 +123,12 @@ Props) => {
           selectedKeys={[rootKey]}
           mode="horizontal"
           theme="dark"
-          items={getHandleNavs(newGroups)}
+          items={getMenuNavs(newGroups)}
         /> */}
         <div className="f-0 ml-8 mr-8 f-fe-s">
           <div className={`${s.nickname} f-sa-fe-c`}>
-            <div>{userInfo._title}</div>
-            <div>{userInfo.type_text}</div>
+            <div>{userInfo?._title ?? ""}</div>
+            <div>{userInfo?.type_text ?? ""}</div>
           </div>
           <Popover
             placement="bottom"

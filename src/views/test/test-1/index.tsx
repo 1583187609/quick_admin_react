@@ -6,7 +6,7 @@ import BaseForm from "@/components/form/BaseForm";
 import { FieldItem } from "@/components/BaseFormItem";
 import { CommonObj } from "@/vite-env";
 import { Tabs } from "antd";
-import { useStoreSpace } from "@/hooks";
+import { useDictMap, useStoreSpace } from "@/hooks";
 
 interface Props {
   className?: string;
@@ -158,8 +158,8 @@ function getFields({ regionOpts }: CommonObj): FieldItem[] {
   ];
 }
 export default ({ className = "" }: Props) => {
-  const { getOpts } = useStoreSpace("dict");
-  const regionOpts = [] ?? getOpts("Region");
+  const { getOpts, getCascaderOpts } = useDictMap();
+  const regionOpts = getCascaderOpts("Region");
   const fields: FieldItem[] = getFields({ regionOpts });
   const initVals = {
     listSearch: "搜索列表",
@@ -188,12 +188,7 @@ export default ({ className = "" }: Props) => {
       key: "1",
       label: "表单可编辑",
       children: (
-        <BaseForm
-          className="mr-32 f-1"
-          fields={fields}
-          style={{ height: "calc(100vh - 154px)" }}
-          initialValues={initVals}
-        />
+        <BaseForm className="mr-32 f-1" fields={fields} style={{ height: "calc(100vh - 154px)" }} initialValues={initVals} />
       ),
     },
     {
@@ -213,13 +208,7 @@ export default ({ className = "" }: Props) => {
       key: "3",
       label: "表单纯文本",
       children: (
-        <BaseForm
-          className="f-1"
-          fields={fields}
-          style={{ height: "calc(100vh - 154px)" }}
-          initialValues={initVals}
-          pureText
-        />
+        <BaseForm className="f-1" fields={fields} style={{ height: "calc(100vh - 154px)" }} initialValues={initVals} pureText />
       ),
     },
   ];

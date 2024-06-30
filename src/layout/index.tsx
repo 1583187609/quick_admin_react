@@ -2,7 +2,7 @@
  * 布局Layout文件
  */
 import { Outlet } from "react-router-dom";
-import TheMenu, { MenusItem } from "./_components/TheMenu";
+import TheMenu, { ResponseMenuItem } from "./_components/TheMenu";
 import TheHead from "./_components/TheHead";
 import { useContext, useEffect, useMemo, useState, Suspense } from "react";
 import { Spin, Watermark } from "antd";
@@ -40,7 +40,7 @@ export default ({ className = "" }: Props) => {
   //   if (subNavs.length) toFirstPath(groups?.[ind]);
   // }
   //跳转到第一个subNavs的第一个地址
-  // function toFirstPath(menu: MenusItem) {
+  // function toFirstPath(menu: ResponseMenuItem) {
   //   if (menu.children?.length) {
   //     const { children = [], path, label } = menu?.children[0];
   //     if (children.length) {

@@ -12,7 +12,7 @@ import { message } from "antd";
 import { useContext } from "react";
 import AddEdit from "./AddEdit";
 import { CommonObj } from "@/vite-env";
-import { useStoreSpace } from "@/hooks";
+import { useDictMap, useStoreSpace } from "@/hooks";
 
 function getFields({ roleTypeOpts, enableStatusOpts }: CommonObj): FieldItem[] {
   return [
@@ -47,9 +47,9 @@ function getCols(): ColItem[] {
 
 export default () => {
   const { openPopup } = useContext(PopupContext);
-  const { getOpts } = useStoreSpace("dict");
-  const roleTypeOpts = [] ?? getOpts("RoleTypeOpts");
-  const enableStatusOpts = [] ?? getOpts("EnableStatusOpts");
+  const { getOpts } = useDictMap();
+  const roleTypeOpts = getOpts("RoleType");
+  const enableStatusOpts = getOpts("EnableStatus");
   function handleExtraBtn(name: BtnName, info: CommonObj, next: () => void) {
     const { ids } = info;
     const map: CommonObj = {
@@ -81,12 +81,7 @@ export default () => {
       columns={getCols()}
       fetch={GetAuthRoleList}
       extraBtns={["add", "delete"]}
-      operateBtns={[
-        "edit",
-        "delete",
-        "view",
-        (row: CommonObj) => (true ? "forbid" : "enable"),
-      ]}
+      operateBtns={["edit", "delete", "view", (row: CommonObj) => (true ? "forbid" : "enable")]}
       onExtraBtn={handleExtraBtn}
       onOperateBtn={handleOperateBtn}
       selection

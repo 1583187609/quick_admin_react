@@ -1,6 +1,6 @@
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
-import { useStoreSpace } from "@/hooks";
+import { useDictMap, useStoreSpace } from "@/hooks";
 import { CommonObj } from "@/vite-env";
 // import { useDictMap } from "@/hooks";
 
@@ -50,9 +50,9 @@ const initVals: CommonObj = {
   role_type: 1,
 };
 export default ({ id, pureText }: Props) => {
-  const { getOpts } = useStoreSpace("dict");
-  const roleTypeOpts = [] ?? getOpts("RoleType");
-  const enableStatusOpts = [] ?? getOpts("EnableStatus");
+  const { getOpts } = useDictMap();
+  const roleTypeOpts = getOpts("RoleType");
+  const enableStatusOpts = getOpts("EnableStatus");
   return (
     <>
       <BaseForm

@@ -5,7 +5,9 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "contributes": ["you"],
+  "contributes": [
+    "you"
+  ],
   "bugs": "https://gitee.com/fanlichuan/quick_admin_react/issues",
   "homepage": "https://gitee.com/fanlichuan/quick_admin_react/#/login",
   "description": "以快（计算机执行效率、开发效率）为核心的后台管理系统开发模板",
@@ -17,10 +19,19 @@
     "TypeScript"
   ],
   "scripts": {
-    "dev": "vite",
+    "serve": "vite",
+    "dev": "vite --mode dev",
+    "test": "vite --mode test",
+    "pre": "vite --mode pre",
+    "prod": "vite --mode prod",
     "build": "tsc && vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "build:dev": "tsc && vite build --mode dev",
+    "build:test": "tsc && vite build --mode test",
+    "build:pre": "tsc && vite build --mode pre",
+    "build:prod": "tsc && vite build --mode prod",
+    "build:simple": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",

@@ -3,6 +3,7 @@
  * @link 使用参考：https://blog.csdn.net/kkkys_kkk/article/details/135442628,
  * @link 使用参考：https://blog.csdn.net/weixin_47002803/article/details/137052547
  * @link 使用示例：https://blog.csdn.net/Tory2/article/details/137491641
+ * @link 使用示例: https://zhuanlan.zhihu.com/p/686433365
  * @link redux-persist 持久化储存(选学) https://blog.csdn.net/weixin_47002803/article/details/137052547
  */
 
@@ -14,7 +15,8 @@ import counter from "./modules/counter";
 import base from "./modules/base";
 import menu from "./modules/menu";
 import dict from "./modules/dict";
-import user from "./modules/user";
+import user, { expose as userExpose } from "./modules/user";
+import routes from "./modules/routes";
 import { CommonObj } from "@/vite-env";
 
 const store = configureStore({
@@ -24,6 +26,7 @@ const store = configureStore({
     menu: menu.reducer,
     dict: dict.reducer,
     user: user.reducer,
+    routes: routes.reducer,
   }),
   // 使用回调函数来自定义中间件
   // middleware: (getDefaultMiddleware) =>
@@ -38,6 +41,7 @@ export const counterStore = counter.actions;
 export const baseStore = base.actions;
 export const dictStore = dict.actions;
 export const userStore = user.actions;
+export const routesStore = routes.actions;
 
 export const actions: CommonObj = {
   menu: menu.actions,
@@ -45,6 +49,11 @@ export const actions: CommonObj = {
   base: base.actions,
   dict: dict.actions,
   user: user.actions,
+  routes: routes.actions,
+};
+
+export const exposes: CommonObj = {
+  user: userExpose,
 };
 
 // 使用这些类型进行简单的类型声明

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { LinkType, MenusItem } from "@/layout/_components/SideMenu/_types";
-import { MenuItem } from "@/layout/_components/TheMenu";
+import {
+  LinkType,
+  ResponseMenuItem,
+} from "@/layout/_components/SideMenu/_types";
+import { AntdMenuItem } from "@/layout/_components/TheMenu";
 import { createSlice, current } from "@reduxjs/toolkit";
 import { defaultHomePath, storage } from "@/utils";
-import store from "@/store";
 import baseStore from "@/store/modules/base";
 import * as Icons from "@ant-design/icons";
 import { CommonObj } from "@/vite-env";
 
-export function getHandleNavs(menus: MenusItem[] = []): MenuItem[] {
-  menus = menus.filter((it: MenusItem) => it.type !== 2);
-  return menus.map((item: MenusItem) => {
+export function getMenuNavs(menus: ResponseMenuItem[] = []): AntdMenuItem[] {
+  menus = menus.filter((it: ResponseMenuItem) => it.type !== 2);
+  return menus.map((item: ResponseMenuItem) => {
     let { path, icon = "TwitterOutlined", children, label, type } = item;
     const obj: CommonObj = {
       key: path,
@@ -19,23 +21,23 @@ export function getHandleNavs(menus: MenusItem[] = []): MenuItem[] {
       type,
     };
     if (children?.length) {
-      obj.children = getHandleNavs(children);
+      obj.children = getMenuNavs(children);
     }
-    return obj as MenuItem;
+    return obj as AntdMenuItem;
   });
 }
 
-const initAllMenus = storage.getItem("allMenus") || [];
+const localMenus = storage.getItem("allMenus") || [];
 const menuSlice = createSlice({
   name: "menu",
   initialState: {
-    allMenus: initAllMenus, // 完整导航数据
-    sideMenus: initAllMenus[0]?.children,
+    allMenus: localMenus, // 完整导航数据
+    sideMenus: localMenus[0]?.children,
     activeIndex: 0,
   },
   reducers: {
     // 初始化菜单
-    initAllMenus: (state, { payload = [] }) => {
+    initMenus: (state, { payload = [] }) => {
       state.allMenus = payload;
     },
     // 初始化菜单选中项
@@ -45,7 +47,7 @@ const menuSlice = createSlice({
       // const subMenus = allMenus;
       // let currPath = defaultHomePath;
       // if (subMenus[activeInd]?.children?.length) {
-      //   function isFind(children: MenusItem[]): boolean {
+      //   function isFind(children: ResponseMenuItem[]): boolean {
       //     return !!children.find((sItem, sInd) => {
       //       const { children = [], path, label } = sItem;
       //       if (path === pathname) {

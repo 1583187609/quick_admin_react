@@ -1,0 +1,12 @@
+# 注释说明
+/node_modules/**
+/dist/*
+/public/*
+# .local
+# .output.js
+
+# **/*.svg
+# **/*.sh
+# **/*.md
+
+stats.html
