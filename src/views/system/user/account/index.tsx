@@ -15,12 +15,15 @@ import React, { useContext, useRef } from "react";
 import AddEdit from "./_components/AddEdit";
 import { getFormFields, getTableFields } from "./fields";
 import { CommonObj } from "@/vite-env";
-// import { useDictMap } from "@/hooks";
+import { useStoreSpace } from "@/hooks";
 
 export default () => {
   const { openPopup } = useContext(PopupContext);
-  // const { getMapText, getOpts } = useDictMap();
   const crudRef = useRef(null);
+  const { getOpts } = useStoreSpace("dict");
+  const genderOpts = [] ?? getOpts("Gender");
+  const roleTypeOpts = [] ?? getOpts("RoleType");
+  const enableStatusOpts = [] ?? getOpts("EnableStatus");
   // useEffect(() => {}, []);
   //处理额外按钮
   function onExtraBtn(
@@ -77,7 +80,7 @@ export default () => {
     <BaseCrud
       ref={crudRef}
       // formAttrs={{ initialValues: { sex: 1 } }}
-      // fields={getFormFields({ getOpts })}
+      fields={getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts })}
       columns={getTableFields({})}
       fetch={GetMockCommonList}
       extraBtns={[

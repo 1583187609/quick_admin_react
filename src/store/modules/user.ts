@@ -5,6 +5,7 @@ import { PostUserLogin, PostUserLogout } from "@/api-mock";
 import { menuStore, dictStore } from "@/store";
 import dayjs from "dayjs";
 import { message, notification } from "antd";
+import { CommonObj } from "@/vite-env";
 
 const expiration = 24 * 60 * 60 * 1000; // 过期时间，单位：秒，默认24小时不登录即会过期
 function getHandleNavs(navs: MenusItem[], level = 0): MenusItem[] {
@@ -144,7 +145,6 @@ const userSlice = createSlice({
         dayjs(state.expired).format("YYYY-MM-DD HH:mm:ss")
       );
       // menuStore.initAllMenus(_navs);
-      // await dictStore.initMap();
       // router.push("/");
       // ElNotification({
       //   type: "success",

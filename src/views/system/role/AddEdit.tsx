@@ -1,5 +1,6 @@
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
+import { useStoreSpace } from "@/hooks";
 import { CommonObj } from "@/vite-env";
 // import { useDictMap } from "@/hooks";
 
@@ -7,7 +8,7 @@ interface Props {
   id?: string;
   pureText?: boolean;
 }
-function getFields({ getOpts }: CommonObj): FieldItem[] {
+function getFields({ roleTypeOpts, enableStatusOpts }: CommonObj): FieldItem[] {
   return [
     {
       name: "role_name",
@@ -23,7 +24,7 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
       type: "Select",
       required: true,
       attrs: {
-        options: getOpts("roleType"),
+        options: roleTypeOpts,
       },
     },
     {
@@ -31,7 +32,7 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
       label: "是否启用",
       type: "Radio.Group",
       attrs: {
-        options: getOpts("enableStatus"),
+        options: enableStatusOpts,
       },
     },
     {
@@ -49,13 +50,15 @@ const initVals: CommonObj = {
   role_type: 1,
 };
 export default ({ id, pureText }: Props) => {
-  // const { getOpts } = useDictMap();
+  const { getOpts } = useStoreSpace("dict");
+  const roleTypeOpts = [] ?? getOpts("RoleType");
+  const enableStatusOpts = [] ?? getOpts("EnableStatus");
   return (
     <>
       <BaseForm
         initialValues={initVals}
         style={{ width: "600px" }}
-        // fields={getFields({ getOpts })}
+        fields={getFields({ roleTypeOpts, enableStatusOpts })}
         pureText={pureText}
       />
     </>

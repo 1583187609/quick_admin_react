@@ -5,7 +5,6 @@ import { createProdMockServer } from "vite-plugin-mock/es/createProdMockServer";
 // 如果使用vite.mock.config.js，只需直接导入文件
 // 可以使用 import.meta.glob功能来进行全部导入
 import apis from "../mock/apis";
-console.log(apis, "apis------------------------");
 export function setupProdMockServer() {
   createProdMockServer(apis);
 }

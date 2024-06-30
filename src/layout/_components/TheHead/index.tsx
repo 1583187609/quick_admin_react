@@ -5,7 +5,7 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { message, Popover, Divider } from "antd";
 import { Menu, Button, Modal } from "antd";
-import { handleNavs } from "../../_help";
+import { getHandleNavs } from "@/store/modules/menu";
 import { MenusItem } from "../TheMenu";
 import PageTags from "./_components/PageTags";
 import { PopupContext } from "@/components/provider/PopupProvider";
@@ -23,17 +23,14 @@ import {
 import { useLocation } from "react-router-dom";
 import { handleLoginOut } from "@/store/modules/user";
 import { getUserInfo } from "@/utils";
-import s from "./index.module.less";
 import { useDispatch } from "react-redux";
-import { useRouter } from "@/hooks";
+import { useRouter, useStoreSpace } from "@/hooks";
 import Breadcrumb from "./_components/Breadcrumb";
 import { CommonObj } from "@/vite-env";
+import s from "./index.module.less";
 
 interface Props {
   className?: string;
-  groups?: MenusItem[];
-  collapsed?: boolean;
-  // setCollapsed: (isFold: boolean) => void;
   // onMenuItem: (ind: number, info: CommonObj) => void;
   // reload: (cb?: () => void) => void;
   // rootInd: number;
@@ -42,14 +39,15 @@ interface Props {
 const { VITE_APP_NAME } = import.meta.env;
 export default ({
   className = "",
-  collapsed = false,
-  // setCollapsed,
-  groups = [],
-}: // onMenuItem,
+}: // setCollapsed,
+// onMenuItem,
 // reload,
 // rootInd,
 // setRootInd,
 Props) => {
+  const { isFold, toggleFold } = useStoreSpace("base");
+  // const [isFold, setIsFold] = useState(false);
+  // const toggleFold = () => setIsFold(!isFold);
   const router = useRouter();
   const userInfo = getUserInfo();
   const dispatch = useDispatch();
@@ -57,11 +55,11 @@ Props) => {
   const location = useLocation();
   const { pathname } = location;
   const [updatedTitle, setUpdatedTitle] = useState(false); //是否更新了document.title
-  const newGroups: MenusItem[] =
-    groups?.map((item: MenusItem, ind: number) => {
-      const { id, label, icon, path } = item;
-      return { id, label, icon, path };
-    }) || [];
+  // const newGroups: MenusItem[] =
+  //   groups?.map((item: MenusItem, ind: number) => {
+  //     const { id, label, icon, path } = item;
+  //     return { id, label, icon, path };
+  //   }) || [];
   // const rootKey = useMemo(
   //   () => findRootKey(groups, pathname, rootInd),
   //   [groups, pathname, rootInd]
@@ -127,11 +125,8 @@ Props) => {
   return (
     <div className={`${className} ${s.header} layout-the-head`}>
       <div className="f-sb-c">
-        <div
-          className={`${s["toggle-btn"]} f-0`}
-          // onClick={() => setCollapsed(!collapsed)}
-        >
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        <div className={`${s["toggle-btn"]} f-0`} onClick={() => toggleFold()}>
+          {isFold ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </div>
         <Breadcrumb className="f-1" />
         {/* <Menu
@@ -140,7 +135,7 @@ Props) => {
           selectedKeys={[rootKey]}
           mode="horizontal"
           theme="dark"
-          items={handleNavs(newGroups)}
+          items={getHandleNavs(newGroups)}
         /> */}
         <div className="f-0 ml-8 mr-8 f-fe-s">
           <div className={`${s.nickname} f-sa-fe-c`}>

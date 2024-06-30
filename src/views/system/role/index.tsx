@@ -8,20 +8,20 @@ import { BtnName } from "@/components/BaseBtn";
 import BaseCrud from "@/components/BaseCrud";
 import { FieldItem } from "@/components/BaseFormItem";
 import { ColItem } from "@/components/table/BaseTable";
-// import { useDictMap } from "@/hooks";
 import { message } from "antd";
 import { useContext } from "react";
 import AddEdit from "./AddEdit";
 import { CommonObj } from "@/vite-env";
+import { useStoreSpace } from "@/hooks";
 
-function getFields({ getOpts }: CommonObj): FieldItem[] {
+function getFields({ roleTypeOpts, enableStatusOpts }: CommonObj): FieldItem[] {
   return [
     {
       name: "role_text",
       label: "角色类型",
       type: "Select",
       attrs: {
-        // options: getOpts("roleType"),
+        options: roleTypeOpts,
       },
     },
     {
@@ -29,7 +29,7 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
       label: "状态",
       type: "Select",
       attrs: {
-        // options: getOpts("enableStatus"),
+        options: enableStatusOpts,
       },
     },
     { name: "create_time", label: "创建时间", type: "DatePicker.RangePicker" },
@@ -46,8 +46,10 @@ function getCols(): ColItem[] {
 }
 
 export default () => {
-  // const { getOpts } = useDictMap();
   const { openPopup } = useContext(PopupContext);
+  const { getOpts } = useStoreSpace("dict");
+  const roleTypeOpts = [] ?? getOpts("RoleTypeOpts");
+  const enableStatusOpts = [] ?? getOpts("EnableStatusOpts");
   function handleExtraBtn(name: BtnName, info: CommonObj, next: () => void) {
     const { ids } = info;
     const map: CommonObj = {
@@ -75,7 +77,7 @@ export default () => {
   }
   return (
     <BaseCrud
-      fields={getFields({})}
+      fields={getFields({ roleTypeOpts, enableStatusOpts })}
       columns={getCols()}
       fetch={GetAuthRoleList}
       extraBtns={["add", "delete"]}

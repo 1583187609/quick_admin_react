@@ -2,12 +2,41 @@
   height: 100vh;
   width: 100vw;
 }
+.main-menu {
+  color: @nav-text-color-light;
+  background: @nav-bg-dark-heavy;
+  .logo {
+    height: @header-height;
+  }
+  .list {
+    overflow: auto;
+    padding-bottom: 4em;
+    .item {
+      @bg-darker: mix(@nav-bg-dark-heavy, #000000, 50%);
+      @bg-darkest: mix(@nav-bg-dark-heavy, #000000, 0.01%);
+      cursor: pointer;
+      padding: @gap-half @gap-qtr;
+      width: @main-menu-width;
+      .text {
+        margin-top: @gap-qtr;
+        font-size: @font-size-lighter;
+      }
+      &:hover {
+        background: @bg-darker;
+      }
+      &.active {
+        color: @color-primary;
+        background: @bg-darkest;
+      }
+    }
+  }
+}
 .right {
   height: 100vh;
 }
 .main {
   padding: @gap-half;
-  width: calc(100vw - @asider-width);
+  width: calc(100vw - @asider-width - @main-menu-width);
   //用100%会导致BaseCrud表格过宽时，滚动条超过100vw问题，暂时不清楚原因
   // width: 100%;
   // flex-basis: 1px;

@@ -5,6 +5,7 @@ import { GetUserInfo, PostMockCommon } from "@/api-mock";
 // import { useDictMap } from "@/hooks";
 import UploadAvatar from "@/components/upload/UploadAvatar";
 import { CommonObj, OptionItem } from "@/vite-env";
+import { useStoreSpace } from "@/hooks";
 
 interface Props {
   id?: string;
@@ -13,9 +14,9 @@ interface Props {
 }
 function getFields({
   isAdd = false,
-  sexOpts,
-  addressOpts,
-  userTypeOpts,
+  genderOpts,
+  regionOpts,
+  roleTypeOpts,
   formRef,
 }: CommonObj): FieldItem[] {
   return [
@@ -46,7 +47,7 @@ function getFields({
       label: "类型",
       type: "Select",
       attrs: {
-        options: userTypeOpts,
+        options: roleTypeOpts,
       },
     },
     {
@@ -54,7 +55,7 @@ function getFields({
       label: "性别",
       type: "Radio.Group",
       attrs: {
-        options: sexOpts,
+        options: genderOpts,
       },
     },
     {
@@ -73,7 +74,7 @@ function getFields({
       label: "地址",
       type: "Cascader",
       attrs: {
-        options: addressOpts,
+        options: regionOpts,
       },
     },
     { name: "phone", label: "电话", valid: "phone", required: true },
@@ -81,12 +82,12 @@ function getFields({
 }
 
 export default ({ id, pureText, refresh }: Props) => {
+  const { getOpts } = useStoreSpace("dict");
   const formRef = useRef();
-  // const { getOpts } = useDictMap();
   const [loadData, setLoadData] = useState<CommonObj>();
-  const sexOpts: OptionItem[] = []; // getOpts("sex");
-  const addressOpts: OptionItem[] = []; // getOpts("address");
-  const userTypeOpts: OptionItem[] = []; // getOpts("userType");
+  const genderOpts = [] ?? getOpts("Gender");
+  const regionOpts = [] ?? getOpts("Region");
+  const roleTypeOpts = [] ?? getOpts("RoleType");
   useEffect(() => {
     if (id) {
       getDetail(id);
@@ -112,9 +113,9 @@ export default ({ id, pureText, refresh }: Props) => {
       style={{ width: "450px" }}
       fields={getFields({
         isAdd: !id,
-        sexOpts,
-        addressOpts,
-        userTypeOpts,
+        genderOpts,
+        regionOpts,
+        roleTypeOpts,
         formRef,
       })}
       loadData={loadData}

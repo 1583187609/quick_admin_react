@@ -1,36 +1,20 @@
 /**
  * 文件说明-模板文件
  */
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BaseImg from "@/components/BaseImg";
 import { useLocation } from "react-router-dom";
 import { Menu } from "antd";
 import type { MenuProps } from "antd";
-import { handleNavs } from "../../_help";
-import s from "./index.module.less";
-import { useRouter } from "@/hooks";
+import { useRouter, useStoreSpace } from "@/hooks";
 import { CommonObj, ShowCodes } from "@/vite-env";
-import { MenusContext } from "@/router";
 import { IconNames } from "@/components/BaseIcon";
+import { getHandleNavs } from "@/store/modules/menu";
+import s from "./index.module.less";
 
 export type LinkType = 0 | 1 | 2; //1 内部iframe渲染； 2, 新打开一个浏览器标签页展示
 export type MenuItem = Required<MenuProps>["items"][number];
 export type MenusItem = {
-  // id: string;
-  // path: string;
-  // label: string;
-  // icon?: IconNames | null;
-  // // type?: "group";
-  // status?: number;
-  // component?: string; //组件路径
-  // children?: MenusItem[];
-
   id: string;
   label: string; //导航文字
   icon: IconNames; //首字母大写，Antd中有效的图标均可，例：TwitterOutlined
@@ -49,24 +33,25 @@ export type MenusItem = {
 };
 interface Props {
   className?: string;
-  collapsed?: boolean;
   title?: string;
   defaultSelectedKeys?: string[];
   defaultOpenKeys?: string[];
 }
-export default ({ className = "", collapsed = false, title }: Props) => {
-  const navs = useContext(MenusContext);
+export default ({ className = "", title }: Props) => {
+  const { isFold } = useStoreSpace("base");
+  // const [isFold, setIsFold] = useState(false);
+  // const toggleFold = () => setIsFold(!isFold);
+  const { allMenus, sideMenus } = useStoreSpace("menu");
   const router = useRouter();
   const location = useLocation();
   const { pathname } = location;
   const [seledKeys, setSeledKeys] = useState<string[]>([]);
   const [openKeys, setOpenKeys] = useState<string[]>([]);
-  const items: MenuItem[] = handleNavs(navs as MenusItem[]);
   useEffect(() => {
-    const { seledKeys, openKeys } = getActiveKeys(navs, pathname);
+    const { seledKeys, openKeys } = getActiveKeys(allMenus, pathname);
     setSeledKeys(seledKeys);
     setOpenKeys(openKeys);
-  }, [navs, pathname]);
+  }, [allMenus, pathname]);
   //获取被选中的菜单keys
   function getActiveKeys(navs: MenusItem[], pathName: string) {
     let openKeys: string[] = [];
@@ -100,13 +85,13 @@ export default ({ className = "", collapsed = false, title }: Props) => {
   }, []);
   return (
     <div
-      className={`${className} ${s.menu} ${
-        collapsed ? s.collapsed : ""
-      } f-sb-s-c`}
+      className={`${className} ${s.menu} ${isFold ? s.collapsed : ""} f-sb-s-c`}
     >
-      <div onClick={() => router.push("/")} className={`${s.title} f-0 f-c-c`}>
-        <BaseImg className="f-0" size="26" round />
-        {!collapsed && <span className="ml-h line-2">{title}</span>}
+      <div
+        onClick={() => router.push("/")}
+        className={`${s.title} f-0 f-c-c line-2`}
+      >
+        {isFold ? title?.slice(0, 1) : title}
       </div>
       <Menu
         style={{ overflow: "auto" }}
@@ -117,8 +102,8 @@ export default ({ className = "", collapsed = false, title }: Props) => {
         selectedKeys={seledKeys}
         mode="inline"
         theme="dark"
-        inlineCollapsed={collapsed}
-        items={items}
+        inlineCollapsed={isFold}
+        items={getHandleNavs(sideMenus)}
       />
     </div>
   );

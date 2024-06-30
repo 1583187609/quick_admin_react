@@ -3,10 +3,9 @@ import BaseAvatar from "@/components/BaseAvatar";
 import BaseForm from "@/components/form/BaseForm";
 import { useContext, useEffect, useRef, useState } from "react";
 import { GetUserInfo, PostMockCommon } from "@/api-mock";
-// import { useDictMap } from "@/hooks";
-import { PopupContext } from "@/components/provider/PopupProvider";
 import UploadAvatar from "@/components/upload/UploadAvatar";
 import { CommonObj, OptionItem } from "@/vite-env";
+import { useStoreSpace } from "@/hooks";
 
 interface Props {
   id?: string;
@@ -15,9 +14,9 @@ interface Props {
 }
 function getFields({
   isAdd = false,
-  sexOpts,
-  addressOpts,
-  userTypeOpts,
+  genderOpts,
+  regionOpts,
+  roleTypeOpts,
   formRef,
 }: CommonObj): FieldItem[] {
   return [
@@ -50,7 +49,7 @@ function getFields({
       label: "用户类型",
       type: "Select",
       attrs: {
-        options: userTypeOpts,
+        options: roleTypeOpts,
       },
     },
     {
@@ -58,7 +57,7 @@ function getFields({
       label: "性别",
       type: "Radio.Group",
       attrs: {
-        options: sexOpts,
+        options: genderOpts,
       },
     },
     {
@@ -77,7 +76,7 @@ function getFields({
       label: "地址",
       type: "Cascader",
       attrs: {
-        options: addressOpts,
+        options: regionOpts,
       },
     },
   ];
@@ -85,11 +84,11 @@ function getFields({
 
 export default ({ id, disabled, refresh }: Props) => {
   const formRef = useRef();
-  // const { getOpts } = useDictMap();
+  const { getOpts } = useStoreSpace("dict");
   const [loadData, setLoadData] = useState<CommonObj>();
-  const sexOpts: OptionItem[] = []; // getOpts("sex");
-  const addressOpts: OptionItem[] = []; // getOpts("address");
-  const userTypeOpts: OptionItem[] = []; // getOpts("userType");
+  const genderOpts = [] ?? getOpts("Gender");
+  const regionOpts = [] ?? getOpts("Region");
+  const roleTypeOpts = [] ?? getOpts("RoleType");
   useEffect(() => {
     if (id) {
       getDetail(id);
@@ -115,9 +114,9 @@ export default ({ id, disabled, refresh }: Props) => {
       style={{ width: "450px" }}
       fields={getFields({
         isAdd: !id,
-        sexOpts,
-        addressOpts,
-        userTypeOpts,
+        genderOpts,
+        regionOpts,
+        roleTypeOpts,
         formRef,
       })}
       loadData={loadData}

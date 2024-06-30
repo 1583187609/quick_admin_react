@@ -1,8 +1,7 @@
 import { storage, typeOf, printLog } from "@/utils";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import { merge } from "lodash";
 import dict, { DictName } from "@/dict";
-import { GetMockAddress } from "@/api-mock";
 import { CommonObj } from "@/vite-env";
 
 /**
@@ -19,7 +18,6 @@ function sortMapByKey(map: CommonObj) {
   return obj;
 }
 
-
 export default createSlice({
   name: "dict",
   initialState: {
@@ -32,8 +30,8 @@ export default createSlice({
      * @param codeMap 例如：YesNo 的 codeMap: {0:1, 1:0}，显示时就会将是否对调
      */
     getMap: (state, { payload }) => {
-      const { dictMap } = state;
       const { name, codeMap } = payload;
+      const { dictMap } = current(state);
       const currMap = dictMap[name];
       if (currMap) {
         if (codeMap) {
@@ -89,6 +87,7 @@ export default createSlice({
       //   });
       // }
       // return opts;
+      return [];
     },
   },
 });

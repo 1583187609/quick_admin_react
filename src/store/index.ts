@@ -15,6 +15,7 @@ import base from "./modules/base";
 import menu from "./modules/menu";
 import dict from "./modules/dict";
 import user from "./modules/user";
+import { CommonObj } from "@/vite-env";
 
 const store = configureStore({
   reducer: combineReducers({
@@ -37,6 +38,14 @@ export const counterStore = counter.actions;
 export const baseStore = base.actions;
 export const dictStore = dict.actions;
 export const userStore = user.actions;
+
+export const actions: CommonObj = {
+  menu: menu.actions,
+  counter: counter.actions,
+  base: base.actions,
+  dict: dict.actions,
+  user: user.actions,
+};
 
 // 使用这些类型进行简单的类型声明
 export type AppDispatch = typeof store.dispatch;

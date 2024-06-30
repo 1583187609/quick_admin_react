@@ -1,35 +1,41 @@
-// import { useUserStore, useRouteStore, useBaseStore } from "@/store";
-// import { useRoute, useRouter } from "vue-router";
-import { LinkType, MenusItem } from "@/layout/_components/SideMenu/Index.vue";
-import { createSlice } from "@reduxjs/toolkit";
+import React, { useEffect, useState } from "react";
+import { LinkType, MenusItem } from "@/layout/_components/SideMenu/_types";
+import { MenuItem } from "@/layout/_components/TheMenu";
+import { createSlice, current } from "@reduxjs/toolkit";
 import { defaultHomePath, storage } from "@/utils";
-import { baseStore } from "@/store";
+import store from "@/store";
+import baseStore from "@/store/modules/base";
+import * as Icons from "@ant-design/icons";
+import { CommonObj } from "@/vite-env";
 
-export interface RouteItem {
-  path: string;
-  name: string;
-  children?: string;
-  component?: () => Promise<unknown>;
-  meta: {
-    title: string;
-    icon?: string;
-    cache?: boolean;
-    tagIdKey?: string; //默认键名id。用keep-alive缓存同组件但不同id的页面组件时，需要依据唯一值来生成新的组件，这个唯一值的键名默认取的 id
-    linkType?: LinkType;
-  };
+export function getHandleNavs(menus: MenusItem[] = []): MenuItem[] {
+  menus = menus.filter((it: MenusItem) => it.type !== 2);
+  return menus.map((item: MenusItem) => {
+    let { path, icon = "TwitterOutlined", children, label, type } = item;
+    const obj: CommonObj = {
+      key: path,
+      icon: React.createElement(Icons[icon] ?? Icons.TwitterOutlined),
+      label,
+      type,
+    };
+    if (children?.length) {
+      obj.children = getHandleNavs(children);
+    }
+    return obj as MenuItem;
+  });
 }
 
-export default createSlice({
+const initAllMenus = storage.getItem("allMenus") || [];
+const menuSlice = createSlice({
   name: "menu",
   initialState: {
-    allMenus: storage.getItem("allMenus") || [], // 完整导航数据
-    sideMenus: [],
+    allMenus: initAllMenus, // 完整导航数据
+    sideMenus: initAllMenus[0]?.children,
     activeIndex: 0,
   },
   reducers: {
     // 初始化菜单
     initAllMenus: (state, { payload = [] }) => {
-      console.log(payload, "init-menus------------");
       state.allMenus = payload;
     },
     // 初始化菜单选中项
@@ -67,12 +73,13 @@ export default createSlice({
     // 切换选中的菜单下标
     changeActiveIndex: (state, { payload }) => {
       const { ind, toFirst = true, allNavs = state.allMenus } = payload;
-      // state.activeIndex = ind;
+      state.activeIndex = ind;
       // if (ind === -1) baseStore.isFold = true;
       // if (!toFirst) return;
-      // const subNavs = allNavs[ind]?.children;
+      const subNavs = allNavs[ind]?.children;
       // baseStore.isFold = !subNavs?.length;
       // if (subNavs?.length) toFirstPath(allNavs[ind]);
+      state.sideMenus = subNavs;
     },
     // 路由跳转到子级第一个路径对应的页面
     toFirstPath: (state, { payload }) => {
@@ -105,3 +112,5 @@ export default createSlice({
     },
   },
 });
+
+export default menuSlice;

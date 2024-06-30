@@ -3,7 +3,11 @@ import { FieldItem } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
 import { CommonObj } from "@/vite-env";
 
-export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
+export function getFormFields({
+  genderOpts,
+  roleTypeOpts,
+  enableStatusOpts,
+}: CommonObj): FieldItem[] {
   return [
     {
       name: "id",
@@ -18,7 +22,7 @@ export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
       label: "性别",
       type: "Select",
       attrs: {
-        options: getOpts?.("sex"),
+        options: genderOpts,
       },
     },
     {
@@ -32,7 +36,7 @@ export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
       label: "用户类型",
       type: "Select",
       attrs: {
-        options: getOpts?.("userType"),
+        options: roleTypeOpts,
       },
     },
     {
@@ -40,13 +44,13 @@ export function getFormFields({ getOpts }: CommonObj): FieldItem[] {
       label: "账号状态",
       type: "Select",
       attrs: {
-        options: getOpts?.("enableStatus"),
+        options: enableStatusOpts,
       },
     },
   ];
 }
 
-export const getTableFields = ({ getMapText }: CommonObj): ColItem[] => {
+export const getTableFields = ({}: CommonObj): ColItem[] => {
   return [
     {
       name: "id",
@@ -62,9 +66,6 @@ export const getTableFields = ({ getMapText }: CommonObj): ColItem[] => {
       name: "sex",
       title: "性别",
       width: 100,
-      render(text: any) {
-        return getMapText?.("sex", text);
-      },
     },
     {
       name: "age",

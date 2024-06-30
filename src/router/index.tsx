@@ -6,11 +6,10 @@
 import { useRoutes, Navigate } from "react-router-dom";
 import React, { createContext, useEffect, useState } from "react";
 import Layout from "@/layout";
-// import { GetUserNavs } from "@/api-mock";
 import { MenusItem } from "@/layout/_components/TheMenu";
 import Login from "@/views/login";
 import { CommonObj } from "@/vite-env";
-import newNavs from "../../mock/data/navs";
+import { useStoreSpace } from "@/hooks";
 
 export const MenusContext = createContext<MenusItem[]>([]);
 
@@ -26,9 +25,9 @@ export const lazyLoad = (path: string) => {
 };
 
 //将菜单allMenus处理成路由routes
-function getHandleRoutes(allMenus: MenusItem[]): any[] {
+function getHandleRoutes(menus: MenusItem[]): any[] {
   const routes: any[] = [];
-  allMenus.map((menu: MenusItem, mInd) => {
+  menus.map((menu: MenusItem) => {
     const { children } = menu;
     children?.map((child) => {
       getRoutes(child);
@@ -57,7 +56,7 @@ function getHandleRoutes(allMenus: MenusItem[]): any[] {
 }
 
 export default () => {
-  const [navs, setNavs] = useState<MenusItem[]>([]);
+  const { allMenus } = useStoreSpace("menu");
   const [routes, setRoutes] = useState<any[]>([
     {
       path: "/",
@@ -74,10 +73,7 @@ export default () => {
   }, []);
 
   function getNavs() {
-    // GetUserNavs().then((res: any) => {
-    const res = newNavs.filter((it) => it.path !== "demo"); //.slice(0, 3);
-    const tempRoutes = getHandleRoutes(res);
-    setNavs(res);
+    const tempRoutes = getHandleRoutes(allMenus);
     routes[0].children = [
       { path: "", element: lazyLoad("/home/index.tsx") },
       ...tempRoutes,
@@ -88,39 +84,6 @@ export default () => {
     ];
     //重置一下，解决刷新后，初次加载会白屏的问题
     setRoutes([...routes, { path: "*", element: lazyLoad("/error.tsx") }]);
-    // });
   }
-  return (
-    <>
-      <MenusContext.Provider value={navs}>
-        {useRoutes(routes)}
-      </MenusContext.Provider>
-    </>
-  );
-
-  // return useRoutes([
-  //   {
-  //     path: "/",
-  //     element: <Layout />,
-  //     // element: <Navigate to="home" />,
-  //     children: [
-  //       { path: "", element: lazyLoad("/home/index.tsx") },
-  //       { path: "/workbench", element: lazyLoad("/home/index.tsx") },
-  //       // {
-  //       //   path: "/analyze/home",
-  //       //   element: lazyLoad("/analyze/home"),
-  //       // },
-  //       // {
-  //       //   path: "/analyze/big_screen",
-  //       //   element: lazyLoad("/analyze/big-screen"),
-  //       // },
-  //       // {
-  //       //   path: "/user/account",
-  //       //   element: lazyLoad("/user/account"),
-  //       // },
-  //       { path: "*", element: lazyLoad("/error") },
-  //     ],
-  //   },
-  //   { path: "*", element: lazyLoad("/error.tsx") },
-  // ]);
+  return useRoutes(routes);
 };

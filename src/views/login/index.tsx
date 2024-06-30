@@ -10,11 +10,11 @@ import Register from "./_components/Register";
 import { handleLoginIn } from "@/store/modules/user";
 import { useDispatch, useSelector } from "react-redux";
 import { userStore, menuStore, dictStore } from "@/store";
-import s from "./index.module.less";
 import { MenuItem } from "@/layout/_components/TheMenu";
 import { useRouter } from "@/hooks";
+import { CommonObj } from "@/vite-env";
+import s from "./index.module.less";
 
-// const { loginIn } = userStore;
 const initVals = {
   phone: "18483221518",
   psd: "superAdmin123456",
@@ -50,8 +50,8 @@ export default () => {
     dispatch(handleLoginIn(data) as any).then(
       async ({ payload }: CommonObj) => {
         const { navs } = payload;
-        dispatch(menuStore.initAllMenus(navs));
-        // await dispatch(dictStore.initMap([]));
+        const newNavs = navs.filter((it) => it.path !== "demo");
+        dispatch(menuStore.initAllMenus(newNavs));
         router.push("/");
         notification.success({
           closeIcon: false,
@@ -75,7 +75,7 @@ export default () => {
           onSubmit={handleSubmit}
           submitText="登录"
           className={`${s.body}`}
-        ></BaseForm>
+        />
         <div className={`${s.foot} f-sb-c`}>
           <Button
             onClick={() =>

@@ -9,13 +9,16 @@ import BaseCrud from "@/components/BaseCrud";
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseIcon, { IconNames } from "@/components/BaseIcon";
 import { ColItem } from "@/components/table/BaseTable";
-// import { useDictMap } from "@/hooks";
 import { message } from "antd";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import AddEdit from "./AddEdit";
 import { CommonObj } from "@/vite-env";
+import { useStoreSpace } from "@/hooks";
 
-function getFields({ getOpts }: CommonObj): FieldItem[] {
+function getFields({
+  enableStatusOpts,
+  yesNoStatusOpts,
+}: CommonObj): FieldItem[] {
   return [
     {
       name: "name",
@@ -26,7 +29,7 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
       label: "状态",
       type: "Select",
       attrs: {
-        // options: getOpts("enableStatus"),
+        options: enableStatusOpts,
       },
     },
     {
@@ -34,7 +37,7 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
       label: "是否缓存",
       type: "Select",
       attrs: {
-        // options: getOpts("yesNoStatus"),
+        options: yesNoStatusOpts,
       },
     },
     {
@@ -42,7 +45,7 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
       label: "是否外链",
       type: "Select",
       attrs: {
-        // options: getOpts("yesNoStatus"),
+        options: yesNoStatusOpts,
       },
     },
     { name: "create_time", label: "创建时间", type: "DatePicker.RangePicker" },
@@ -72,7 +75,10 @@ function getCols(): ColItem[] {
 }
 export default () => {
   const { openPopup } = useContext(PopupContext);
-  // const { getOpts } = useDictMap();
+  const dictStore = useStoreSpace("dict");
+  const { getOpts } = dictStore;
+  const enableStatusOpts = [] ?? getOpts("EnableStatus");
+  const yesNoStatusOpts = [] ?? getOpts("YesNoStatus");
   // useEffect(() => {
   //   openPopup("新增", <AddEdit />);
   // }, []);
@@ -101,7 +107,7 @@ export default () => {
   }
   return (
     <BaseCrud
-      fields={getFields({})}
+      fields={getFields({ enableStatusOpts, yesNoStatusOpts })}
       columns={getCols()}
       fetch={GetAuthMenuList}
       extraBtns={["add", "delete"]}

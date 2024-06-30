@@ -5,10 +5,11 @@ import { Outlet } from "react-router-dom";
 import TheMenu, { MenusItem } from "./_components/TheMenu";
 import TheHead from "./_components/TheHead";
 import { useContext, useEffect, useMemo, useState, Suspense } from "react";
-import { MenusContext } from "@/router";
 import { Spin, Watermark } from "antd";
-import { useRouter } from "@/hooks";
-import { CommonObj } from "@/vite-env";
+import { useRouter, useStoreSpace } from "@/hooks";
+import BaseImg from "@/components/BaseImg";
+import BaseIcon from "@/components/BaseIcon";
+import logoImg from "@/assets/images/logo.svg";
 import s from "./index.module.less";
 
 interface Props {
@@ -18,6 +19,7 @@ let reloadCb: undefined | (() => void);
 const { VITE_APP_NAME } = import.meta.env;
 
 export default ({ className = "" }: Props) => {
+  const { allMenus, activeIndex, changeActiveIndex } = useStoreSpace("menu");
   // const router = useRouter();
   // const groups = useContext(MenusContext);
   // const [rootInd, setRootInd] = useState(0);
@@ -63,6 +65,32 @@ export default ({ className = "" }: Props) => {
   return (
     <Watermark content={VITE_APP_NAME} gap={[80, 80]}>
       <div className={`${className} ${s.layout} f-sb-s`}>
+        <div className={`${s["main-menu"]} f-0 f-fs-s f-fs-c-c`}>
+          <div className={`f-c-c-c f-0 ${s.logo}`}>
+            <BaseImg
+              src={logoImg}
+              size="60%"
+              style={{ borderRadius: 0 }}
+              to={{ name: "home" }}
+            />
+          </div>
+          <ul className={`${s.list} f-fs-c-c f-1 all-hide-scroll`}>
+            {allMenus.map((item, ind) => {
+              return (
+                <li
+                  className={`${s.item} ${
+                    activeIndex === ind ? s.active : ""
+                  } f-c-c-c`}
+                  onClick={() => changeActiveIndex({ ind })}
+                  key={ind}
+                >
+                  <BaseIcon size="20" name={item.icon} />
+                  <span className={`${s.text} line-1`}>{item.label}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
         <TheMenu
           // collapsed={collapsed}
           className="f-0"

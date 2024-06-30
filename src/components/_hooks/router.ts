@@ -1,9 +1,5 @@
 import { useNavigate } from "react-router-dom";
 
-export interface RouteItem {
-  name?: string;
-}
-
 export default () => {
   const navigate = useNavigate();
   return {

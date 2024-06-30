@@ -1,7 +1,7 @@
 import BaseAvatar from "@/components/BaseAvatar";
 import { FieldItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
-// import { useDictMap } from "@/hooks";
+import { useStoreSpace } from "@/hooks";
 import { getUserInfo } from "@/utils";
 import { CommonObj } from "@/vite-env";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 interface Props {
   id: number;
 }
-function getFields({ getOpts }: CommonObj): FieldItem[] {
+function getFields({ regionOpts }: CommonObj): FieldItem[] {
   return [
     {
       name: "nickname",
@@ -60,7 +60,7 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
       label: "地址",
       type: "Cascader",
       attrs: {
-        options: getOpts("address"),
+        options: regionOpts,
       },
     },
     { name: "phone", label: "电话", valid: "phone" },
@@ -76,7 +76,8 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
   ];
 }
 export default ({ id }: Props) => {
-  // const { getOpts } = useDictMap();
+  const { getOpts } = useStoreSpace("dict");
+  const regionOpts = [] ?? getOpts("Region");
   const [loadData, setLoadData] = useState<CommonObj>({});
   useEffect(() => {
     getDetail(id);
@@ -92,7 +93,7 @@ export default ({ id }: Props) => {
       <BaseForm
         initialValues={{ sex: 0 }}
         style={{ width: "450px" }}
-        // fields={getFields({ getOpts })}
+        fields={getFields({ regionOpts })}
         loadData={loadData}
       />
     </>

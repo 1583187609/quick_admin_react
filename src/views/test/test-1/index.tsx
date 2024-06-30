@@ -6,12 +6,12 @@ import BaseForm from "@/components/form/BaseForm";
 import { FieldItem } from "@/components/BaseFormItem";
 import { CommonObj } from "@/vite-env";
 import { Tabs } from "antd";
-// import { useDictMap } from "@/hooks";
+import { useStoreSpace } from "@/hooks";
 
 interface Props {
   className?: string;
 }
-function getFields({ getOpts }: CommonObj): FieldItem[] {
+function getFields({ regionOpts }: CommonObj): FieldItem[] {
   return [
     {
       name: "search",
@@ -78,7 +78,7 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
       label: "家庭住址",
       type: "Cascader",
       attrs: {
-        options: getOpts?.("Region"),
+        options: regionOpts,
       },
     },
     // { name: "detail", label: "详细地址", type: "Input" },
@@ -158,8 +158,9 @@ function getFields({ getOpts }: CommonObj): FieldItem[] {
   ];
 }
 export default ({ className = "" }: Props) => {
-  // const { getOpts } = useDictMap();
-  const fields: FieldItem[] = getFields({});
+  const { getOpts } = useStoreSpace("dict");
+  const regionOpts = [] ?? getOpts("Region");
+  const fields: FieldItem[] = getFields({ regionOpts });
   const initVals = {
     listSearch: "搜索列表",
     activeType: 1,

@@ -1,8 +1,8 @@
-import { FieldItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import IconPicker from "./_components/IconPicker";
 import { Tabs } from "antd";
 import { useState } from "react";
+import { CommonObj } from "@/vite-env";
 
 interface Props {}
 function getFields({ activeKey = "1" }): any[] {

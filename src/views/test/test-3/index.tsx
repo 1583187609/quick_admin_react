@@ -11,18 +11,20 @@ import { PopupContext } from "@/components/provider/PopupProvider";
 import { BtnName } from "@/components/BaseBtn";
 import BaseCrud, { ExportBtnParams } from "@/components/BaseCrud";
 import { message } from "antd";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef } from "react";
 import AddEdit from "./AddEdit";
 import { getFormFields, getTableFields } from "./fields";
-// import { useDictMap } from "@/hooks";
 import { DownloadOutlined } from "@ant-design/icons";
 import { CommonObj } from "@/vite-env";
+import { useStoreSpace } from "@/hooks";
 
 export default () => {
   const { openPopup } = useContext(PopupContext);
-  // const { getMapText, getOpts } = useDictMap();
+  const { getOpts } = useStoreSpace("dict");
+  const genderOpts = [] ?? getOpts("Gender");
+  const roleTypeOpts = [] ?? getOpts("RoleType");
+  const enableStatusOpts = [] ?? getOpts("EnableStatus");
   const crudRef = useRef<any>(null);
-  // useEffect(() => {}, []);
   //处理额外按钮
   function onExtraBtn(
     name: BtnName,
@@ -76,8 +78,8 @@ export default () => {
   return (
     <BaseCrud
       ref={crudRef}
-      fields={getFormFields({})} //getOpts
-      columns={getTableFields({})} //getMapText
+      fields={getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts })}
+      columns={getTableFields({})}
       fetch={GetMockCommonList}
       extraBtns={["add", "delete", "export"]}
       operateBtns={[
