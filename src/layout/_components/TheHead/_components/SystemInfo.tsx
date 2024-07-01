@@ -1,12 +1,6 @@
 import SectionForm, { SectionFormItem } from "@/components/form/SectionForm";
-import {
-  name,
-  version,
-  scripts,
-  dependencies,
-  devDependencies,
-} from "#/package.json";
-import { FieldItem } from "@/components/BaseFormItem";
+import { name, version, scripts, dependencies, devDependencies } from "#/package.json";
+import { FormField } from "@/components/BaseFormItem";
 
 const sections: SectionFormItem[] = [
   {
@@ -44,7 +38,7 @@ const envMap: CommonObj = {
   test: "测试",
 };
 function toFieldItem(obj: CommonObj) {
-  const arr: FieldItem[] = [];
+  const arr: FormField[] = [];
   for (let key in obj) {
     arr.push({ name: key, label: key });
   }
@@ -60,12 +54,5 @@ export default () => {
     ...dependencies,
     ...devDependencies,
   };
-  return (
-    <SectionForm
-      style={{ width: "500px" }}
-      initialValues={inivVals}
-      sections={sections}
-      pureText
-    />
-  );
+  return <SectionForm style={{ width: "500px" }} initialValues={inivVals} sections={sections} pureText />;
 };

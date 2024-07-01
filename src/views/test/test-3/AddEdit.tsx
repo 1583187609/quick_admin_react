@@ -1,4 +1,4 @@
-import { FieldItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import BaseAvatar from "@/components/BaseAvatar";
 import BaseForm from "@/components/form/BaseForm";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -12,31 +12,36 @@ interface Props {
   disabled?: boolean;
   refresh?: () => void;
 }
-function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRef }: CommonObj): FieldItem[] {
+function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRef }: CommonObj): FormField[] {
   return [
     {
       name: "avatar",
       label: "头像",
       type: "Custom",
-      custom: <UploadAvatar name="avatar" formRef={formRef} />,
+      element: <UploadAvatar name="avatar" formRef={formRef} />,
     },
-    ...(isAdd
-      ? []
-      : [
-          {
-            name: "nickname",
-            label: "用户昵称",
-            attrs: {
-              disabled: true,
-            },
-          },
-        ]),
-    { name: "phone", label: "电话", valid: "phone", required: true },
+    !isAdd && {
+      name: "nickname",
+      label: "用户昵称",
+      attrs: {
+        disabled: true,
+      },
+    },
+    {
+      name: "phone",
+      label: "电话",
+      required: true,
+      extraAttrs: {
+        valid: "phone",
+      },
+    },
     {
       name: "name",
       label: "姓名",
-      valid: "userName",
       required: true,
+      extraAttrs: {
+        valid: "userName",
+      },
     },
     {
       name: "type",
@@ -58,11 +63,13 @@ function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRe
       name: "age",
       label: "年龄",
       type: "InputNumber",
-      valid: "age",
       attrs: {
         max: 100,
         min: 0,
         maxLength: 3,
+      },
+      extraAttrs: {
+        valid: "age",
       },
     },
     {

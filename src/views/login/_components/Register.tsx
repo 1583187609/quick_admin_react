@@ -1,11 +1,24 @@
-import { FieldItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 
-const fields: FieldItem[] = [
-  { name: "pheon", label: "电话", valid: "phone" },
-  { name: "psd", label: "密码", type: "Input.Password", valid: "password" },
+const fields: FormField[] = [
+  {
+    name: "pheon",
+    label: "电话",
+    extraAttrs: {
+      valid: "phone",
+    },
+  },
+  {
+    name: "psd",
+    label: "密码",
+    type: "Input.Password",
+    extraAttrs: {
+      valid: "password",
+    },
+  },
   { name: "captcha", label: "验证码" },
 ];
 export default () => {
-  return <BaseForm style={{ width: 450 }} fields={fields} submitText="注册" />;
+  return <BaseForm style={{ width: 450 }} fields={fields} submitButton="注册" />;
 };

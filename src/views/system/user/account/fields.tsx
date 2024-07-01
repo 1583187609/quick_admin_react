@@ -1,9 +1,9 @@
 import { ColItem } from "@/components/BaseCrud/_components/QueryTable";
-import { FieldItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
 import { CommonObj } from "@/vite-env";
 
-export function getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts }: CommonObj): FieldItem[] {
+export function getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts }: CommonObj): FormField[] {
   return [
     {
       name: "id",
@@ -25,7 +25,7 @@ export function getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts }: Co
       name: "age",
       label: "年龄",
       type: "Custom",
-      custom: <BaseRange attrs={{ min: 1, max: 100, maxLength: 3 }} />,
+      element: <BaseRange attrs={{ min: 1, max: 100, maxLength: 3 }} />,
     },
     {
       name: "type",

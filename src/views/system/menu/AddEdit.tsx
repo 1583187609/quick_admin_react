@@ -3,9 +3,10 @@ import IconPicker from "./_components/IconPicker";
 import { Tabs } from "antd";
 import { useState } from "react";
 import { CommonObj } from "@/vite-env";
+import { useDictMap } from "@/hooks";
 
 interface Props {}
-function getFields({ activeKey = "1" }): any[] {
+function getFields({ activeKey = "1", yesNoStatusOpts }: CommonObj): any[] {
   return [
     {
       name: "menu_name",
@@ -20,87 +21,72 @@ function getFields({ activeKey = "1" }): any[] {
           {
             name: "route_path",
             label: "路由地址",
-            example: "/auth/menu",
             required: true,
+            extraAttrs: {
+              example: "/auth/menu",
+            },
           },
-          ...(activeKey === "2"
-            ? [
-                {
-                  name: "component_path",
-                  label: "组件路径",
-                  example: "/pages-system/user/account/index.tsx",
-                  required: true,
-                },
-              ]
-            : []),
+          activeKey === "2" && {
+            name: "component_path",
+            label: "组件路径",
+            required: true,
+            extraAttrs: {
+              example: "/pages-system/user/account/index.tsx",
+            },
+          },
           {
             name: "icon",
             label: "菜单图标",
             type: "Custom",
-            custom: <IconPicker />,
+            element: <IconPicker />,
           },
         ]
       : []),
-    ...(activeKey !== "1"
-      ? [{ name: "auth", label: "权限标识", example: "system:menu:list" }]
-      : []),
+    activeKey !== "1" && {
+      name: "auth",
+      label: "权限标识",
+      extraAttrs: {
+        example: "system:menu:list",
+      },
+    },
+    ,
     {
       name: "order_num",
       label: "显示顺序",
       type: "InputNumber",
-      value: 1,
+    },
+    activeKey === "2" && {
+      name: "is_cache",
+      label: "是否缓存",
+      type: "Radio.Group",
+      attrs: {
+        options: yesNoStatusOpts,
+      },
     },
 
-    ...(activeKey === "2"
-      ? [
-          {
-            name: "is_cache",
-            label: "是否缓存",
-            type: "Radio.Group",
-            attrs: {
-              options: [
-                { label: "是", value: 1 },
-                { label: "否", value: 2 },
-              ],
-            },
-          },
-        ]
-      : []),
     {
       name: "is_frame",
       label: "是否为外链",
       type: "Radio.Group",
       attrs: {
-        options: [
-          { label: "是", value: 1 },
-          { label: "否", value: 2 },
-        ],
+        options: yesNoStatusOpts,
       },
     },
-    ...(activeKey !== "3"
-      ? [
-          {
-            name: "is_show",
-            label: "是否显示",
-            type: "Radio.Group",
-            attrs: {
-              options: [
-                { label: "是", value: 1 },
-                { label: "否", value: 2 },
-              ],
-            },
-          },
-        ]
-      : []),
+    activeKey !== "3" && {
+      name: "is_show",
+      label: "是否显示",
+      type: "Radio.Group",
+      attrs: {
+        options: yesNoStatusOpts,
+      },
+    },
+    ,
     {
       name: "is_enable",
       label: "是否启用",
       type: "Radio.Group",
       attrs: {
-        options: [
-          { label: "是", value: 1 },
-          { label: "否", value: 2 },
-        ],
+        options: yesNoStatusOpts,
       },
     },
     {
@@ -127,6 +113,8 @@ const tabs = [
 ];
 export default ({}: Props) => {
   const [activeKey, setActiveKey] = useState("1");
+  const { getOpts } = useDictMap();
+  const yesNoStatusOpts = getOpts("YesNoStatus");
   function handleClickTabItem(key: string) {
     setActiveKey(key);
   }
@@ -142,11 +130,7 @@ export default ({}: Props) => {
           };
         })}
       />
-      <BaseForm
-        initialValues={initVals}
-        style={{ width: "600px" }}
-        fields={getFields({ activeKey })}
-      />
+      <BaseForm initialValues={initVals} style={{ width: "600px" }} fields={getFields({ activeKey, yesNoStatusOpts })} />
     </>
   );
 };

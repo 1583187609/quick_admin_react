@@ -11,7 +11,7 @@ import { typeOf } from "@/utils";
 import { PopoverAttrs } from "@/components/BaseFormItem";
 import { CommonObj, TostMessageType } from "@/vite-env";
 
-import type { FieldItem } from "@/components/BaseFormItem";
+import type { FormField } from "@/components/BaseFormItem";
 import { merge, omitBy } from "lodash";
 import dayjs from "dayjs";
 import { defaultFieldAttrs, FormItemType } from "@/components/BaseFormItem";
@@ -48,17 +48,8 @@ export function showMessage(hint: string, type: TostMessageType = "success") {
  * @param type PrintLogType 要打印的日志类型 或要输出的文本内容
  */
 export type PrintLogType = "req" | "res" | "err";
-export type ThemeColorType =
-  | "primary"
-  | "success"
-  | "danger"
-  | "warning"
-  | "info";
-export function printLog(
-  data: any,
-  type: PrintLogType | ThemeColorType = "req",
-  text: string = ""
-) {
+export type ThemeColorType = "primary" | "success" | "danger" | "warning" | "info";
+export function printLog(data: any, type: PrintLogType | ThemeColorType = "req", text: string = "") {
   if (["req", "res", "err"].includes(type)) {
     const map: CommonObj = {
       req: {
@@ -114,12 +105,7 @@ export function printLog(
  * @param {*} params 传入的参数
  * @example methods: {onSubmit: debounce((event, param) => {console.log("防抖测试");})}
  */
-export function debounce(
-  fn: (e: any, params?: object) => void,
-  immediate = true,
-  delay = 1000,
-  params?: object
-) {
+export function debounce(fn: (e: any, params?: object) => void, immediate = true, delay = 1000, params?: object) {
   let timer: any = null;
   return function (event: any) {
     if (timer) clearTimeout(timer);
@@ -166,12 +152,7 @@ export function debounceHandler(fn: Function, delay = 500) {
  * @param {*} params 传入的参数
  * @example methods: {onSubmit: throttle((event, param) => {console.log("节流测试");})}
  */
-export function throttle(
-  fn: (e: any, params?: object) => void,
-  immediate = true,
-  delay = 1000,
-  params?: object
-) {
+export function throttle(fn: (e: any, params?: object) => void, immediate = true, delay = 1000, params?: object) {
   if (immediate) {
     let previous = 0;
     return function (event: any) {
@@ -202,10 +183,7 @@ export interface SummaryMethodProps<T = CommonObj> {
   columns: TableColumnCtx<T>[];
   data: T[];
 }
-export function handleTableSummary(
-  param: SummaryMethodProps,
-  exceptKeys?: string[]
-) {
+export function handleTableSummary(param: SummaryMethodProps, exceptKeys?: string[]) {
   const { columns, data } = param;
   const sums: string[] = [];
   columns.forEach((column, index) => {
@@ -213,8 +191,8 @@ export function handleTableSummary(
       sums[index] = "合计";
       return;
     }
-    const values = data.map((item) => Number(item[column.property]));
-    if (values.every((value) => Number.isNaN(value))) {
+    const values = data.map(item => Number(item[column.property]));
+    if (values.every(value => Number.isNaN(value))) {
       sums[index] = "-"; //N/A
     } else {
       if (exceptKeys?.includes(column.property)) {
@@ -261,9 +239,7 @@ export function getScreenSizeType(): ScreenSizeType {
  * @param popover
  * @returns
  */
-export function getPopoverAttrs(
-  popover?: string | PopoverAttrs
-): PopoverAttrs | undefined {
+export function getPopoverAttrs(popover?: string | PopoverAttrs): PopoverAttrs | undefined {
   if (!popover) return;
   const t = typeOf(popover);
   if (t === "String") return { content: popover as string };
@@ -279,8 +255,8 @@ export function getPopoverAttrs(
  * 过滤筛选日期字段
  * @param fields 字段数组
  */
-function getDateFields(fields: FieldItem[]) {
-  return fields.filter(({ type }: FieldItem) => {
+function getDateFields(fields: FormField[]) {
+  return fields.filter(({ type }: FormField) => {
     return type?.includes("Date") || type?.includes("Time");
   });
 }
@@ -290,13 +266,9 @@ function getDateFields(fields: FieldItem[]) {
  * @param dateFields Array 日期字段数组
  * @param key 对象属性名
  */
-function getDateFormat(dateFields: FieldItem[], key: string) {
-  const { type, attrs } = dateFields.find((it) => it.name === key) || {};
-  const newAttrs = merge(
-    {},
-    defaultFieldAttrs[type as FormItemType]?.attrs,
-    attrs
-  );
+function getDateFormat(dateFields: FormField[], key: string) {
+  const { type, attrs } = dateFields.find(it => it.name === key) || {};
+  const newAttrs = merge({}, defaultFieldAttrs[type as FormItemType]?.attrs, attrs);
   return newAttrs.format || "YYYY-MM-DD";
 }
 
@@ -306,28 +278,23 @@ function getDateFormat(dateFields: FieldItem[], key: string) {
  * @param params Object 要整理的参数
  * @param type 日期转换类型, set 设置值， get 获取值
  */
-export function convertDateField(
-  fields: FieldItem[],
-  params: CommonObj = {},
-  type: "set" | "get" = "get"
-) {
+export type ConvertDateFieldType = "set" | "get";
+export function convertDateField(fields: FormField[], params: CommonObj = {}, type: ConvertDateFieldType = "get") {
   const dateFields = getDateFields(fields);
-  const dateNames = dateFields.map((it) => it.name);
+  const dateNames = dateFields.map(it => it.name);
   for (let key in params) {
-    if (dateNames.includes(key)) {
-      const format = getDateFormat(dateFields, key);
-      const val = params[key];
-      const isArr = typeOf(val) === "Array";
-      let date: any = isArr
-        ? val.map((it: string) => dayjs(it, format))
-        : dayjs(val, format);
-      if (type === "get") {
-        date = isArr
-          ? date.map((it: any) => it.format(format))
-          : date.format(format);
-      }
-      params[key] = date;
+    if (!dateNames.includes(key)) continue;
+    const format = getDateFormat(dateFields, key);
+    const val = params[key];
+    const isArr = typeOf(val) === "Array";
+    let date: any = isArr ? val.map((it: string) => dayjs(it, format)) : dayjs(val, format);
+    if (type === "get") {
+      // if (["attendDate", "attendTime"].includes(key)) console.log(date, "date-format----------------");
+      date = isArr ? date.map((it: any) => it.format(format)) : date.format(format);
+      // if (["attendDate", "attendTime"].includes(key)) console.log(format, key, date, "format----------------");
     }
+    params[key] = date;
   }
+  // console.log(params, "params------------");
   return params;
 }

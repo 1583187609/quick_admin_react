@@ -1,11 +1,8 @@
 import { merge } from "lodash";
 import { CSSProperties } from "react";
 import { axisCfg, gradColors, titleCfg } from "./_config";
-import BaseChart, {
-  coreEcharts as echarts,
-  DataItem,
-  ThemeTypes,
-} from "./BaseChart";
+import BaseChart, { coreEcharts as echarts, DataItem, ThemeTypes } from "./BaseChart";
+import { CommonObj } from "@/vite-env";
 interface Props {
   className?: string;
   style?: CSSProperties;
@@ -129,7 +126,7 @@ export default ({
   //获取空心饼图的series配置
   function getHollowSeriesCfg() {
     let total = 0;
-    data.forEach((item) => {
+    data.forEach(item => {
       total += Number(item[1]);
     });
     return {
@@ -139,9 +136,7 @@ export default ({
         show: true,
         position: "center",
         color: "#4c4a4a",
-        formatter: `{value|${total}}\n\r{label|车辆总数${
-          unit ? `(${unit})` : ""
-        }}`,
+        formatter: `{value|${total}}\n\r{label|车辆总数${unit ? `(${unit})` : ""}}`,
         rich: {
           value: {
             color: "#333",

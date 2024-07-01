@@ -3,7 +3,7 @@
  */
 
 import React, { useContext, useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
-import { FieldItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import QueryForm from "./_components/QueryForm";
 import QueryTable, { ColItem } from "./_components/QueryTable";
 import ExtraBtns, { ExportFieldItem } from "./_components/ExtraBtns";
@@ -24,7 +24,7 @@ interface Props {
   className?: string;
   formAttrs?: FormAttrs;
   tableAttrs?: TableAttrs;
-  fields?: FieldItem[];
+  fields?: FormField[];
   columns?: ColItem[];
   extraBtns?: BaseBtnType[];
   operateBtns?: BaseBtnType[];

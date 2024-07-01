@@ -7,7 +7,7 @@ import { merge } from "lodash";
 import config, { ConfigMergeStrategy } from "@/config";
 import { CommonObj, StrNum } from "@/vite-env";
 import { BtnName } from "@/components/BaseBtn";
-import { FieldItem, FieldAttrs } from "@/components/BaseFormItem";
+import { FormField, FieldAttrs } from "@/components/BaseFormItem";
 import { propsJoinChar, emptyVals } from "./consts";
 
 /**
@@ -81,11 +81,7 @@ export const getCssValUnit = (val: string) => {
  * @param  num {string}  操作数
  * @returns {string}
  */
-export const calCssVal = (
-  val: number | string | undefined,
-  operator: string,
-  num: number
-) => {
+export const calCssVal = (val: number | string | undefined, operator: string, num: number) => {
   val = String(val);
   const unit = getCssValUnit(val);
   const newVal = parseFloat(val);
@@ -123,9 +119,9 @@ export function getChinaCharLength(str?: string): number {
  * @param fields 表单域
  * @param num 额外的空白宽度，默认2 // 2是因为：一个是间距宽度，一个是*宽度
  */
-export function getMaxLength(fields: FieldItem[] = [], num = 2): number {
+export function getMaxLength(fields: FormField[] = [], num = 2): number {
   let max = 1;
-  fields.forEach((item) => {
+  fields.forEach(item => {
     if (typeOf(item) !== "Object") return;
     const { label, children, popover } = item as FieldAttrs;
     const popNum = popover ? 1 : 0;
@@ -216,7 +212,7 @@ export function deleteAttrs(obj: CommonObj = {}, arr: string[] = []) {
  */
 export function splitPropsParams(args: CommonObj) {
   const obj = JSON.parse(JSON.stringify(args));
-  const entrs = Object.keys(obj).filter((it) => it.includes(propsJoinChar));
+  const entrs = Object.keys(obj).filter(it => it.includes(propsJoinChar));
   entrs.forEach((prop: string, ind: number) => {
     if (!obj[prop]) return;
     const type = typeOf(obj[prop]);
@@ -287,9 +283,7 @@ export function getIsUpdated(e_1: any, e_2: any) {
   if (t1 !== t2) return true;
   if (t1 === "Array") {
     if (e_1.length !== e_2.length) return true;
-    const updated = !!e_1.find((it: any, i: number) =>
-      getIsUpdated(e_1[i], e_2[i])
-    );
+    const updated = !!e_1.find((it: any, i: number) => getIsUpdated(e_1[i], e_2[i]));
     if (updated) return true;
   } else if (t1 === "Object") {
     if (Object.keys(e_1).length !== Object.keys(e_2).length) return true;
@@ -318,11 +312,7 @@ export function handleBtnNext(map: CommonObj, name: BtnName) {
  * @param key string 排序依据的对象属性键名
  * @param type string 排序方式 asc 升序 desc 降序
  */
-export function sortObjArrByKey(
-  arr: CommonObj[] = [],
-  key = "order",
-  type = "asc"
-): CommonObj[] {
+export function sortObjArrByKey(arr: CommonObj[] = [], key = "order", type = "asc"): CommonObj[] {
   arr.sort((a: CommonObj, b: CommonObj) => {
     if (type === "asc") {
       return a[key] - b[key];

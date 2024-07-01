@@ -6,7 +6,7 @@ import { GetAuthMenuList } from "@/api-mock";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { BtnName } from "@/components/BaseBtn";
 import BaseCrud from "@/components/BaseCrud";
-import { FieldItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import BaseIcon, { IconNames } from "@/components/BaseIcon";
 import { ColItem } from "@/components/table/BaseTable";
 import { message } from "antd";
@@ -15,7 +15,7 @@ import AddEdit from "./AddEdit";
 import { CommonObj } from "@/vite-env";
 import { useDictMap, useStoreSpace } from "@/hooks";
 
-function getFields({ enableStatusOpts, yesNoStatusOpts }: CommonObj): FieldItem[] {
+function getFields({ enableStatusOpts, yesNoStatusOpts }: CommonObj): FormField[] {
   return [
     {
       name: "name",

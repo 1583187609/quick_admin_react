@@ -3,7 +3,7 @@
  */
 
 import BaseForm from "@/components/form/BaseForm";
-import { FieldItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import { CommonObj } from "@/vite-env";
 import { Tabs } from "antd";
 import { useDictMap, useStoreSpace } from "@/hooks";
@@ -11,8 +11,73 @@ import { useDictMap, useStoreSpace } from "@/hooks";
 interface Props {
   className?: string;
 }
-function getFields({ regionOpts }: CommonObj): FieldItem[] {
+function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
   return [
+    {
+      name: "name",
+      label: "姓名",
+      required: true,
+      colAttrs: 12,
+    },
+    {
+      name: "sex",
+      label: "性别",
+      type: "Radio.Group",
+      attrs: {
+        optionType: "button",
+        buttonStyle: "solid",
+        options: genderOpts,
+      },
+      colAttrs: 12,
+    },
+    {
+      name: "age",
+      label: "年龄",
+      type: "InputNumber",
+      attrs: {},
+      colAttrs: {
+        span: 12,
+      },
+      extraAttrs: {
+        valid: "age",
+      },
+    },
+    {
+      name: "homeAddress",
+      label: "家庭住址",
+      type: "Cascader",
+      attrs: {
+        options: regionOpts,
+      },
+      colAttrs: {
+        span: 12,
+      },
+    },
+    {
+      name: "height",
+      label: "身高",
+      type: "Slider",
+      attrs: {
+        min: 0,
+        max: 250,
+      },
+    },
+    // { name: "detail", label: "详细地址", type: "Input" },
+    {
+      name: "phone",
+      label: "电话",
+      extraAttrs: {
+        valid: "phone",
+      },
+    },
+    {
+      name: "password",
+      label: "密码",
+      type: "Input.Password",
+      extraAttrs: {
+        valid: "password",
+      },
+    },
     {
       name: "search",
       label: "搜索",
@@ -41,62 +106,23 @@ function getFields({ regionOpts }: CommonObj): FieldItem[] {
           { label: "线上", value: 2 },
         ],
       },
+      colAttrs: {
+        span: 12,
+      },
     },
     {
       name: "signUpFee",
       label: "报名费用",
       type: "InputNumber",
-      valid: "rmb",
       attrs: {
         disabled: true,
       },
-    },
-    { name: "name", label: "姓名", required: true },
-    {
-      name: "sex",
-      label: "性别",
-      type: "Radio.Group",
-      attrs: {
-        optionType: "button",
-        buttonStyle: "solid",
-        options: [
-          { label: "未知", value: 0 },
-          { label: "男", value: 1 },
-          { label: "女", value: 2 },
-        ],
+      colAttrs: {
+        span: 12,
       },
-    },
-    {
-      name: "age",
-      label: "年龄",
-      type: "InputNumber",
-      valid: "age",
-      attrs: {},
-    },
-    {
-      name: "homeAddress",
-      label: "家庭住址",
-      type: "Cascader",
-      attrs: {
-        options: regionOpts,
+      extraAttrs: {
+        valid: "rmb",
       },
-    },
-    // { name: "detail", label: "详细地址", type: "Input" },
-    { name: "phone", label: "电话", valid: "phone" },
-    {
-      name: "height",
-      label: "身高",
-      type: "Slider",
-      attrs: {
-        min: 0,
-        max: 250,
-      },
-    },
-    {
-      name: "password",
-      label: "密码",
-      type: "Input.Password",
-      valid: "password",
     },
     {
       name: "score",
@@ -159,8 +185,9 @@ function getFields({ regionOpts }: CommonObj): FieldItem[] {
 }
 export default ({ className = "" }: Props) => {
   const { getOpts, getCascaderOpts } = useDictMap();
+  const genderOpts = getOpts("Gender");
   const regionOpts = getCascaderOpts("Region");
-  const fields: FieldItem[] = getFields({ regionOpts });
+  const fields: FormField[] = getFields({ genderOpts, regionOpts });
   const initVals = {
     listSearch: "搜索列表",
     activeType: 1,
@@ -212,5 +239,5 @@ export default ({ className = "" }: Props) => {
       ),
     },
   ];
-  return <Tabs items={items} />;
+  return <Tabs items={items} defaultActiveKey="1" />;
 };

@@ -1,8 +1,8 @@
 import { createContext } from "react";
 
 export interface BaseContextProps {
-  showCount?: boolean;
-  pureText?: boolean;
+  showCount?: boolean; // 表单字段是否展示限制最大字符数
+  pureText?: boolean; // 是否纯文本展示
 }
 
 interface Props extends BaseContextProps {
@@ -14,8 +14,6 @@ export const BaseContext = createContext<BaseContextProps>({
   pureText: false,
 });
 
-export default ({ children, ...restValue }: Props) => {
-  return (
-    <BaseContext.Provider value={restValue}>{children}</BaseContext.Provider>
-  );
+export default ({ children, ...restProps }: Props) => {
+  return <BaseContext.Provider value={restProps}>{children}</BaseContext.Provider>;
 };

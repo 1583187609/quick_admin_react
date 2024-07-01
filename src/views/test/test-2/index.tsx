@@ -59,7 +59,13 @@ const sections: SectionFormItem[] = [
         colAttrs: { span: 12 },
       },
       { name: "zz", label: "住址", type: "Cascader", colAttrs: { span: 12 } },
-      { name: "dh", label: "电话", valid: "phone" },
+      {
+        name: "dh",
+        label: "电话",
+        extraAttrs: {
+          valid: "phone",
+        },
+      },
       { name: "sfzh", label: "身份证号", attrs: { disabled: true } },
     ],
   },
@@ -115,17 +121,8 @@ export default ({ className = "" }: Props) => {
         <strong className="f-1 mr-32 f-c-c">表单纯文本</strong>
       </div>
       <div className="f-fs-fs f-1 all-hide-scroll" style={{ overflow: "auto" }}>
-        <SectionForm
-          style={{ height: "100%" }}
-          className="f-3 mr-32"
-          sections={sections}
-        />
-        <SectionForm
-          style={{ height: "100%" }}
-          className="f-2"
-          sections={sections}
-          pureText
-        />
+        <SectionForm style={{ height: "100%" }} className="f-3 mr-32" sections={sections} />
+        <SectionForm style={{ height: "100%" }} className="f-2" sections={sections} pureText />
       </div>
     </>
   );

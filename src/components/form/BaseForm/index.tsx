@@ -1,18 +1,11 @@
 /**
- * 基础的表单 - BaseForm
+ * 基础表单 - BaseForm
  */
 
-import {
-  useContext,
-  useEffect,
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useRef, useImperativeHandle, forwardRef, useState } from "react";
 import { Button, Form, message } from "antd";
 import { CSSProperties } from "react";
-import BaseFormItem, { FieldItem } from "@/components/BaseFormItem";
+import BaseFormItem, { FormField } from "@/components/BaseFormItem";
 import { getMaxLength, convertDateField, omitAttrs, printLog } from "@/utils";
 import { merge } from "lodash";
 import { PopupContext } from "@/components/provider/PopupProvider";
@@ -20,8 +13,10 @@ import { SizeType } from "antd/es/config-provider/SizeContext";
 import FormFields from "../_components/FormFields";
 import FormFoot from "../_components/FormFoot";
 import { handleFinish, handleFinishFailed } from "../_utils";
-import s from "./index.module.less";
 import { CommonObj, FetchType } from "@/vite-env";
+import { BtnAttrs } from "../_types";
+import s from "./index.module.less";
+import { defaultFormProps } from "@/components/form/_config";
 
 export type FullType = "autoFull" | "allFull" | ""; //autoFull，撑满时，按钮才固定在底部，否则，跟随移动；allFull：按钮始终固定在底部
 interface Props {
@@ -32,9 +27,9 @@ interface Props {
   labelCol?: CommonObj;
   wrapperCol?: CommonObj;
   autoComplete?: string;
-  fields?: FieldItem[];
-  submitText?: string;
-  resetText?: string;
+  fields?: FormField[];
+  submitButton?: string | BtnAttrs;
+  resetButton?: string | BtnAttrs;
   // showCount?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -48,17 +43,13 @@ interface Props {
   [key: string]: any;
 }
 
-const defaultProps: CommonObj = {
-  validateTrigger: "onBlur",
-};
-
 export default forwardRef((props: Props, ref: any) => {
   const {
     className = "",
     loadData,
     fields = [],
-    submitText,
-    resetText,
+    submitButton,
+    resetButton,
     // showCount = true,
     // fetch,
     // onSubmit,
@@ -76,24 +67,26 @@ export default forwardRef((props: Props, ref: any) => {
   const newInitVals = convertDateField(fields, initialValues, "set");
   const newLoadData = convertDateField(fields, loadData, "set");
   const formData: CommonObj = merge({}, newInitVals, newLoadData);
-  const formProps = merge(
-    { initialValues: newInitVals },
-    defaultProps,
-    restProps
-  );
-  const { pureText, readOnly = false } = formProps;
-
+  const {
+    pureText,
+    readOnly = false,
+    isOmit,
+    log,
+    fetch,
+    onSubmit,
+    ...formProps
+  } = merge({ initialValues: newInitVals }, defaultFormProps, restProps);
+  useImperativeHandle(ref, () => {
+    form;
+  });
   useEffect(() => {
     form.setFieldsValue(newLoadData);
   }, [newLoadData]);
-  useImperativeHandle(ref, () => form);
   return (
     <Form
       form={form}
       className={`${className} ${s["base-form"]}  f-fs-s-c`} //${s[fullType]}
-      onFinish={(args: CommonObj) =>
-        handleFinish(args, fields, props, { setLoading, closePopup })
-      }
+      onFinish={(args: CommonObj) => handleFinish(args, fields, props, { setLoading, closePopup })}
       onFinishFailed={handleFinishFailed}
       {...formProps}
     >
@@ -112,8 +105,8 @@ export default forwardRef((props: Props, ref: any) => {
         <FormFoot
           form={form}
           loading={loading}
-          submitText={submitText}
-          resetText={resetText}
+          submitButton={submitButton}
+          resetButton={resetButton}
           readOnly={readOnly}
           loadData={loadData}
           newLoadData={newLoadData}

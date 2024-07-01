@@ -1,4 +1,4 @@
-import { FieldItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { useDictMap, useStoreSpace } from "@/hooks";
 import { CommonObj } from "@/vite-env";
@@ -8,7 +8,7 @@ interface Props {
   id?: string;
   pureText?: boolean;
 }
-function getFields({ roleTypeOpts, enableStatusOpts }: CommonObj): FieldItem[] {
+function getFields({ roleTypeOpts, enableStatusOpts }: CommonObj): FormField[] {
   return [
     {
       name: "role_name",

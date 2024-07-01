@@ -1,11 +1,8 @@
 import { merge } from "lodash";
 import { CSSProperties } from "react";
 import { axisCfg, gradColors, titleCfg } from "./_config";
-import BaseChart, {
-  coreEcharts as echarts,
-  DataItem,
-  ThemeTypes,
-} from "./BaseChart";
+import BaseChart, { coreEcharts as echarts, DataItem, ThemeTypes } from "./BaseChart";
+import { CommonObj } from "@/vite-env";
 interface Props {
   className?: string;
   style?: CSSProperties;
@@ -63,15 +60,7 @@ function getItemColor(ind: number) {
     },
   ]);
 }
-export default ({
-  title,
-  unit,
-  data = tempData,
-  smooth = false,
-  symbolSize = 6,
-  option,
-  ...restPorps
-}: Props) => {
+export default ({ title, unit, data = tempData, smooth = false, symbolSize = 6, option, ...restPorps }: Props) => {
   const dimensions = data?.[0] || ["product"];
   const series =
     dimensions?.slice(1)?.map((item: any, ind: number) => {

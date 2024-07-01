@@ -1,28 +1,22 @@
 import { Button, message } from "antd";
-import {
-  RedoOutlined,
-  LoadingOutlined,
-  CloudUploadOutlined,
-} from "@ant-design/icons";
+import { RedoOutlined, LoadingOutlined, CloudUploadOutlined } from "@ant-design/icons";
+import { CommonObj } from "@/vite-env";
+import { getBtnProps } from "../_utils";
+import { BtnAttrs } from "@/components/form/_types";
 
 interface Props {
   loading: boolean;
-  submitText?: string;
-  resetText?: string;
+  submitButton?: string | BtnAttrs;
+  resetButton?: string | BtnAttrs;
   readOnly: boolean;
   loadData?: CommonObj;
   newLoadData?: CommonObj;
   form?: any;
 }
-export default ({
-  loading,
-  submitText = "提交",
-  resetText = "重置",
-  readOnly,
-  loadData,
-  newLoadData,
-  form,
-}: Props) => {
+
+export default ({ loading, submitButton = "提交", resetButton = "重置", readOnly, loadData, newLoadData, form }: Props) => {
+  const submitBtn = getBtnProps(submitButton);
+  const resetBtn = getBtnProps(resetButton);
   //点击重置按钮
   function handleReset() {
     if (readOnly) return message.info("只读模式-不可重置");
@@ -34,21 +28,11 @@ export default ({
   }
   return (
     <div className={`pt-half pb-half f-c-c f-0`}>
-      <Button
-        // loading ? <LoadingOutlined /> : <CloudUploadOutlined />
-        icon={<CloudUploadOutlined />}
-        loading={loading}
-        type="primary"
-        htmlType="submit"
-      >
-        {submitText}
+      <Button icon={<CloudUploadOutlined />} loading={loading} type="primary" htmlType="submit" {...submitBtn.attrs}>
+        {submitBtn.children}
       </Button>
-      <Button
-        icon={<RedoOutlined />}
-        htmlType="button"
-        onClick={() => handleReset()}
-      >
-        {resetText}
+      <Button icon={<RedoOutlined />} htmlType="button" onClick={() => handleReset()} {...resetBtn.attrs}>
+        {resetBtn.children}
       </Button>
     </div>
   );

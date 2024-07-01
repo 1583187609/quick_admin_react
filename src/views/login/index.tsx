@@ -1,5 +1,5 @@
 import { PopupContext } from "@/components/provider/PopupProvider";
-import { FieldItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { Button } from "antd";
 import { useContext, useRef } from "react";
@@ -23,20 +23,29 @@ export default () => {
   const router = useRouter();
   const location = useLocation();
   const { openPopup } = useContext(PopupContext);
-  const fields: FieldItem[] = [
-    { name: "phone", label: "账号", valid: "phone", required: true },
+  const fields: FormField[] = [
+    {
+      name: "phone",
+      label: "账号",
+      required: true,
+      extraAttrs: {
+        valid: "phone",
+      },
+    },
     {
       name: "psd",
       label: "密码",
       type: "Input.Password",
-      valid: "password",
       required: true,
+      extraAttrs: {
+        valid: "password",
+      },
     },
     {
       name: "captcha",
       label: "验证码",
       type: "Custom",
-      custom: <Captcha name="captcha" formRef={formRef} />,
+      element: <Captcha name="captcha" formRef={formRef} />,
       required: true,
       rules: [{ min: 4, message: "验证码长度不足4位" }],
     },
@@ -50,29 +59,20 @@ export default () => {
           initialValues={initVals}
           size="large"
           fields={fields}
-          onSubmit={(params: CommonObj) =>
-            handleLoginIn({ params, other: { router, location } })
-          }
-          submitText="登录"
+          onSubmit={(params: CommonObj) => handleLoginIn({ params, other: { router, location } })}
+          submitButton="登录"
           className={`${s.body}`}
         />
         <div className={`${s.foot} f-sb-c`}>
           <Button
-            onClick={() =>
-              openPopup({ title: "免费注册", placement: "left" }, <Register />)
-            }
+            onClick={() => openPopup({ title: "免费注册", placement: "left" }, <Register />)}
             className={s.btn}
             type="link"
             size="small"
           >
             免费注册
           </Button>
-          <Button
-            onClick={() => openPopup("找回密码", <FindPassword />)}
-            className={s.btn}
-            type="link"
-            size="small"
-          >
+          <Button onClick={() => openPopup("找回密码", <FindPassword />)} className={s.btn} type="link" size="small">
             找回密码
           </Button>
         </div>

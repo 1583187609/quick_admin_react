@@ -1,3 +1,4 @@
+import { CommonObj } from "@/vite-env";
 import { FormItemType } from "./_types";
 
 //覆盖重写el-form-item 的默认属性值
@@ -138,6 +139,7 @@ export const defaultFieldAttrs: {
     attrs: {},
   },
 };
+export type ValidType = keyof typeof defaultValidTypes;
 //默认的校验类型
 export const defaultValidTypes: CommonObj = {
   //手机号

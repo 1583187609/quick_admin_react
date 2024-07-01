@@ -1,17 +1,11 @@
 /**
- * 分块的表单 - SectionForm
+ * 分块表单 - SectionForm
  */
 
-import React, {
-  useContext,
-  useEffect,
-  useImperativeHandle,
-  forwardRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useImperativeHandle, forwardRef, useState } from "react";
 import { Button, Form, message } from "antd";
 import { CSSProperties } from "react";
-import BaseFormItem, { FieldItem } from "@/components/BaseFormItem";
+import BaseFormItem, { FormField } from "@/components/BaseFormItem";
 import { CaretDownOutlined } from "@ant-design/icons";
 import { getMaxLength, convertDateField, omitAttrs, printLog } from "@/utils";
 import { merge } from "lodash";
@@ -20,12 +14,15 @@ import { SizeType } from "antd/es/config-provider/SizeContext";
 import FormFields from "../_components/FormFields";
 import FormFoot from "../_components/FormFoot";
 import { handleFinish, handleFinishFailed } from "../_utils";
+import { CommonObj } from "@/vite-env";
+import { BtnAttrs } from "../_types";
+import { defaultFormProps } from "@/components/form/_config";
 import s from "./index.module.less";
 
 export type FullType = "autoFull" | "allFull" | ""; //autoFull，撑满时，按钮才固定在底部，否则，跟随移动；allFull：按钮始终固定在底部
 export interface SectionFormItem {
   title: string;
-  fields: FieldItem[];
+  fields: FormField[];
 }
 interface Props {
   className?: string;
@@ -36,8 +33,8 @@ interface Props {
   wrapperCol?: CommonObj;
   autoComplete?: string;
   sections?: SectionFormItem[];
-  submitText?: string;
-  resetText?: string;
+  submitButton?: string | BtnAttrs;
+  resetButton?: string | BtnAttrs;
   // showCount?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
@@ -50,17 +47,13 @@ interface Props {
   [key: string]: any;
 }
 
-const defaultProps: CommonObj = {
-  validateTrigger: "onBlur",
-};
-
 export default forwardRef((props: Props, ref: any) => {
   const {
     className = "",
     loadData,
     sections = [],
-    submitText,
-    resetText,
+    submitButton,
+    resetButton,
     // showCount = true,
     // onSubmit,
     // formItemWidthFull,
@@ -73,26 +66,31 @@ export default forwardRef((props: Props, ref: any) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { closePopup } = useContext(PopupContext);
-  const allFields = sections.map((it) => it.fields).flat(1);
+  const allFields = sections.map(it => it.fields).flat(1);
   const newInitVals = convertDateField(allFields, initialValues, "set");
   const newLoadData = convertDateField(allFields, loadData, "set");
   const formData: CommonObj = merge({}, newInitVals, newLoadData);
   const [folds, setFolds] = useState<boolean[]>([]);
-  const formProps = merge(
-    { initialValues: newInitVals },
-    defaultProps,
-    restProps
-  );
-  const { pureText, readOnly = false } = formProps;
+  const {
+    pureText,
+    readOnly = false,
+    isOmit,
+    log,
+    fetch,
+    onSubmit,
+    ...formProps
+  } = merge({ initialValues: newInitVals }, defaultFormProps, restProps);
+  useImperativeHandle(ref, () => {
+    form;
+  });
   useEffect(() => {
     form.setFieldsValue(newLoadData);
   }, [newLoadData]);
   useEffect(() => {
     setFolds(Array(sections.length).fill(false));
   }, [sections]);
-  useImperativeHandle(ref, () => form);
   // 处理折叠逻辑
-  function handleFold(ind: number) {
+  function handleToggleFold(ind: number) {
     folds[ind] = !folds[ind];
     setFolds(folds.slice());
   }
@@ -100,9 +98,7 @@ export default forwardRef((props: Props, ref: any) => {
     <Form
       form={form}
       className={`${className} ${s["section-form"]}  f-fs-s-c`} //${s[fullType]}
-      onFinish={(args: CommonObj) =>
-        handleFinish(args, allFields, props, { setLoading, closePopup })
-      }
+      onFinish={(args: CommonObj) => handleFinish(args, allFields, props, { setLoading, closePopup })}
       onFinishFailed={handleFinishFailed}
       {...formProps}
     >
@@ -117,20 +113,11 @@ export default forwardRef((props: Props, ref: any) => {
                 <Button
                   className={`${s["fold-btn"]}`}
                   type="link"
-                  onClick={() => handleFold(sInd)}
-                  icon={
-                    <CaretDownOutlined
-                      className={`${s["fold-icon"]} ${
-                        folds[sInd] ? "" : "rotate-180"
-                      }`}
-                    />
-                  }
-                ></Button>
+                  onClick={() => handleToggleFold(sInd)}
+                  icon={<CaretDownOutlined className={`${s["fold-icon"]} ${folds[sInd] ? "" : "rotate-180"}`} />}
+                />
               </div>
-              <div
-                className={`${s.body}`}
-                style={{ maxHeight: folds[sInd] ? "0" : "100vh" }}
-              >
+              <div className={`${s.body}`} style={{ maxHeight: folds[sInd] ? "0" : "100vh" }}>
                 <FormFields
                   fields={fields}
                   pureText={pureText}
@@ -149,8 +136,8 @@ export default forwardRef((props: Props, ref: any) => {
         <FormFoot
           form={form}
           loading={loading}
-          submitText={submitText}
-          resetText={resetText}
+          submitButton={submitButton}
+          resetButton={resetButton}
           readOnly={readOnly}
           loadData={loadData}
           newLoadData={newLoadData}

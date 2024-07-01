@@ -2,19 +2,17 @@ import { CSSProperties } from "react";
 import { regexp, typeOf, getTextFromOpts } from "@/utils";
 import { merge } from "lodash";
 import { defaultFieldAttrs } from "./_config";
-import { FieldItem } from "./_types";
+import { FormField } from "./_types";
 
 //获取表单键值对的值
-export function getKeyVal(field: FieldItem, val: any) {
+export function getKeyVal(field: FormField, val: any) {
   const { type = "Input", label, attrs = {} } = field;
   if (["Select", "Radio.Group"].includes(type)) {
     val = attrs?.options?.find((it: OptionItem) => it.value === val)?.label;
   } else if (type.includes("Time") || type.includes("Date")) {
     const { format } = merge({}, defaultFieldAttrs[type]?.attrs, attrs);
     const isArr = typeOf(val) === "Array";
-    val = isArr
-      ? val.map((it: any) => it.format(format)).join(" ~ ")
-      : val.format(format);
+    val = isArr ? val.map((it: any) => it.format(format)).join(" ~ ") : val.format(format);
   } else if (["Checkbox.Group"].includes(type)) {
     val = attrs?.options
       ?.filter((it: OptionItem) => val.includes(it.value))

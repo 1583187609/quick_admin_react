@@ -6,7 +6,7 @@ import { GetAuthRoleList } from "@/api-mock";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { BtnName } from "@/components/BaseBtn";
 import BaseCrud from "@/components/BaseCrud";
-import { FieldItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import { ColItem } from "@/components/table/BaseTable";
 import { message } from "antd";
 import { useContext } from "react";
@@ -14,7 +14,7 @@ import AddEdit from "./AddEdit";
 import { CommonObj } from "@/vite-env";
 import { useDictMap, useStoreSpace } from "@/hooks";
 
-function getFields({ roleTypeOpts, enableStatusOpts }: CommonObj): FieldItem[] {
+function getFields({ roleTypeOpts, enableStatusOpts }: CommonObj): FormField[] {
   return [
     {
       name: "role_text",

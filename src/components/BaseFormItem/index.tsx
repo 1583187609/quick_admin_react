@@ -1,5 +1,5 @@
 /**
- * 文件说明-模板文件
+ * 表单字段组件
  */
 
 import { useMemo } from "react";
@@ -22,10 +22,10 @@ import {
 import { CSSProperties } from "react";
 import { merge } from "lodash";
 import BaseKeyVal from "../BaseKeyVal";
-import s from "./index.module.less";
-import { FieldItem } from "./_types";
+import { ColAttrs, FormField } from "./_types";
 import { getKeyVal } from "./_utils";
 import { defaultFieldAttrs, defaultValidTypes } from "./_config";
+import s from "./index.module.less";
 
 export * from "./_types";
 export * from "./_config";
@@ -33,7 +33,7 @@ export * from "./_config";
 interface Props {
   className?: string;
   style?: CSSProperties;
-  field: FieldItem;
+  field: FormField;
   widthFull?: boolean;
   readOnly?: boolean;
   pureText?: any;
@@ -42,14 +42,8 @@ interface Props {
   [key: string]: any;
 }
 
-const Field = ({
-  field,
-  ...restProps
-}: {
-  field: FieldItem;
-  [key: string]: any;
-}) => {
-  const { type, attrs, custom } = field;
+const Field = ({ field, ...restProps }: { field: FormField; [key: string]: any }) => {
+  const { type, attrs, element } = field;
   Object.assign(attrs, restProps);
   if (type === "Input") return <Input {...attrs} />;
   if (type === "Input.Password") return <Input.Password {...attrs} />;
@@ -61,19 +55,22 @@ const Field = ({
   if (type === "Radio.Group") return <Radio.Group {...attrs} />;
   if (type === "Rate") return <Rate {...attrs} />;
   if (type === "TimePicker") return <TimePicker {...attrs} />;
-  if (type === "TimePicker.RangePicker")
-    return <TimePicker.RangePicker {...attrs} />;
+  if (type === "TimePicker.RangePicker") return <TimePicker.RangePicker {...attrs} />;
   if (type === "DatePicker") return <DatePicker {...attrs} />;
-  if (type === "DatePicker.RangePicker")
-    return <DatePicker.RangePicker {...attrs} />;
+  if (type === "DatePicker.RangePicker") return <DatePicker.RangePicker {...attrs} />;
   if (type === "Slider") return <Slider {...attrs} />;
   if (type === "Cascader") return <Cascader {...attrs} />;
   if (type === "Switch") return <Switch {...attrs} />;
   if (type === "Checkbox") return <Checkbox {...attrs} />;
   if (type === "Checkbox.Group") return <Checkbox.Group {...attrs} />;
-  if (type === "Custom") return custom;
+  if (type === "Custom") return element;
   return <div className={s.error}>类型错误：{type}</div>;
 };
+
+function getColAttrs(col?: number | ColAttrs) {
+  if (typeof col === "number") return { span: col };
+  return col;
+}
 
 export default ({
   className = "",
@@ -85,27 +82,15 @@ export default ({
   // showCount = false,
   ...restProps
 }: Props) => {
-  const { colAttrs, ...newField }: FieldItem = useMemo(() => {
+  const { colAttrs, extraAttrs, ...newField }: FormField = useMemo(() => {
     const type = field.type || "Input";
-    const tempField: FieldItem = merge(
-      {},
-      { type, ...defaultFieldAttrs[type] },
-      field
-    );
-    const {
-      label = "",
-      attrs,
-      required = false,
-      rules,
-      valid,
-      example,
-    } = tempField;
+    const tempField: FormField = merge({}, { type, ...defaultFieldAttrs[type] }, field);
+    const { label = "", attrs, required = false, rules, extraAttrs = {} } = tempField;
+    const { valid, example } = extraAttrs;
     const currValidField = (valid ? defaultValidTypes[valid] : {}) || {};
     let phr = attrs?.placeholder || "";
     phr = phr.includes("${label}") ? phr.replace("${label}", label) : phr;
-    if (example) {
-      phr += `，例：${example}`;
-    }
+    if (example) phr += `，例：${example}`;
     tempField.attrs = merge(
       // { style: merge({}, { width: widthFull ? "100%" : "none" }) },
       {},
@@ -126,20 +111,11 @@ export default ({
   }, [field]);
 
   return (
-    <Col span={24} {...colAttrs}>
+    <Col span={24} {...getColAttrs(colAttrs)}>
       {pureText ? (
-        <BaseKeyVal
-          className="mb-one"
-          labelStyle={{ width: labelWidth }}
-          {...getKeyVal(newField, pureText)}
-        />
+        <BaseKeyVal className="mb-one" labelStyle={{ width: labelWidth }} {...getKeyVal(newField, pureText)} />
       ) : (
-        <Form.Item
-          className={`${className}`}
-          style={style}
-          labelCol={{ style: { width: labelWidth } }}
-          {...newField}
-        >
+        <Form.Item className={`${className}`} style={style} labelCol={{ style: { width: labelWidth } }} {...newField}>
           <Field field={newField} />
         </Form.Item>
       )}
