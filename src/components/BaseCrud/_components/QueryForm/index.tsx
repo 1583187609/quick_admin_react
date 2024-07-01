@@ -26,7 +26,6 @@ interface Props {
   initialValues?: CommonObj;
   labelCol?: CommonObj;
   wrapperCol?: CommonObj;
-  autoComplete?: string;
   fields?: FormField[];
   rowNum?: number; //筛选条件默认以几行展示
   extraParams?: CommonObj; //额外的请求参数

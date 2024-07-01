@@ -32,6 +32,7 @@ export function handleFinish(params: CommonObj, fields: FormField[] = [], props:
       .then((res: any) => {
         message.success(`${text}成功！`);
         closePopup?.();
+        log && printLog(res, "res");
       })
       .finally(() => setLoading(false));
   }

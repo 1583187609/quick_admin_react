@@ -25,22 +25,27 @@ export interface SectionFormItem {
   fields: FormField[];
 }
 interface Props {
+  /**
+   * 以下是继承 antd 的属性
+   */
   className?: string;
-  loadData?: CommonObj; //请求加载的数据
   style?: CSSProperties;
   initialValues?: CommonObj;
   labelCol?: CommonObj;
   wrapperCol?: CommonObj;
-  autoComplete?: string;
+  disabled?: boolean;
+  size?: SizeType;
+  /**
+   * 以下是自定义的属性
+   */
+  loadData?: CommonObj; //请求加载的数据
   sections?: SectionFormItem[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
   // showCount?: boolean;
-  disabled?: boolean;
   readOnly?: boolean;
   pureText?: boolean;
   // formItemWidthFull?: boolean;
-  size?: SizeType;
   onSubmit?: (data: CommonObj, next: () => void) => void;
   isOmit?: boolean; //是否剔除属性
   // fullType?: FullType; //是否自动撑满，是否自动滚动
@@ -50,6 +55,7 @@ interface Props {
 export default forwardRef((props: Props, ref: any) => {
   const {
     className = "",
+    initialValues,
     loadData,
     sections = [],
     submitButton,
@@ -58,7 +64,6 @@ export default forwardRef((props: Props, ref: any) => {
     // onSubmit,
     // formItemWidthFull,
     // fullType = "allFull",
-    initialValues,
     // isOmit = true,
     // log = true,
     ...restProps

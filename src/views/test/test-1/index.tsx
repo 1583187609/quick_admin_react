@@ -7,6 +7,7 @@ import { FormField } from "@/components/BaseFormItem";
 import { CommonObj } from "@/vite-env";
 import { Tabs } from "antd";
 import { useDictMap, useStoreSpace } from "@/hooks";
+import { PostMockCommon } from "@/api-mock";
 
 interface Props {
   className?: string;
@@ -215,7 +216,13 @@ export default ({ className = "" }: Props) => {
       key: "1",
       label: "表单可编辑",
       children: (
-        <BaseForm className="mr-32 f-1" fields={fields} style={{ height: "calc(100vh - 154px)" }} initialValues={initVals} />
+        <BaseForm
+          className="mr-32 f-1"
+          fetch={PostMockCommon}
+          fields={fields}
+          style={{ height: "calc(100vh - 154px)" }}
+          initialValues={initVals}
+        />
       ),
     },
     {
@@ -224,6 +231,7 @@ export default ({ className = "" }: Props) => {
       children: (
         <BaseForm
           className="mr-32 f-1"
+          fetch={PostMockCommon}
           fields={fields}
           style={{ height: "calc(100vh - 154px)" }}
           initialValues={initVals}
@@ -235,7 +243,14 @@ export default ({ className = "" }: Props) => {
       key: "3",
       label: "表单纯文本",
       children: (
-        <BaseForm className="f-1" fields={fields} style={{ height: "calc(100vh - 154px)" }} initialValues={initVals} pureText />
+        <BaseForm
+          className="f-1"
+          fetch={PostMockCommon}
+          fields={fields}
+          style={{ height: "calc(100vh - 154px)" }}
+          initialValues={initVals}
+          pureText
+        />
       ),
     },
   ];
