@@ -22,7 +22,7 @@ function getFields({ activeKey = "1", yesNoStatusOpts }: CommonObj): any[] {
             name: "route_path",
             label: "路由地址",
             required: true,
-            extraAttrs: {
+            otherAttrs: {
               example: "/auth/menu",
             },
           },
@@ -30,7 +30,7 @@ function getFields({ activeKey = "1", yesNoStatusOpts }: CommonObj): any[] {
             name: "component_path",
             label: "组件路径",
             required: true,
-            extraAttrs: {
+            otherAttrs: {
               example: "/pages-system/user/account/index.tsx",
             },
           },
@@ -45,7 +45,7 @@ function getFields({ activeKey = "1", yesNoStatusOpts }: CommonObj): any[] {
     activeKey !== "1" && {
       name: "auth",
       label: "权限标识",
-      extraAttrs: {
+      otherAttrs: {
         example: "system:menu:list",
       },
     },

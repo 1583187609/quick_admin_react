@@ -1,11 +1,14 @@
 import { CommonObj } from "@/vite-env";
-import { FormItemType } from "./_types";
+import { FieldAttrs, FormItemAttrs, FormItemType } from "./_types";
 
 //覆盖重写el-form-item 的默认属性值
 export const defaultFieldAttrs: {
   [key in FormItemType]: {
     valuePropName?: string;
-    attrs: CommonObj;
+    attrs?: {
+      getAttrs?: (field: FormItemAttrs) => FieldAttrs | undefined;
+      [key: string]: any;
+    };
   };
 } = {
   Input: {
@@ -13,7 +16,11 @@ export const defaultFieldAttrs: {
       placeholder: "请输入${label}",
       // maxLength: 30,
       allowClear: true,
-      // showCount: true,
+      getAttrs(field: FormItemAttrs) {
+        const { attrs } = field;
+        if (attrs) attrs.showCount = !!attrs.maxLength;
+        return attrs;
+      },
     },
   },
   Select: {
@@ -77,6 +84,11 @@ export const defaultFieldAttrs: {
       maxLength: 100,
       allowClear: true,
       // showCount: true,
+      getAttrs(field: FormItemAttrs) {
+        const { attrs } = field;
+        if (attrs) attrs.showCount = !!attrs.maxLength;
+        return attrs;
+      },
     },
   },
   "Input.Password": {
@@ -88,6 +100,11 @@ export const defaultFieldAttrs: {
       //   return visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />;
       // },
       // showCount: true,
+      getAttrs(field: FormItemAttrs) {
+        const { attrs } = field;
+        if (attrs) attrs.showCount = !!attrs.maxLength;
+        return attrs;
+      },
     },
   },
   AutoComplete: {
@@ -111,10 +128,17 @@ export const defaultFieldAttrs: {
       // maxLength: 30,
       allowClear: true,
       // showCount: true,
+      getAttrs(field: FormItemAttrs) {
+        const { attrs } = field;
+        if (attrs) attrs.showCount = !!attrs.maxLength;
+        return attrs;
+      },
     },
   },
   Slider: {
-    attrs: {},
+    attrs: {
+      style: { width: "calc(100% - 20px)" },
+    },
   },
   TimePicker: {
     attrs: {
@@ -139,7 +163,6 @@ export const defaultFieldAttrs: {
     attrs: {},
   },
 };
-export type ValidType = keyof typeof defaultValidTypes;
 //默认的校验类型
 export const defaultValidTypes: CommonObj = {
   //手机号

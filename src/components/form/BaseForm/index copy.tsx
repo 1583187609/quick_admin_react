@@ -30,7 +30,6 @@ interface Props {
   fields?: FormField[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
-  // showCount?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
   pureText?: boolean;
@@ -50,7 +49,6 @@ export default forwardRef((props: Props, ref: any) => {
     fields = [],
     submitButton,
     resetButton,
-    // showCount = true,
     // fetch,
     // onSubmit,
     // formItemWidthFull,
@@ -99,7 +97,6 @@ export default forwardRef((props: Props, ref: any) => {
           formData={formData}
           readOnly={readOnly}
           // formItemWidthFull={formItemWidthFull}
-          // showCount={showCount}
           labelWidth={labelWidth}
         />
       </div>

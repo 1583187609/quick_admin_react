@@ -5,69 +5,95 @@
 import BaseForm from "@/components/form/BaseForm";
 import { FormField } from "@/components/BaseFormItem";
 import { CommonObj } from "@/vite-env";
-import { Tabs } from "antd";
-import { useDictMap, useStoreSpace } from "@/hooks";
+import { Tabs, Select } from "antd";
+import { useDictMap } from "@/hooks";
 import { PostMockCommon } from "@/api-mock";
+import { UserOutlined, UnlockOutlined } from "@ant-design/icons";
 
-interface Props {
-  className?: string;
-}
 function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
   return [
     {
       name: "name",
       label: "姓名",
       required: true,
+      extra: "设置 maxLength 属性后，则触发 showCount 属性值为true",
       colAttrs: 12,
-    },
-    {
-      name: "sex",
-      label: "性别",
-      type: "Radio.Group",
       attrs: {
-        optionType: "button",
-        buttonStyle: "solid",
-        options: genderOpts,
+        maxLength: 6,
       },
-      colAttrs: 12,
+      otherAttrs: {},
     },
     {
       name: "age",
       label: "年龄",
       type: "InputNumber",
+      extra: "设置 valid 属性为age，将获得 age 的所有预设值特性",
+      colAttrs: 12,
       attrs: {},
-      colAttrs: {
-        span: 12,
-      },
-      extraAttrs: {
+      otherAttrs: {
         valid: "age",
       },
     },
     {
+      name: "sex",
+      label: "性别",
+      type: "Radio.Group",
+      extra: "options选项传入数组 genderOpts",
+      colAttrs: {
+        span: 12,
+      },
+      attrs: {
+        optionType: "button",
+        buttonStyle: "solid",
+        options: genderOpts,
+      },
+    },
+
+    {
       name: "homeAddress",
       label: "家庭住址",
       type: "Cascader",
+      extra: "options选项传入级联名称 Region",
+      colAttrs: 12,
       attrs: {
-        options: regionOpts,
-      },
-      colAttrs: {
-        span: 12,
+        // options: regionOpts,
+        options: "Region",
       },
     },
     {
       name: "height",
       label: "身高",
       type: "Slider",
+      extra: "这是popover的使用示例（鼠标放在label右侧的图标上查看）",
       attrs: {
         min: 0,
         max: 250,
+      },
+      otherAttrs: {
+        popover: "这是popover的使用示例",
       },
     },
     // { name: "detail", label: "详细地址", type: "Input" },
     {
       name: "phone",
       label: "电话",
-      extraAttrs: {
+      colAttrs: 12,
+      // extra: `设置 {valid: "phone"} 实现电话号码长度限制、正则校验`,
+      extra: `设置prefix、addonAfter属性`,
+      attrs: {
+        prefix: <UserOutlined />,
+        // addonAfter: "+86",
+        addonAfter: (
+          <Select
+            defaultValue={1}
+            options={[
+              { label: "国内", value: 1 },
+              { label: "国外", value: 2 },
+            ]}
+          ></Select>
+        ),
+      },
+      otherAttrs: {
         valid: "phone",
       },
     },
@@ -75,7 +101,12 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
       name: "password",
       label: "密码",
       type: "Input.Password",
-      extraAttrs: {
+      colAttrs: 12,
+      extra: `设置 {valid: "password"} 实现密码长度限制、正则校验`,
+      attrs: {
+        prefix: <UnlockOutlined />,
+      },
+      otherAttrs: {
         valid: "password",
       },
     },
@@ -83,12 +114,15 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
       name: "search",
       label: "搜索",
       type: "Input.Search",
+      colAttrs: 12,
+      extra: "colAttrs为Col的属性，值可为数字或对象",
       attrs: { placeholder: "请输入搜索内容" },
     },
     {
       name: "listSearch",
       label: "搜索记忆",
       type: "AutoComplete",
+      colAttrs: 12,
       attrs: {
         options: [
           { label: "搜索提示1", value: "1" },
@@ -101,14 +135,12 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
       name: "activeType",
       label: "报名形式",
       type: "Select",
+      colAttrs: 12,
       attrs: {
         options: [
           { label: "现场", value: 1 },
           { label: "线上", value: 2 },
         ],
-      },
-      colAttrs: {
-        span: 12,
       },
     },
     {
@@ -118,10 +150,8 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
       attrs: {
         disabled: true,
       },
-      colAttrs: {
-        span: 12,
-      },
-      extraAttrs: {
+      colAttrs: 12,
+      otherAttrs: {
         valid: "rmb",
       },
     },
@@ -149,7 +179,7 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
     },
     {
       name: "attendTime",
-      label: "参加活动的时间场次",
+      label: "参加活动的时间",
       type: "TimePicker",
     },
     {
@@ -180,11 +210,24 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
       name: "note",
       label: "备注",
       type: "Input.TextArea",
-      attrs: { showCount: false },
+      attrs: { maxLength: 200 },
+    },
+    {
+      name: "custom",
+      label: "自定义项",
+      type: "Custom",
+      extra: "声明type为Custom，同时写上element属性",
+      element: <div className="color-primary">这是一个自定义项</div>,
+    },
+    {
+      name: "error",
+      label: "error项",
+      type: "Inputt",
+      extra: "当type类型拼写错误或不存在时，就会出现此错误提示",
     },
   ];
 }
-export default ({ className = "" }: Props) => {
+export default () => {
   const { getOpts, getCascaderOpts } = useDictMap();
   const genderOpts = getOpts("Gender");
   const regionOpts = getCascaderOpts("Region");
@@ -220,7 +263,7 @@ export default ({ className = "" }: Props) => {
           className="mr-32 f-1"
           fetch={PostMockCommon}
           fields={fields}
-          style={{ height: "calc(100vh - 154px)" }}
+          style={{ height: "calc(100vh - 160px)" }}
           initialValues={initVals}
         />
       ),
@@ -233,7 +276,7 @@ export default ({ className = "" }: Props) => {
           className="mr-32 f-1"
           fetch={PostMockCommon}
           fields={fields}
-          style={{ height: "calc(100vh - 154px)" }}
+          style={{ height: "calc(100vh - 160px)" }}
           initialValues={initVals}
           readOnly
         />
@@ -247,7 +290,7 @@ export default ({ className = "" }: Props) => {
           className="f-1"
           fetch={PostMockCommon}
           fields={fields}
-          style={{ height: "calc(100vh - 154px)" }}
+          style={{ height: "calc(100vh - 160px)" }}
           initialValues={initVals}
           pureText
         />

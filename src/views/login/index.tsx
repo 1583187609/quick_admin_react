@@ -28,7 +28,7 @@ export default () => {
       name: "phone",
       label: "账号",
       required: true,
-      extraAttrs: {
+      otherAttrs: {
         valid: "phone",
       },
     },
@@ -37,7 +37,7 @@ export default () => {
       label: "密码",
       type: "Input.Password",
       required: true,
-      extraAttrs: {
+      otherAttrs: {
         valid: "password",
       },
     },

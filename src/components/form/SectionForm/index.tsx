@@ -42,7 +42,6 @@ interface Props {
   sections?: SectionFormItem[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
-  // showCount?: boolean;
   readOnly?: boolean;
   pureText?: boolean;
   // formItemWidthFull?: boolean;
@@ -60,7 +59,6 @@ export default forwardRef((props: Props, ref: any) => {
     sections = [],
     submitButton,
     resetButton,
-    // showCount = true,
     // onSubmit,
     // formItemWidthFull,
     // fullType = "allFull",
@@ -129,7 +127,6 @@ export default forwardRef((props: Props, ref: any) => {
                   formData={formData}
                   readOnly={readOnly}
                   // formItemWidthFull={formItemWidthFull}
-                  // showCount={showCount}
                   labelWidth={labelWidth}
                 />
               </div>

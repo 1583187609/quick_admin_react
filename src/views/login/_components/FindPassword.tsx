@@ -5,7 +5,7 @@ const fields: FormField[] = [
   {
     name: "pheon",
     label: "电话",
-    extraAttrs: {
+    otherAttrs: {
       valid: "phone",
     },
   },
@@ -13,7 +13,7 @@ const fields: FormField[] = [
     name: "psd",
     label: "密码",
     type: "Input.Password",
-    extraAttrs: {
+    otherAttrs: {
       valid: "password",
     },
   },

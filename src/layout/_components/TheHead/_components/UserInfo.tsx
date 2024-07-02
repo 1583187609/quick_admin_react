@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 interface Props {
   id: number;
 }
-function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
+function getFields({ genderOpts }: CommonObj): FormField[] {
   return [
     {
       name: "nickname",
@@ -42,7 +42,7 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
         max: 99,
         min: 0,
       },
-      extraAttrs: {
+      otherAttrs: {
         valid: "age",
       },
     },
@@ -58,20 +58,20 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
       label: "地址",
       type: "Cascader",
       attrs: {
-        options: regionOpts,
+        options: "Region",
       },
     },
     {
       name: "phone",
       label: "电话",
-      extraAttrs: {
+      otherAttrs: {
         valid: "phone",
       },
     },
     {
       name: "password",
       label: "密码",
-      extraAttrs: {
+      otherAttrs: {
         valid: "password",
       },
     },
@@ -87,7 +87,6 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
 }
 export default ({ id }: Props) => {
   const { getOpts, getCascaderOpts } = useDictMap();
-  const regionOpts = getCascaderOpts("Region");
   const getderOpts = getOpts("Gender");
   const [loadData, setLoadData] = useState<CommonObj>({});
   useEffect(() => {
@@ -101,12 +100,7 @@ export default ({ id }: Props) => {
   return (
     <>
       <BaseAvatar style={{ margin: "0 auto 32px" }} />
-      <BaseForm
-        initialValues={{ sex: 0 }}
-        style={{ width: "450px" }}
-        fields={getFields({ regionOpts, getderOpts })}
-        loadData={loadData}
-      />
+      <BaseForm initialValues={{ sex: 0 }} style={{ width: "450px" }} fields={getFields({ getderOpts })} loadData={loadData} />
     </>
   );
 };

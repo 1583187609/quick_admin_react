@@ -1,6 +1,12 @@
 import { BaseDataType, CommonObj, OptionItem } from "@/vite-env";
-import { CSSProperties } from "react";
+import { CSSProperties, ReactNode, RefAttributes } from "react";
 import { defaultValidTypes } from "./_config";
+import { CheckboxGroupProps } from "antd/es/checkbox";
+import { Dayjs } from "dayjs";
+import { PickerLocale, RangePickerDateProps } from "antd/es/date-picker/generatePicker";
+import { SizeType } from "antd/es/config-provider/SizeContext";
+import { RadioGroupProps } from "antd";
+import { CascaderName, DictName } from "@/dict";
 
 export type ValidType = keyof typeof defaultValidTypes;
 export type FormItemType =
@@ -29,7 +35,7 @@ export interface FieldAttrs {
   placeholder?: string;
   allowClear?: boolean;
   /** Select **/
-  options?: OptionItem[];
+  options?: DictName | CascaderName | OptionItem[]; // 当type为cascader或select时，options的名称 或 直接的options选项
   /** Radio.Group **/
   optionType?: "default" | "button";
   buttonStyle?: "outline" | "solid";
@@ -43,6 +49,24 @@ export interface FieldAttrs {
   addonAfter?: any;
   [key: string]: any;
 }
+
+// 标准的表单字段项
+export interface StandFieldAttrs extends FieldAttrs {
+  options?: OptionItem[]; // 当type为cascader或select时，options的名称 或 直接的options选项
+}
+
+export type PlacementTypes = "bottomLeft" | "bottomRight" | "topLeft" | "topRight";
+export type RadioGroupAttrs = Omit<RadioGroupProps & RefAttributes<HTMLDivElement>, "ref">;
+export type CheckboxGroupAttrs = Omit<CheckboxGroupProps & RefAttributes<HTMLDivElement>, "ref">;
+export type DateRangePickerAttrs = Readonly<
+  Omit<RangePickerDateProps<Dayjs>, "locale" | "generateConfig" | "hideHeader" | "components"> & {
+    locale?: PickerLocale;
+    size?: SizeType;
+    placement?: PlacementTypes;
+    bordered?: boolean;
+    status?: "error" | "warning";
+  }
+>;
 export interface ColAttrs {
   flex?: string | number;
   offset?: number;
@@ -61,20 +85,23 @@ export interface ColAttrs {
 export interface RuleItem {
   [key: string]: any;
 }
-export interface FormFieldAttrs {
+export interface FormItemAttrs {
   type?: FormItemType; // 表单字段控件类型
   name: string; // 同 antd 的属性
-  label: string; // 同 antd 的属性
+  label: ReactNode; // 同 antd 的属性
   rules?: RuleItem[]; // 同 antd 的属性
   required?: boolean; // 同 antd 的属性
   element?: any; //type 为 Custom 时，要渲染的内容
+  extra?: ReactNode;
   attrs?: FieldAttrs;
   validateTrigger?: ValidateTriggerType | ValidateTriggerType[]; // 同 antd 的属性
-  extraAttrs?: {
+  otherAttrs?: {
+    popover?: string;
     example?: string; // 写在placeholder 中的文字
     valid?: ValidType; // 校验类型及控件本身必要的其他属性，例：password, phone
   };
   colAttrs?: number | ColAttrs;
+  [key: string]: any; //其他antd Form.Item 的属性
 }
 
-export type FormField = BaseDataType | FormFieldAttrs;
+export type FormField = BaseDataType | FormItemAttrs;

@@ -12,7 +12,7 @@ interface Props {
   disabled?: boolean;
   refresh?: () => void;
 }
-function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRef }: CommonObj): FormField[] {
+function getFields({ isAdd = false, genderOpts, roleTypeOpts, formRef }: CommonObj): FormField[] {
   return [
     {
       name: "avatar",
@@ -31,7 +31,7 @@ function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRe
       name: "phone",
       label: "电话",
       required: true,
-      extraAttrs: {
+      otherAttrs: {
         valid: "phone",
       },
     },
@@ -39,7 +39,7 @@ function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRe
       name: "name",
       label: "姓名",
       required: true,
-      extraAttrs: {
+      otherAttrs: {
         valid: "userName",
       },
     },
@@ -68,7 +68,7 @@ function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRe
         min: 0,
         maxLength: 3,
       },
-      extraAttrs: {
+      otherAttrs: {
         valid: "age",
       },
     },
@@ -77,7 +77,7 @@ function getFields({ isAdd = false, genderOpts, regionOpts, roleTypeOpts, formRe
       label: "地址",
       type: "Cascader",
       attrs: {
-        options: regionOpts,
+        options: "Region",
       },
     },
   ];
@@ -88,7 +88,6 @@ export default ({ id, disabled, refresh }: Props) => {
   const { getOpts, getCascaderOpts } = useStoreSpace("dict");
   const [loadData, setLoadData] = useState<CommonObj>();
   const genderOpts = getOpts("Gender");
-  const regionOpts = getCascaderOpts("Region");
   const roleTypeOpts = getOpts("RoleType");
   useEffect(() => {
     if (id) {
@@ -116,7 +115,6 @@ export default ({ id, disabled, refresh }: Props) => {
       fields={getFields({
         isAdd: !id,
         genderOpts,
-        regionOpts,
         roleTypeOpts,
         formRef,
       })}

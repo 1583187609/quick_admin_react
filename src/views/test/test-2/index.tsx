@@ -62,7 +62,7 @@ const sections: SectionFormItem[] = [
       {
         name: "dh",
         label: "电话",
-        extraAttrs: {
+        otherAttrs: {
           valid: "phone",
         },
       },
