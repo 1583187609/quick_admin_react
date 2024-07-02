@@ -5,10 +5,10 @@
 import React, { useContext, useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
 import { FormField } from "@/components/BaseFormItem";
 import QueryForm from "./_components/QueryForm";
-import QueryTable, { ColItem } from "./_components/QueryTable";
-import ExtraBtns, { ExportFieldItem } from "./_components/ExtraBtns";
+import QueryTable from "./_components/QueryTable";
+import ExtraBtns from "./_components/ExtraBtns";
 import { BaseBtnType, BtnItem, BtnName, btnsMap, getBtnObj } from "@/components/BaseBtn";
-import { message, Modal } from "antd";
+import { Modal } from "antd";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import ImportModal from "./_components/ImportModal";
 import { merge } from "lodash";
@@ -16,6 +16,7 @@ import { getUserInfo, omitAttrs, printLog, showMessage } from "@/utils";
 import StrongText from "./_components/StrongText";
 import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { ExportBtnParams, FormAttrs, TableAttrs, ReqMap, ResMap } from "./_types";
+import { TableCol } from "@/components/table/_types";
 import s from "./index.module.less";
 
 export * from "./_types";
@@ -25,7 +26,7 @@ interface Props {
   formAttrs?: FormAttrs;
   tableAttrs?: TableAttrs;
   fields?: FormField[];
-  columns?: ColItem[];
+  columns?: TableCol[];
   extraBtns?: BaseBtnType[];
   operateBtns?: BaseBtnType[];
   onExtraBtn?: (name: BtnName, exportBtnParams: ExportBtnParams, next: FinallyNext) => void;
@@ -112,7 +113,6 @@ export default forwardRef(
     const params = useRef<CommonObj>({});
     const { openPopup, closePopup } = useContext(PopupContext);
     const [seledKeys, setSeledKeys] = useState<React.Key[]>([]);
-    // const [seledRows, setSeledRows] = useState<CommonObj[]>([]);
     const [rows, setRows] = useState<CommonObj[]>([]);
     //初始化分页信息
     const initPage = {
@@ -130,9 +130,6 @@ export default forwardRef(
       }
       return btn;
     });
-    // const newOperateBtns = operateBtns.map((btn: BaseBtnType) =>
-    //   getBtnObj(btn)
-    // );
     allColumns = columns.slice();
     useImperativeHandle(
       ref,
@@ -187,7 +184,6 @@ export default forwardRef(
         };
         //回调函数
         const callback = (msg: string = `${btnsMap[name].text}成功！`, closeType: ClosePopupType) => {
-          console.log("执行了回调---------");
           showMessage(msg);
           closePopup?.(closeType);
           getList(params.current);

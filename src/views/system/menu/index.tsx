@@ -8,7 +8,7 @@ import { BtnName } from "@/components/BaseBtn";
 import BaseCrud from "@/components/BaseCrud";
 import { FormField } from "@/components/BaseFormItem";
 import BaseIcon, { IconNames } from "@/components/BaseIcon";
-import { ColItem } from "@/components/table/BaseTable";
+import { TableCol } from "@/components/table/_types";
 import { message } from "antd";
 import { useContext } from "react";
 import AddEdit from "./AddEdit";
@@ -45,7 +45,7 @@ export const fields: FormField[] = [
   },
   { name: "create_time", label: "创建时间", type: "DatePicker.RangePicker" },
 ];
-export const columns: ColItem[] = [
+export const columns: TableCol[] = [
   { name: "name", title: "菜单名称", width: 150 },
   { name: "type_text", title: "菜单类型", width: 80 },
   {

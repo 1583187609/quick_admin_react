@@ -1,4 +1,4 @@
-import { ColItem } from "@/components/BaseCrud/_components/QueryTable";
+import { TableCol } from "@/components/table/_types";
 import { FormField } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
 
@@ -43,7 +43,7 @@ export const fields: FormField[] = [
   },
 ];
 
-export const columns: ColItem[] = [
+export const columns: TableCol[] = [
   {
     name: "id",
     title: "ID",

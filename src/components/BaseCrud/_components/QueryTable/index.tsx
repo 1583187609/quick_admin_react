@@ -8,24 +8,15 @@ import { MenuOutlined } from "@ant-design/icons";
 import OperateBtns from "../OperateBtns";
 import { BtnName, BaseBtnType, BtnItem, getBtnObj } from "@/components/BaseBtn";
 import { btnsMap } from "@/components/BaseBtn";
-import { TablePaginationConfig } from "antd/lib/table/InternalTable";
-import s from "./index.module.less";
 import { showMessage } from "@/utils";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import { CommonObj, FinallyNext } from "@/vite-env";
+import { TableCol, RowKeyType } from "@/components/table/_types";
+import { defaultColumnAttrs, defaultTableAttrs, defaultPagination } from "@/components/table/_config";
+import s from "./index.module.less";
 
-export type ColumnType = "operate" | "index" | "selection" | "sort" | "";
 export interface RenderProps {
   item: CommonObj;
-}
-export interface ColItem {
-  key?: string;
-  name?: string;
-  type?: ColumnType;
-  title: string;
-  width?: number;
-  fixed?: "left" | "right" | boolean;
-  render?: (text: any, row: CommonObj, index: number) => any;
 }
 export interface PaginationAttrs {
   defaultPageSize?: number;
@@ -41,9 +32,9 @@ export interface PaginationAttrs {
 interface Props {
   className?: string;
   bordered?: boolean;
-  columns?: ColItem[];
+  columns?: TableCol[];
   dataSource?: CommonObj[];
-  rowKey?: React.Key;
+  rowKey?: RowKeyType;
   loading?: boolean;
   selection?: boolean;
   index?: boolean;
@@ -60,9 +51,7 @@ interface Props {
   onSelectionSelect?: (record: CommonObj, selected: boolean, seledRows: CommonObj[]) => void;
   onSelectionSelectAll?: (selected: boolean, seledRows: CommonObj[], changeRows: CommonObj[]) => void;
 }
-const defaultCol = {
-  align: "center",
-};
+
 const specialColMap: CommonObj = {
   //序号列
   index: {
@@ -70,7 +59,7 @@ const specialColMap: CommonObj = {
     title: "序号",
     width: 60,
     fixed: "left",
-    align: defaultCol.align,
+    align: defaultColumnAttrs.align,
     render(text: any, row: CommonObj, ind: number) {
       return ind + 1;
     },
@@ -81,7 +70,7 @@ const specialColMap: CommonObj = {
     title: "排序",
     width: 60,
     fixed: "left",
-    align: defaultCol.align,
+    align: defaultColumnAttrs.align,
     render(text: any, row: CommonObj, ind: number) {
       return <MenuOutlined style={{ touchAction: "none", cursor: "move" }} />;
     },
@@ -92,7 +81,7 @@ const specialColMap: CommonObj = {
     title: "选择",
     width: 50,
     fixed: "left",
-    align: defaultCol.align,
+    align: defaultColumnAttrs.align,
   },
   //操作列
   operate: {
@@ -100,24 +89,10 @@ const specialColMap: CommonObj = {
     title: "操作",
     // width: 260,
     fixed: "right",
-    align: defaultCol.align,
+    align: defaultColumnAttrs.align,
   },
 };
-const defaultTableAttrs = {
-  // rowKey :"id",
-  // bordered :true,
-};
-const defaultPagination: TablePaginationConfig = {
-  size: "default", //small, default
-  defaultPageSize: 20,
-  defaultCurrent: 1,
-  showSizeChanger: true,
-  showTotal: (total, range) => `共 ${total} 条`,
-  showQuickJumper: true, //是否可以快速跳转至某页
-  pageSizeOptions: [10, 20, 30, 40, 50], //指定每页可以显示多少条
-  // hideOnSinglePage: false, //只有一页时是否隐藏分页器
-  // responsive: false, //当 size 未指定时，根据屏幕宽度自动调整尺寸
-};
+
 export default forwardRef(
   (
     {
@@ -147,13 +122,13 @@ export default forwardRef(
     const tableRef = useRef(null);
     const { closePopup } = useContext(PopupContext);
     const newCols = useMemo(() => {
-      columns = columns.map((item: ColItem, ind: number) => {
+      columns = columns.map((item: TableCol, ind: number) => {
         const { name, type = "", ...rest } = item;
         let tempCols = {
           dataIndex: name,
           ...rest,
         };
-        tempCols = merge(specialColMap[type] || {}, defaultCol, tempCols);
+        tempCols = merge(specialColMap[type] || {}, defaultColumnAttrs, tempCols);
         return tempCols;
       });
       if (index) {

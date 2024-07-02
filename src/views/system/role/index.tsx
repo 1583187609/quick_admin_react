@@ -7,7 +7,7 @@ import { PopupContext } from "@/components/provider/PopupProvider";
 import { BtnName } from "@/components/BaseBtn";
 import BaseCrud from "@/components/BaseCrud";
 import { FormField } from "@/components/BaseFormItem";
-import { ColItem } from "@/components/table/BaseTable";
+import { TableCol } from "@/components/table/_types";
 import { message } from "antd";
 import { useContext } from "react";
 import AddEdit from "./AddEdit";
@@ -33,7 +33,7 @@ const fields: FormField[] = [
   { name: "create_time", label: "创建时间", type: "DatePicker.RangePicker" },
 ];
 
-const columns: ColItem[] = [
+const columns: TableCol[] = [
   { name: "role_text", title: "角色类型", width: 150 },
   { name: "status", title: "启用状态", width: 80 },
   { name: "create_time", title: "创建时间", width: 180 },
@@ -79,6 +79,7 @@ export default () => {
       onOperateBtn={handleOperateBtn}
       selection
       index
+      sort
     ></BaseCrud>
   );
 };

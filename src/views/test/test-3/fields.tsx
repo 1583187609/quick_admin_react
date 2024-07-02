@@ -1,92 +1,111 @@
-import { ColItem } from "@/components/BaseCrud/_components/QueryTable";
+import { TableCol } from "@/components/table/_types";
 import { FormField } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
-import { CommonObj } from "@/vite-env";
 
-export function getFormFields(): FormField[] {
-  return [
-    {
-      name: "id",
-      label: "用户ID",
+export const fields: FormField[] = [
+  {
+    name: "id",
+    label: "用户ID",
+  },
+  {
+    name: "id",
+    label: "用户ID",
+  },
+  {
+    name: "name",
+    label: "用户姓名",
+  },
+  {
+    name: "gender",
+    label: "性别",
+    type: "Select",
+    attrs: {
+      options: "Gender",
     },
-    {
-      name: "name",
-      label: "用户姓名",
+  },
+  {
+    name: "age",
+    label: "年龄",
+    type: "Custom",
+    element: <BaseRange />,
+  },
+  {
+    name: "type",
+    label: "用户类型",
+    type: "Select",
+    attrs: {
+      options: "RoleType",
     },
-    {
-      name: "gender",
-      label: "性别",
-      type: "Select",
-      attrs: {
-        options: "Gender",
-      },
+  },
+  {
+    name: "status",
+    label: "账号状态",
+    type: "Select",
+    attrs: {
+      options: "EnableStatus",
     },
-    {
-      name: "age",
-      label: "年龄",
-      type: "Custom",
-      element: <BaseRange />,
-    },
-    {
-      name: "type",
-      label: "用户类型",
-      type: "Select",
-      attrs: {
-        options: "RoleType",
-      },
-    },
-    {
-      name: "status",
-      label: "账号状态",
-      type: "Select",
-      attrs: {
-        options: "EnableStatus",
-      },
-    },
-  ];
-}
+  },
+];
 
-export const getTableFields = ({}: CommonObj): ColItem[] => {
-  return [
-    {
-      name: "id",
-      title: "ID",
-      width: 100,
-    },
-    {
-      name: "name",
-      title: "姓名",
-      width: 100,
-    },
-    {
-      name: "gender",
-      title: "性别",
-      width: 100,
-    },
-    {
-      name: "age",
-      title: "年龄",
-      width: 50,
-    },
-    {
-      name: "address_text",
-      title: "地址",
-      width: 250,
-    },
-    {
-      name: "phone",
-      title: "电话",
-      width: 120,
-    },
-    {
-      name: "type_text",
-      title: "用户类型",
-      width: 100,
-    },
-    {
-      name: "status",
-      title: "账号状态",
-      width: 80,
-    },
-  ];
-};
+export const columns: TableCol[] = [
+  {
+    name: "zdyzjl",
+    title: "自定义组件列-内置[UserInfo]",
+    width: 220,
+  },
+  {
+    name: "zdyzj",
+    title: "自定义组件-非内置",
+    width: 150,
+  },
+  {
+    name: "zdybgt",
+    title: "自定义表格头",
+    width: 120,
+  },
+  {
+    name: "tp",
+    title: "图片[BaseImg]",
+    width: 150,
+  },
+  {
+    name: "address_text",
+    title: "自我介绍[BaseText]",
+    width: 250,
+  },
+  {
+    name: "phone",
+    title: "formatter列",
+    width: 120,
+  },
+  {
+    name: "type_text",
+    title: "状态[BaseTag]",
+    width: 150,
+  },
+  {
+    name: "sj",
+    title: "时间（内置宽度）",
+    width: 150,
+  },
+  {
+    name: "cjsj",
+    title: "创建时间[create]",
+    width: 150,
+  },
+  {
+    name: "xgsj",
+    title: "修改时间[update]",
+    width: 150,
+  },
+  {
+    name: "qjy",
+    title: "启/禁用",
+    width: 100,
+  },
+  {
+    name: "bz",
+    title: "备注[remark]",
+    width: 100,
+  },
+];

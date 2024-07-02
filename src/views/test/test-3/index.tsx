@@ -9,7 +9,7 @@ import BaseCrud, { ExportBtnParams } from "@/components/BaseCrud";
 import { message } from "antd";
 import React, { useContext, useRef } from "react";
 import AddEdit from "./AddEdit";
-import { getFormFields, getTableFields } from "./fields";
+import { fields, columns } from "./fields";
 import { DownloadOutlined } from "@ant-design/icons";
 import { CommonObj, FinallyNext } from "@/vite-env";
 
@@ -60,8 +60,8 @@ export default () => {
   return (
     <BaseCrud
       ref={crudRef}
-      fields={getFormFields()}
-      columns={getTableFields({})}
+      fields={fields}
+      columns={columns}
       fetch={GetMockCommonList}
       extraBtns={["add", "delete", "export"]}
       operateBtns={[
@@ -82,8 +82,6 @@ export default () => {
       ]}
       onExtraBtn={onExtraBtn}
       onOperateBtn={onOperateBtn}
-      sort
-      index
       selection
     />
   );

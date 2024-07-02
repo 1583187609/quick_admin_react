@@ -17,7 +17,7 @@ import { Button, Tooltip, Dropdown } from "antd";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import SetPrint from "../SetPrint";
 import SetTable, { SetTableRowItem } from "../SetTable";
-import { ColItem } from "../QueryTable";
+import { TableCol } from "@/components/table/_types";
 
 export type ToolsType = "print" | "colSet";
 export interface ExportFieldItem {
@@ -26,9 +26,9 @@ export interface ExportFieldItem {
 }
 interface Props {
   className?: string;
-  allColumns: ColItem[];
-  columns: ColItem[];
-  setColumns: (columns: ColItem[]) => void;
+  allColumns: TableCol[];
+  columns: TableCol[];
+  setColumns: (columns: TableCol[]) => void;
   btns?: BtnItem[];
   tools?: ToolsType[];
   batchBtn?: boolean; //是否显示批量选择按钮
@@ -110,9 +110,7 @@ export default ({
     if (isShow) {
       let findInd = -1;
       columns.findIndex((item, index) => {
-        const itemAtAllInd = allColumns.findIndex(
-          (it) => it.name === item.name
-        );
+        const itemAtAllInd = allColumns.findIndex(it => it.name === item.name);
         if (itemAtAllInd > allInd) {
           findInd = index;
           return true;
@@ -128,7 +126,7 @@ export default ({
       columns.splice(findInd, 0, allColumns[allInd]);
       setColumns(columns.slice()); //slice()会深拷贝
     } else {
-      const nowInd = columns.findIndex((it) => it.name === name);
+      const nowInd = columns.findIndex(it => it.name === name);
       columns.splice(nowInd, 1);
       setColumns(columns.slice());
     }
@@ -145,10 +143,7 @@ export default ({
         return <BaseBtn onClick={onClick} btn={btn} key={ind} />;
       })}
       {batchBtn && (
-        <Dropdown
-          trigger={["hover"]}
-          menu={{ items: batchBtns, selectable: true }}
-        >
+        <Dropdown trigger={["hover"]} menu={{ items: batchBtns, selectable: true }}>
           <Button icon={<FileDoneOutlined />} type="primary" disabled={!total}>
             批量操作{seledNum ? ` (${seledNum})` : ""}
           </Button>

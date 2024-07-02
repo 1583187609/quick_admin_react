@@ -1,40 +1,23 @@
-import { Space, Table, Tag, message } from "antd";
+import { CommonObj } from "@/vite-env";
+import { Table } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { merge } from "lodash";
-export interface ColItem {
-  key?: string;
-  name?: string;
-  title: string;
-  width?: number;
-  fixed?: "left" | "right" | boolean;
-  render?: (text: string, row: CommonObj, index: number) => any;
-}
+import { TableCol } from "@/components/table/_types";
+import { defaultTableAttrs, defaultColumnAttrs } from "../_config";
 
 interface Props {
-  columns?: ColItem[];
+  columns?: TableCol[];
   dataSource?: CommonObj[];
   rowKey?: string;
   size?: SizeType;
 }
 
-const defaultAttrs: CommonObj = {
-  bordered: true,
-};
-const defaultColAttrs = {
-  align: "center",
-};
-
-export default ({
-  columns,
-  dataSource,
-  rowKey = "id",
-  ...restPorps
-}: Props) => {
-  const newAttrs = merge({}, defaultAttrs, restPorps);
-  const newCols = columns?.map((item: ColItem, ind: number) => {
+export default ({ columns, dataSource, rowKey = "id", ...restProps }: Props) => {
+  const newAttrs = merge({}, defaultTableAttrs, restProps);
+  const newCols = columns?.map((item: TableCol, ind: number) => {
     const { name, ...rest } = item;
     let tempCols = { dataIndex: name, ...rest };
-    tempCols = merge({}, defaultColAttrs, tempCols);
+    tempCols = merge({}, defaultColumnAttrs, tempCols);
     return tempCols;
   });
   const newRows = dataSource?.map((item: CommonObj, ind: number) => {
@@ -48,13 +31,5 @@ export default ({
     }
     return item;
   });
-  return (
-    <Table
-      rowKey={rowKey}
-      columns={newCols}
-      dataSource={newRows}
-      pagination={false}
-      {...newAttrs}
-    />
-  );
+  return <Table rowKey={rowKey} columns={newCols} dataSource={newRows} pagination={false} {...newAttrs} />;
 };
