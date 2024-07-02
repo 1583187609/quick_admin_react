@@ -1,13 +1,20 @@
 import { CommonObj } from "@/vite-env";
 import { TablePaginationConfig } from "antd/lib/table/InternalTable";
 
+// 默认的表格属性
 export const defaultTableAttrs: CommonObj = {
   bordered: true,
+  tableLayout: "fixed",
+  size: "middle",
+  // scroll:{ x: "max-content", y: 1 },
+  scroll: { x: 1, y: 1 },
 };
+// 默认的表格列属性
 export const defaultColumnAttrs: CommonObj = {
   align: "center",
 };
 
+// 默认的表格分页属性
 export const defaultPagination: TablePaginationConfig = {
   size: "default", //small, default
   defaultPageSize: 20,

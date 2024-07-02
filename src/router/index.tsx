@@ -4,21 +4,23 @@
  */
 
 import { useRoutes, Navigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import Layout from "@/layout";
 import { ResponseMenuItem } from "@/layout/_components/TheMenu";
 import Login from "@/views/login";
 import { CommonObj } from "@/vite-env";
 import { useStoreSpace } from "@/hooks";
+import { camelCase } from "lodash";
 
 export interface RouteItem {
+  name: string; // 路由名称
   path: string;
-  element?: any;
+  element?: ReactNode;
   children?: RouteItem[];
   meta?: {
     title?: string;
-    cache?: boolean;
-    auth?: boolean;
+    cache?: boolean; // 是否缓存该页面
+    auth?: boolean; // 是否需要授权才能访问
   };
 }
 
@@ -38,14 +40,16 @@ function getRoutes(menus: ResponseMenuItem[]): RouteItem[] {
   const routes: RouteItem[] = [];
   menus.forEach((menu: ResponseMenuItem) => {
     const { children } = menu;
-    children?.forEach(child => getRoutes(child));
-    function getRoutes(menu: ResponseMenuItem) {
+    children?.forEach(child => pushRoutes(child));
+    function pushRoutes(menu: ResponseMenuItem) {
       const { label, path, component, children } = menu;
       const route: RouteItem = {
+        name: camelCase(path),
         path,
       };
       if (children?.length) {
-        route.children = children.map(child => getRoutes(child));
+        // route.children = children.map(child => getRoutes(child));
+        route.children = getRoutes(children);
       } else {
         route.element = LazyLoad(component as string);
         route.meta = {
@@ -60,34 +64,38 @@ function getRoutes(menus: ResponseMenuItem[]): RouteItem[] {
   return routes;
 }
 
+const notFoundRoute = {
+  path: "*",
+  name: "notFound",
+  element: LazyLoad("/error.tsx"),
+};
 export default () => {
   const { allMenus } = useStoreSpace("menu");
+  const { updateRouteState } = useStoreSpace("routes");
   const [routes, setRoutes] = useState<RouteItem[]>([
     {
+      name: "root",
       path: "/",
       element: <Layout />,
       // element: <Navigate to="home" />,
       children: [],
     },
     // { path: "/login", element: LazyLoad("/views/login/index.tsx") }, //使用懒加载会一直执行，导致页面一直处在加载中状态
-    { path: "/login", element: <Login /> },
+    { name: "login", path: "/login", element: <Login /> },
   ]);
 
   useEffect(() => {
     createRoutes(allMenus);
   }, [allMenus]);
-
+  useEffect(() => {
+    if (routes.length > 2) {
+      updateRouteState({ isCreatedRoute: true });
+    }
+  }, [routes]);
   function createRoutes(menus: ResponseMenuItem[]) {
-    routes[0].children = [
-      { path: "", element: LazyLoad("/home/index.tsx") },
-      ...getRoutes(menus),
-      {
-        path: "*",
-        element: LazyLoad("/error.tsx"),
-      },
-    ];
+    routes[0].children = [{ path: "", name: "home", element: LazyLoad("/home/index.tsx") }, ...getRoutes(menus), notFoundRoute];
     //重置一下，解决刷新后，初次加载会白屏的问题
-    setRoutes([...routes, { path: "*", element: LazyLoad("/error.tsx") }]);
+    setRoutes([...routes, notFoundRoute]);
   }
   return useRoutes(routes);
 };

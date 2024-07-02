@@ -4,6 +4,7 @@ import { LinkType, ResponseMenuItem } from "@/layout/_components/SideMenu/_types
 import { createSlice } from "@reduxjs/toolkit";
 import { defaultHomePath, storage } from "@/utils";
 import { camelCase } from "lodash";
+import { updateState } from "../_utils";
 
 // const modules = import.meta.glob("../../views/**/*.tsx");
 /**
@@ -54,6 +55,7 @@ export default createSlice({
     isCreatedRoute: false, // 路由是否已创建完毕
   },
   reducers: {
+    updateRouteState: updateState,
     // 跳转路由
     // push(state, { type, payload }) {
     //   state.path = payload;

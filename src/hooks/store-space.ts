@@ -1,4 +1,4 @@
-import { actions, exposes } from "@/store";
+import { SpaceNames, actions, exposes } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { CommonObj } from "@/vite-env";
 // import user from "@/store/modules/user";
@@ -15,7 +15,7 @@ function getReducers(actionsMap: CommonObj, dispatch: any) {
 /**
  * 后续再处理没有传入name时的逻辑
  */
-export default (name: string) => {
+export default (name: SpaceNames) => {
   if (!name) throw Error("请传入 store 唯一ID名称");
   const dispatch = useDispatch();
   // console.log(user.selectors, "user--------------");

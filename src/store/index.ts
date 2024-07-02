@@ -43,6 +43,7 @@ export const dictStore = dict.actions;
 export const userStore = user.actions;
 export const routesStore = routes.actions;
 
+export type SpaceNames = keyof typeof actions;
 export const actions: CommonObj = {
   menu: menu.actions,
   counter: counter.actions,
@@ -59,12 +60,7 @@ export const exposes: CommonObj = {
 // 使用这些类型进行简单的类型声明
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
 // 在整个应用程序中使用它们，而不是简单地使用 `useDispatch` 和 `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

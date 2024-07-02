@@ -1,10 +1,11 @@
-import { storage, isProd, defaultHomePath, defaultIconName } from "@/utils";
+import { storage, isProd, defaultHomePath, defaultIconName, showMessage } from "@/utils";
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import { ResponseMenuItem } from "@/layout/_components/SideMenu/_types";
 import { PostUserLogin, PostUserLogout } from "@/api-mock";
-import { message, notification } from "antd";
+import { notification } from "antd";
 import { CommonObj } from "@/vite-env";
 import menuStore from "@/store/modules/menu";
+import routesStore from "@/store/modules/routes";
 import dayjs from "dayjs";
 
 const expiration = 24 * 60 * 60 * 1000; // 过期时间，单位：秒，默认24小时不登录即会过期
@@ -52,16 +53,19 @@ const handleLoginIn = createAsyncThunk("userLoginIn", async (payload: CommonObj,
     storage.setItem("token", user?.token ?? "");
     storage.setItem("allMenus", newNavs);
     storage.setItem("expiredDate", expiredDate);
-    let toPath = defaultHomePath;
-    if (location.search) toPath = location.search.slice(10);
-    router.push(toPath);
-    notification.success({
-      closeIcon: false,
-      style: { top: "36px" },
-      placement: "topRight",
-      message: "登录成功",
-      description: `欢迎回来，${user?.name ?? "XXX"}`,
-      duration: 3, //单位：秒
+    // 等路由创建好了，再进入
+    setTimeout(() => {
+      let toPath = defaultHomePath;
+      if (location.search) toPath = location.search.slice(10);
+      router.push(toPath);
+      notification.success({
+        closeIcon: false,
+        style: { top: "36px" },
+        placement: "topRight",
+        message: "登录成功",
+        description: `欢迎回来，${user?.name ?? "XXX"}`,
+        duration: 3, //单位：秒
+      });
     });
     return {
       user,
@@ -88,14 +92,16 @@ const handleLoginInAfter = (builder: any) => {
 const handleLoginOut = createAsyncThunk("userLoginOut", async (payload: CommonObj, { dispatch, getState, extra }) => {
   const { phone, isFetch = false } = payload.params;
   const { router, location } = payload.other;
+  console.log("退出登录-------------1");
   return await PostUserLogout({ phone }).then((res: any) => {
+    console.log("退出登录-------------2");
     storage.getKeys().forEach((key: string) => {
       const isRemove = !["rememberAccount", "set", "hasGuide"].includes(key);
       if (isRemove) storage.removeItem(key);
     });
     storage.clear("session"); //清除sessionStorage的数据
-    menuStore.actions.changeActiveIndex(0);
-    message.success("退出成功！");
+    // menuStore.actions.changeActiveIndex(0);
+    showMessage("退出成功！", "success");
     const { pathname } = location;
     // const { path, fullPath, name } = route;
     // router.push({

@@ -1,0 +1,46 @@
+.user-info {
+  text-align: left;
+}
+.avatar-box {
+  position: relative;
+  .el-tag {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    opacity: 0.6;
+    &.company {
+      left: 0;
+    }
+    &.education {
+      right: 0;
+    }
+  }
+}
+.avatar {
+  height: 120px;
+  width: 120px;
+  border-radius: @radius-light;
+  &.simple {
+    height: 70px;
+    width: 70px;
+  }
+}
+.nickname {
+  font-size: 15px;
+  &:hover {
+    cursor: pointer;
+    color: @color-primary;
+    text-decoration: underline;
+  }
+}
+.gender {
+  margin: 0 @gap-half;
+}
+.age {
+  font-size: 13px;
+}
+.item {
+  &:not(:last-child) {
+    margin-right: 1em;
+  }
+}

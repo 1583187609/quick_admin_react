@@ -61,16 +61,14 @@ export function getTagHtmlStr(
   const wrongStr = wrongWords.join("|");
   const sensStr = sensWords.join("|");
   const wordStr = [wrongStr, sensStr]
-    .filter((it) => it !== "")
-    .map((item) => (item ? `(${item})` : item))
+    .filter(it => it !== "")
+    .map(item => (item ? `(${item})` : item))
     .join("|");
   if (str && wordStr) {
     const reg = new RegExp(wordStr, "g");
     str = str.replace(reg, (matchStr: string, chars: string, index: number) => {
       const isWrong = wrongWords.includes(matchStr);
-      return `<span style="${
-        isWrong ? wrongStyle : sensStyle
-      }">${matchStr}</span>`;
+      return `<span style="${isWrong ? wrongStyle : sensStyle}">${matchStr}</span>`;
     });
   }
   return str;
@@ -94,8 +92,7 @@ export function getTagHtmlStr(
  */
 export function checkFileChanged(e: any) {
   const { lastModifiedDate: lastModified } = e.target.files[0];
-  const isChanged =
-    localStorage.getItem("lastModified") !== lastModified.toString();
+  const isChanged = localStorage.getItem("lastModified") !== lastModified.toString();
   if (isChanged) {
     localStorage.setItem("lastModified", lastModified);
   }
@@ -109,3 +106,67 @@ export function checkFileChanged(e: any) {
 export function urlSearchToParams(searchStr = location.search.slice(1)) {
   return Object.fromEntries(new URLSearchParams(searchStr));
 }
+
+/**
+ * 获取html文本
+ * @param title 要高亮的文本
+ * @param words 关键词
+ * @returns html字符串
+ */
+export const getHtmlStr = (str: string, words: string) => {
+  return str;
+
+  // 关键词高亮处理
+  // const index = str.indexOf(words);
+  // const beforeStr = str.substring(0, index);
+  // const afterStr = str.slice(index + words.length);
+  // if (index > -1) return `<span>${beforeStr}<span style="color:red">${words}</span>${afterStr}</span>`;
+  // return `<span>${str}</span>`;
+
+  // react tsx 写法
+  // return index > -1 ? (
+  //   <span>
+  //     {beforeStr}
+  //     <span style={{ color: "red" }}>{words}</span>
+  //     {afterStr}
+  //   </span>
+  // ) : (
+  //   <span>{str}</span>
+  // );
+};
+
+/**
+ * 根据关键词模糊过滤树节点
+ * @param val 模糊搜索的关键词
+ * @param tree 树数据
+ * @param newArr 缓存的节点树
+ * @returns 返回一个新的树，不改变原数组
+ */
+export const filterTreeByKeywords = (val: string, tree: CommonObj[], newArr: CommonObj[] = []): CommonObj[] => {
+  if (!(tree.length && val)) return tree;
+  tree.forEach(item => {
+    const { title, children } = item;
+    if (title.includes(val)) {
+      item.title = getHtmlStr(title, val);
+      if (children?.length) {
+        item.children = filterTreeByKeywords(val, children);
+      }
+      return newArr.push(item);
+    }
+    if (!children?.length) return item;
+    const subArr = filterTreeByKeywords(val, children);
+    if (subArr?.length) {
+      item.title = getHtmlStr(title, val);
+      newArr.push({ ...item, children: subArr });
+    }
+    return item;
+  });
+  return newArr;
+};
+
+/**
+ * 给数字每隔 3 位就增加一个逗号
+ * @param num 要转化的数字
+ * @returns
+ */
+export const addCommasToNumber = (num: string | number) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

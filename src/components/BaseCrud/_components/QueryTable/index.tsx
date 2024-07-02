@@ -1,23 +1,19 @@
 /**
  * 文件说明-模板文件
  */
-import React, { useMemo, useRef, useImperativeHandle, forwardRef, useContext } from "react";
-import { message, Table } from "antd";
-import { merge } from "lodash";
-import { MenuOutlined } from "@ant-design/icons";
+import React, { useMemo, useRef, useImperativeHandle, forwardRef, useContext, CSSProperties } from "react";
+import { Table } from "antd";
 import OperateBtns from "../OperateBtns";
 import { BtnName, BaseBtnType, BtnItem, getBtnObj } from "@/components/BaseBtn";
 import { btnsMap } from "@/components/BaseBtn";
-import { showMessage } from "@/utils";
+import { emptyVals, showMessage } from "@/utils";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
-import { CommonObj, FinallyNext } from "@/vite-env";
-import { TableCol, RowKeyType } from "@/components/table/_types";
+import { TableCol, TableColAttrs, RowKeyType, StandardTableColAttrs } from "@/components/table/_types";
 import { defaultColumnAttrs, defaultTableAttrs, defaultPagination } from "@/components/table/_config";
+import { specialColMap } from "@/components/table/_utils";
+import { CommonObj, FinallyNext } from "@/vite-env";
 import s from "./index.module.less";
 
-export interface RenderProps {
-  item: CommonObj;
-}
 export interface PaginationAttrs {
   defaultPageSize?: number;
   defaultCurrent?: number;
@@ -30,19 +26,26 @@ export interface PaginationAttrs {
   responsive?: boolean; //当 size 未指定时，根据屏幕宽度自动调整尺寸
 }
 interface Props {
+  /**
+   * 以下是antd的属性
+   */
   className?: string;
+  style?: CSSProperties;
   bordered?: boolean;
   columns?: TableCol[];
   dataSource?: CommonObj[];
   rowKey?: RowKeyType;
   loading?: boolean;
-  selection?: boolean;
-  index?: boolean;
+  pagination?: PaginationAttrs;
+  /**
+   * 以下是新增的属性
+   */
   sort?: boolean;
+  index?: boolean;
+  selection?: boolean;
+  total?: number;
   operateBtns?: BaseBtnType[];
   filterBtnsByAuth: (btns: BtnItem[]) => BtnItem[];
-  pagination?: PaginationAttrs;
-  total?: number;
   onPageChange?: (currPage: number, pageSize: number) => void;
   onPageSizeChange?: (currPage: number, pageSize: number) => void;
   onOperateBtn?: (name: BtnName, row: CommonObj, next: FinallyNext) => void;
@@ -50,48 +53,8 @@ interface Props {
   onSelectionChange?: (seledKeys: React.Key[], seledRows: CommonObj[]) => void;
   onSelectionSelect?: (record: CommonObj, selected: boolean, seledRows: CommonObj[]) => void;
   onSelectionSelectAll?: (selected: boolean, seledRows: CommonObj[], changeRows: CommonObj[]) => void;
+  [key: string]: any;
 }
-
-const specialColMap: CommonObj = {
-  //序号列
-  index: {
-    name: "index",
-    title: "序号",
-    width: 60,
-    fixed: "left",
-    align: defaultColumnAttrs.align,
-    render(text: any, row: CommonObj, ind: number) {
-      return ind + 1;
-    },
-  },
-  //排序列
-  sort: {
-    name: "sort",
-    title: "排序",
-    width: 60,
-    fixed: "left",
-    align: defaultColumnAttrs.align,
-    render(text: any, row: CommonObj, ind: number) {
-      return <MenuOutlined style={{ touchAction: "none", cursor: "move" }} />;
-    },
-  },
-  //多选列
-  selection: {
-    name: "selection",
-    title: "选择",
-    width: 50,
-    fixed: "left",
-    align: defaultColumnAttrs.align,
-  },
-  //操作列
-  operate: {
-    name: "operate",
-    title: "操作",
-    // width: 260,
-    fixed: "right",
-    align: defaultColumnAttrs.align,
-  },
-};
 
 export default forwardRef(
   (
@@ -100,15 +63,14 @@ export default forwardRef(
       columns = [],
       dataSource = [],
       rowKey = "id",
-      bordered = true,
+      loading,
+      pagination,
       sort = false,
       index = false,
       selection = false,
-      loading,
+      total = 0,
       operateBtns = [],
       filterBtnsByAuth,
-      pagination,
-      total = 0,
       onPageChange,
       onPageSizeChange,
       onOperateBtn,
@@ -116,53 +78,45 @@ export default forwardRef(
       onSelectionChange,
       onSelectionSelect,
       onSelectionSelectAll,
+      ...restProps
     }: Props,
     ref: any
   ) => {
     const tableRef = useRef(null);
     const { closePopup } = useContext(PopupContext);
+    const tableAttrs = Object.assign({}, defaultTableAttrs, restProps);
     const newCols = useMemo(() => {
-      columns = columns.map((item: TableCol, ind: number) => {
-        const { name, type = "", ...rest } = item;
+      columns = columns.filter(it => !!it);
+      columns = columns.map((item: TableCol) => {
+        const { name, type, ...rest } = item as TableColAttrs;
         let tempCols = {
           dataIndex: name,
           ...rest,
         };
-        tempCols = merge(specialColMap[type] || {}, defaultColumnAttrs, tempCols);
+        tempCols = Object.assign({}, type ? specialColMap[type] : undefined, defaultColumnAttrs, tempCols);
         return tempCols;
       });
-      if (index) {
-        columns.unshift(specialColMap.index);
-      }
-      if (sort) {
-        columns.unshift(specialColMap.sort);
-      }
+      if (index) columns.unshift(specialColMap.index);
+      if (sort) columns.unshift(specialColMap.sort);
       if (operateBtns?.length) {
-        columns.push(
-          merge({ width: getOperateColWidth(operateBtns) }, specialColMap.operate, {
-            render: (text: any, row: CommonObj, ind: number) => {
-              return (
-                <OperateBtns
-                  onClick={(name: BtnName) => handleOperateBtn(name, row, ind)}
-                  btns={getOperateBtnsOfRow({ ...row, ind })}
-                />
-              );
-            },
-          })
-        );
+        const col = Object.assign({ width: getOperateColWidth(operateBtns) }, specialColMap.operate, {
+          render: (text: any, row: CommonObj, ind: number) => (
+            <OperateBtns
+              onClick={(name: BtnName) => handleOperateBtn(name, row, ind)}
+              btns={getOperateBtnsOfRow({ ...row, ind })}
+            />
+          ),
+        });
+        columns.push(col as TableColAttrs);
       }
       return columns;
     }, [columns, index, sort]);
     const newRows = useMemo(() => {
       return dataSource.map((item: CommonObj, ind: number) => {
         for (let key in item) {
-          if (["", undefined, null].includes(item[key])) {
-            item[key] = "-";
-          }
+          if (emptyVals.includes(item[key])) item[key] = "-";
         }
-        if (!item[rowKey]) {
-          item[rowKey] = ind;
-        }
+        if (!item[rowKey]) item[rowKey] = ind;
         return item;
       });
     }, [dataSource]);
@@ -180,22 +134,28 @@ export default forwardRef(
           },
         }
       : undefined;
-    useImperativeHandle(ref, () => tableRef);
+    useImperativeHandle(
+      ref,
+      () => {
+        return { tableRef };
+      },
+      [tableRef]
+    );
     //处理点击操作栏的按钮
     function handleOperateBtn(name: BtnName, row: CommonObj, ind: number) {
+      const { text } = btnsMap[name] ?? {};
       if (onOperateBtn) {
         onOperateBtn(
           name,
           { ...row, $index: ind },
-          (msg: string = `${btnsMap[name].text}成功!`, closeType?: ClosePopupType, cb?: () => void, isRefresh?: boolean) => {
+          (msg: string = `${text}成功!`, closeType?: ClosePopupType, cb?: () => void, isRefresh?: boolean) => {
             showMessage(msg);
             closePopup(closeType);
             cb?.();
           }
         );
       } else {
-        const { name: btnName, text } = btnsMap[name] || {};
-        message.error(`暂未处理【${text}】按钮 - ${btnName}`);
+        showMessage(`暂未处理【${text}】按钮 - ${name}`, "error");
       }
     }
     //获取操作栏的宽度
@@ -211,22 +171,18 @@ export default forwardRef(
     return (
       <Table
         rowKey={rowKey}
-        bordered={bordered}
-        tableLayout="fixed"
         rowSelection={rowSelection}
         className={`${className} ${s["query-table"]}`}
-        columns={newCols}
-        size="middle"
-        // scroll={{ x: "max-content", y: 1 }}
-        scroll={{ x: 1, y: 1 }}
+        columns={newCols as StandardTableColAttrs[]}
         pagination={{
-          ...merge({}, defaultPagination, pagination),
+          ...Object.assign({}, defaultPagination, pagination),
           total,
           onChange: onPageChange,
           onShowSizeChange: onPageSizeChange,
         }}
         dataSource={newRows}
         loading={loading && { tip: "玩命加载中……", size: "large" }}
+        {...tableAttrs}
       />
     );
   }

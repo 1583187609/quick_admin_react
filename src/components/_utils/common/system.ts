@@ -3,7 +3,7 @@
 /********************************************************************/
 
 import { typeOf } from "@/utils";
-import { FieldAttrs } from "@/components/BaseFormItem";
+import { FormFieldAttrs } from "@/components/BaseFormItem";
 import { CommonObj, OptionItem, StrNum } from "@/vite-env";
 import { emptyVals, emptyTime } from "./consts";
 import dayjs from "dayjs";
@@ -131,7 +131,7 @@ export function getLastTimeStr(time: any) {
  * 处理平台默认值问题 Form echo data
  * @description 后端的数据库日期必须有一个默认值，回显的时候会显示这个默认值，因为数据量较多，改动较大，所以由前端统一处理
  */
-export function handleFormInitData(field: FieldAttrs, modelValue?: CommonObj) {
+export function handleFormInitData(field: FormFieldAttrs, modelValue?: CommonObj) {
   if (!modelValue || emptyVals.includes(emptyTime)) return;
   const { type, prop } = field;
   const propType = typeOf(prop);
@@ -152,8 +152,8 @@ export function handleFormInitData(field: FieldAttrs, modelValue?: CommonObj) {
 
 /**
  * 计算弹性布局时，末尾需要的空盒子个数
- * @param total {number} 总共多少个元素
- * @param cols  {number} 多少列布局
+ * @param {number} total  总共多少个元素
+ * @param {number} cols   多少列布局
  * @returns
  */
 export function getEmptyNum(total: number, cols: number) {
@@ -190,7 +190,7 @@ export const getImgUrl = (path: string) => {
 /**
  * 从树形数组中根据id获取菜单文本
  * @param tree {}[] 树形数据
- * @param id string | number id
+ * @param {string | number} id  id
  * @param key 要获取的文本的键名
  * @param keyMap 键名映射
  */
@@ -202,7 +202,7 @@ export function getTextFromTreeByKey(
 ) {
   if (!val) return "";
   let text = "";
-  tree?.find((item) => {
+  tree?.find(item => {
     if (item[keyMap.id] == val) {
       text = item[key];
       return !!text;
@@ -230,7 +230,7 @@ export function getLabelFromOptionsByLastValue(
   const { label: labelKey, value: valueKey, children: childrenKey } = propsMap;
   let target: CommonObj | undefined;
   function getLabel(opts: CommonObj[]): boolean {
-    return !!opts.find((item) => {
+    return !!opts.find(item => {
       const children = item[childrenKey];
       const value = item[valueKey];
       const isFind = value === val;
@@ -264,7 +264,7 @@ export function getLabelFromOptionsByAllValues(
   const { label: labelKey, value: valueKey, children: childrenKey } = propsMap;
   const labels: string[] = [];
   function getLabel(opts: CommonObj[], level = 0) {
-    opts.find((item) => {
+    opts.find(item => {
       const children = item[childrenKey];
       const value = item[valueKey];
       const label = item[labelKey];
@@ -284,17 +284,34 @@ export function getLabelFromOptionsByAllValues(
 
 /**
  * 根据url地址下载文件
- * @param url string 下载地址
- * @param name string 文件名称
+ * @param {string} url  下载地址
+ * @param {string} name  文件名称
  */
-export function downloadByUrl(
-  url: string,
-  name: string = dayjs().format("YYYY-MM-DD")
-) {
+export function downloadByUrl(url: string, name: string = dayjs().format("YYYY-MM-DD")) {
   const a = document.createElement("a");
   a.download = name;
   a.href = url;
   a.style.display = "none";
   a.click();
   a.remove();
+}
+
+/**
+ * 根据 bufferData 下载文件
+ * @param {string} buffer  Buffer数据
+ * @param {string} name  文件名称
+ */
+export function downloadByBuffer(buffer, name?: string) {
+  const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  const url = window.URL.createObjectURL(blob);
+  downloadByUrl(url, name);
+}
+
+/**
+ * @description 获取浏览器默认语言
+ * @returns {String}
+ */
+export function getBrowserLang() {
+  const lang = (navigator.language ?? navigator.browserLanguage).toLowerCase();
+  return ["cn", "zh", "zh-cn"].includes(lang) ? "zh" : "en";
 }

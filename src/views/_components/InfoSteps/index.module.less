@@ -1,0 +1,76 @@
+.step-item {
+  color: @color-text-lighter;
+
+  &:not(:last-child) {
+    margin-bottom: @gap;
+  }
+
+  &.primary {
+    color: @color-primary;
+    font-weight: 600;
+
+    .num {
+      background: @color-primary;
+    }
+
+    .icon {
+      color: @color-primary;
+    }
+  }
+
+  &.success {
+    color: @color-success;
+    font-weight: 600;
+
+    .num {
+      background: @color-success;
+    }
+
+    .icon {
+      color: @color-success;
+    }
+  }
+
+  &.warning {
+    color: @color-warning;
+    font-weight: 600;
+
+    .num {
+      background: @color-warning;
+    }
+
+    .icon {
+      color: @color-warning;
+    }
+  }
+
+  &.danger {
+    color: @color-danger;
+    font-weight: 600;
+
+    .num {
+      background: @color-danger;
+    }
+
+    .icon {
+      color: @color-danger;
+    }
+  }
+
+  .num {
+    margin-right: @gap-qtr;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 50%;
+    height: 18px;
+    line-height: 18px;
+    width: 18px;
+    text-align: center;
+    background: @color-text-lighter;
+  }
+
+  .text {
+    margin-right: @gap-qtr;
+  }
+}

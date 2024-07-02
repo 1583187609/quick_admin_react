@@ -1,9 +1,8 @@
-import { CSSProperties } from "react";
+import { CSSProperties, MouseEventHandler } from "react";
 import avatar from "@/assets/images/default/avatar.png";
 import { toCssVal } from "@/utils";
-import { merge } from "lodash";
-import s from "./index.module.less";
 import { useRouter } from "@/hooks";
+import s from "./index.module.less";
 
 type Props = {
   className?: string;
@@ -15,35 +14,22 @@ type Props = {
   round?: boolean;
   [key: string]: any;
 };
-export default ({
-  className = "",
-  style,
-  onClick,
-  size,
-  src,
-  to,
-  round = true,
-  ...restProps
-}: Props) => {
+export default ({ className = "", style, onClick, size, src, to, round = true, ...restProps }: Props) => {
   const router = useRouter();
-  const newStyle = merge(
-    {
-      cursor: to || onClick ? "pointer" : "inherit",
-      height: toCssVal(size),
-      width: toCssVal(size),
-    },
-    style
-  );
-  function handleClick() {
-    onClick && onClick();
-    to && router.push(to);
+  function handleClick(e: MouseEventHandler<HTMLImageElement>) {
+    to ? router.push(to) : onClick?.(e);
   }
   return (
     <>
       <img
-        onClick={handleClick}
-        style={newStyle}
         className={`${s["base-avatar"]} ${round ? s.round : ""} ${className}`}
+        style={{
+          cursor: to || onClick ? "pointer" : "inherit",
+          height: toCssVal(size),
+          width: toCssVal(size),
+          ...style,
+        }}
+        onClick={handleClick}
         src={src || avatar}
         alt="图片加载失败"
         {...restProps}

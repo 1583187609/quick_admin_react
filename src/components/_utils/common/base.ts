@@ -7,7 +7,7 @@ import { merge } from "lodash";
 import config, { ConfigMergeStrategy } from "@/config";
 import { CommonObj, StrNum } from "@/vite-env";
 import { BtnName } from "@/components/BaseBtn";
-import { FormField, FieldAttrs } from "@/components/BaseFormItem";
+import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { propsJoinChar, emptyVals } from "./consts";
 
 /**
@@ -123,8 +123,8 @@ export function getMaxLength(fields: FormField[] = [], num = 2): number {
   let max = 1;
   fields.forEach(item => {
     if (typeOf(item) !== "Object") return;
-    const { label, children, popover } = item as FieldAttrs;
-    const popNum = popover ? 1 : 0;
+    const { label, children, extra } = item as FormFieldAttrs;
+    const popNum = extra?.popover ? 1 : 0;
     if (label?.length + popNum > max) {
       max = getChinaCharLength(label) + popNum; //全角符算1个，半角符算0.5个字符
     }
@@ -340,3 +340,29 @@ export function copyText(text = "") {
   }
   document.body.removeChild(input);
 }
+
+/**
+ * 文本是否已超出（出现了省略号）
+ */
+export function getIsOver(target: any) {
+  if (!target) return false;
+  const { scrollHeight, clientHeight } = target;
+  return scrollHeight > clientHeight;
+}
+
+/**
+ * 是否是数组元素的删除
+ */
+// export function isArrDel(fObj: CommonObj, tObj: CommonObj) {
+//   for (const key in fObj) {
+//     const type = typeOf(fObj[key]);
+//     if (type === "Array") {
+//       const isDel = fObj[key].length > tObj[key]?.length;
+//       if (isDel) return true;
+//     } else if (type === "Object") {
+//       const isDel = isArrDel(fObj[key], tObj[key]);
+//       if (isDel) return true;
+//     }
+//   }
+//   return false;
+// }
