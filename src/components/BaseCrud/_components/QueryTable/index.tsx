@@ -1,7 +1,7 @@
 /**
  * 文件说明-模板文件
  */
-import React, { useMemo, useRef, useImperativeHandle, forwardRef } from "react";
+import React, { useMemo, useRef, useImperativeHandle, forwardRef, useContext } from "react";
 import { message, Table } from "antd";
 import { merge } from "lodash";
 import { MenuOutlined } from "@ant-design/icons";
@@ -10,6 +10,9 @@ import { BtnName, BaseBtnType, BtnItem, getBtnObj } from "@/components/BaseBtn";
 import { btnsMap } from "@/components/BaseBtn";
 import { TablePaginationConfig } from "antd/lib/table/InternalTable";
 import s from "./index.module.less";
+import { showMessage } from "@/utils";
+import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
+import { CommonObj, FinallyNext } from "@/vite-env";
 
 export type ColumnType = "operate" | "index" | "selection" | "sort" | "";
 export interface RenderProps {
@@ -51,23 +54,11 @@ interface Props {
   total?: number;
   onPageChange?: (currPage: number, pageSize: number) => void;
   onPageSizeChange?: (currPage: number, pageSize: number) => void;
-  onOperateBtn?: (
-    name: BtnName,
-    row: CommonObj,
-    next: (msg?: string) => void
-  ) => void;
+  onOperateBtn?: (name: BtnName, row: CommonObj, next: FinallyNext) => void;
   selectedRowKeys?: React.Key[];
   onSelectionChange?: (seledKeys: React.Key[], seledRows: CommonObj[]) => void;
-  onSelectionSelect?: (
-    record: CommonObj,
-    selected: boolean,
-    seledRows: CommonObj[]
-  ) => void;
-  onSelectionSelectAll?: (
-    selected: boolean,
-    seledRows: CommonObj[],
-    changeRows: CommonObj[]
-  ) => void;
+  onSelectionSelect?: (record: CommonObj, selected: boolean, seledRows: CommonObj[]) => void;
+  onSelectionSelectAll?: (selected: boolean, seledRows: CommonObj[], changeRows: CommonObj[]) => void;
 }
 const defaultCol = {
   align: "center",
@@ -154,6 +145,7 @@ export default forwardRef(
     ref: any
   ) => {
     const tableRef = useRef(null);
+    const { closePopup } = useContext(PopupContext);
     const newCols = useMemo(() => {
       columns = columns.map((item: ColItem, ind: number) => {
         const { name, type = "", ...rest } = item;
@@ -172,22 +164,16 @@ export default forwardRef(
       }
       if (operateBtns?.length) {
         columns.push(
-          merge(
-            { width: getOperateColWidth(operateBtns) },
-            specialColMap.operate,
-            {
-              render: (text: any, row: CommonObj, ind: number) => {
-                return (
-                  <OperateBtns
-                    onClick={(name: BtnName) =>
-                      handleClickOperateBtn(name, row, ind)
-                    }
-                    btns={getOperateBtnsOfRow({ ...row, ind })}
-                  />
-                );
-              },
-            }
-          )
+          merge({ width: getOperateColWidth(operateBtns) }, specialColMap.operate, {
+            render: (text: any, row: CommonObj, ind: number) => {
+              return (
+                <OperateBtns
+                  onClick={(name: BtnName) => handleOperateBtn(name, row, ind)}
+                  btns={getOperateBtnsOfRow({ ...row, ind })}
+                />
+              );
+            },
+          })
         );
       }
       return columns;
@@ -214,24 +200,24 @@ export default forwardRef(
           onSelect(row: CommonObj, isSeled: boolean, seledRows: CommonObj[]) {
             onSelectionSelect?.(row, isSeled, seledRows);
           },
-          onSelectAll(
-            isSeled: boolean,
-            seledRows: CommonObj[],
-            changeRows: CommonObj[]
-          ) {
+          onSelectAll(isSeled: boolean, seledRows: CommonObj[], changeRows: CommonObj[]) {
             onSelectionSelectAll?.(isSeled, seledRows, changeRows);
           },
         }
       : undefined;
     useImperativeHandle(ref, () => tableRef);
     //处理点击操作栏的按钮
-    function handleClickOperateBtn(name: BtnName, row: CommonObj, ind: number) {
+    function handleOperateBtn(name: BtnName, row: CommonObj, ind: number) {
       if (onOperateBtn) {
-        onOperateBtn(name, { ...row, $index: ind }, (msg?: string) => {
-          message.success(
-            msg === undefined ? `${btnsMap[name].text}成功!` : msg
-          );
-        });
+        onOperateBtn(
+          name,
+          { ...row, $index: ind },
+          (msg: string = `${btnsMap[name].text}成功!`, closeType?: ClosePopupType, cb?: () => void, isRefresh?: boolean) => {
+            showMessage(msg);
+            closePopup(closeType);
+            cb?.();
+          }
+        );
       } else {
         const { name: btnName, text } = btnsMap[name] || {};
         message.error(`暂未处理【${text}】按钮 - ${btnName}`);
@@ -244,9 +230,7 @@ export default forwardRef(
       return widths[ind];
     }
     function getOperateBtnsOfRow(row: CommonObj) {
-      const tempBtns = operateBtns.map((btn: BaseBtnType) =>
-        getBtnObj(btn, undefined, row)
-      );
+      const tempBtns = operateBtns.map((btn: BaseBtnType) => getBtnObj(btn, undefined, row));
       return filterBtnsByAuth(tempBtns);
     }
     return (

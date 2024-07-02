@@ -2,19 +2,19 @@
  * 分块表单 - SectionForm
  */
 
-import React, { useContext, useEffect, useImperativeHandle, forwardRef, useState } from "react";
-import { Button, Form, message } from "antd";
+import { useContext, useEffect, useImperativeHandle, forwardRef, useState } from "react";
+import { Button, Form } from "antd";
 import { CSSProperties } from "react";
-import BaseFormItem, { FormField } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import { CaretDownOutlined } from "@ant-design/icons";
-import { getMaxLength, convertDateField, omitAttrs, printLog } from "@/utils";
+import { getMaxLength, convertDateField } from "@/utils";
 import { merge } from "lodash";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import FormFields from "../_components/FormFields";
 import FormFoot from "../_components/FormFoot";
 import { handleFinish, handleFinishFailed } from "../_utils";
-import { CommonObj } from "@/vite-env";
+import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { BtnAttrs } from "../_types";
 import { defaultFormProps } from "@/components/form/_config";
 import s from "./index.module.less";
@@ -38,13 +38,15 @@ interface Props {
   /**
    * 以下是自定义的属性
    */
-  loadData?: CommonObj; //请求加载的数据
   sections?: SectionFormItem[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
   readOnly?: boolean;
   pureText?: boolean;
   // formItemWidthFull?: boolean;
+  fetch?: FetchType;
+  fetchSuccess?: FinallyNext; //fetch请求成功之后的回调方法
+  fetchFail?: FinallyNext; //fetch请求失败之后的回调方法
   onSubmit?: (data: CommonObj, next: () => void) => void;
   isOmit?: boolean; //是否剔除属性
   // fullType?: FullType; //是否自动撑满，是否自动滚动
@@ -55,7 +57,6 @@ export default forwardRef((props: Props, ref: any) => {
   const {
     className = "",
     initialValues,
-    loadData,
     sections = [],
     submitButton,
     resetButton,
@@ -71,8 +72,7 @@ export default forwardRef((props: Props, ref: any) => {
   const { closePopup } = useContext(PopupContext);
   const allFields = sections.map(it => it.fields).flat(1);
   const newInitVals = convertDateField(allFields, initialValues, "set");
-  const newLoadData = convertDateField(allFields, loadData, "set");
-  const formData: CommonObj = merge({}, newInitVals, newLoadData);
+  const formData: CommonObj = merge({}, newInitVals);
   const [folds, setFolds] = useState<boolean[]>([]);
   const {
     pureText,
@@ -80,15 +80,14 @@ export default forwardRef((props: Props, ref: any) => {
     isOmit,
     log,
     fetch,
+    fetchSuccess,
+    fetchFail,
     onSubmit,
     ...formProps
   } = merge({ initialValues: newInitVals }, defaultFormProps, restProps);
   useImperativeHandle(ref, () => {
     form;
   });
-  useEffect(() => {
-    form.setFieldsValue(newLoadData);
-  }, [newLoadData]);
   useEffect(() => {
     setFolds(Array(sections.length).fill(false));
   }, [sections]);
@@ -101,7 +100,7 @@ export default forwardRef((props: Props, ref: any) => {
     <Form
       form={form}
       className={`${className} ${s["section-form"]}  f-fs-s-c`} //${s[fullType]}
-      onFinish={(args: CommonObj) => handleFinish(args, allFields, props, { setLoading, closePopup })}
+      onFinish={(args: CommonObj) => handleFinish(args, allFields, props, { setLoading, closePopup, fetchSuccess, fetchFail })}
       onFinishFailed={handleFinishFailed}
       {...formProps}
     >
@@ -135,15 +134,7 @@ export default forwardRef((props: Props, ref: any) => {
         })}
       </div>
       {!pureText && (
-        <FormFoot
-          form={form}
-          loading={loading}
-          submitButton={submitButton}
-          resetButton={resetButton}
-          readOnly={readOnly}
-          loadData={loadData}
-          newLoadData={newLoadData}
-        />
+        <FormFoot form={form} loading={loading} submitButton={submitButton} resetButton={resetButton} readOnly={readOnly} />
       )}
     </Form>
   );

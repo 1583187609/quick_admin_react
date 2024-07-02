@@ -17,14 +17,13 @@ export function getBtnProps(btn: string | BtnAttrs): BtnAttrs {
 }
 
 export default (props: CommonObj, ref: any) => {
-  const { className = "", loadData, fields = [], submitButton, resetButton, initialValues, ...restProps } = props;
+  const { className = "", fields = [], submitButton, resetButton, initialValues, ...restProps } = props;
   const [form] = Form.useForm();
   const { closePopup } = useContext(PopupContext);
   const [loading, setLoading] = useState(false);
   const labelWidth = getMaxLength(fields) + "em";
   const newInitVals = convertDateField(fields, initialValues, "set");
-  const newLoadData = convertDateField(fields, loadData, "set");
-  const formData: CommonObj = merge({}, newInitVals, newLoadData);
+  const formData: CommonObj = merge({}, newInitVals);
   const {
     pureText,
     readOnly = false,
@@ -37,9 +36,6 @@ export default (props: CommonObj, ref: any) => {
   useImperativeHandle(ref, () => {
     form;
   });
-  useEffect(() => {
-    form.setFieldsValue(newLoadData);
-  }, [newLoadData]);
   // 暂时先不使用，后面看情况再提取复用逻辑
   return {
     form,
@@ -49,7 +45,6 @@ export default (props: CommonObj, ref: any) => {
     formProps,
     pureText,
     readOnly,
-    newLoadData,
     // 处理提交校验成功时的逻辑
     handleFinish(params: CommonObj) {
       const { readOnly, isOmit = true, log = true, onSubmit, fetch, submitButton = "提交" } = props;

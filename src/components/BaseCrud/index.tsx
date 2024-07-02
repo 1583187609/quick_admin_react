@@ -9,12 +9,12 @@ import QueryTable, { ColItem } from "./_components/QueryTable";
 import ExtraBtns, { ExportFieldItem } from "./_components/ExtraBtns";
 import { BaseBtnType, BtnItem, BtnName, btnsMap, getBtnObj } from "@/components/BaseBtn";
 import { message, Modal } from "antd";
-import { PopupContext } from "@/components/provider/PopupProvider";
+import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import ImportModal from "./_components/ImportModal";
 import { merge } from "lodash";
-import { getUserInfo, omitAttrs, printLog } from "@/utils";
+import { getUserInfo, omitAttrs, printLog, showMessage } from "@/utils";
 import StrongText from "./_components/StrongText";
-import { CommonObj, FetchType } from "@/vite-env";
+import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { ExportBtnParams, FormAttrs, TableAttrs, ReqMap, ResMap } from "./_types";
 import s from "./index.module.less";
 
@@ -28,8 +28,8 @@ interface Props {
   columns?: ColItem[];
   extraBtns?: BaseBtnType[];
   operateBtns?: BaseBtnType[];
-  onExtraBtn?: (name: BtnName, exportBtnParams: ExportBtnParams, next: (msg?: string) => void) => void;
-  onOperateBtn?: (name: BtnName, row: CommonObj, next: (msg?: string) => void) => void;
+  onExtraBtn?: (name: BtnName, exportBtnParams: ExportBtnParams, next: FinallyNext) => void;
+  onOperateBtn?: (name: BtnName, row: CommonObj, next: FinallyNext) => void;
   children?: any;
   sort?: boolean;
   index?: boolean;
@@ -110,7 +110,7 @@ export default forwardRef(
     const tableRef = useRef(null);
     const totalRef = useRef(0);
     const params = useRef<CommonObj>({});
-    const { openPopup } = useContext(PopupContext);
+    const { openPopup, closePopup } = useContext(PopupContext);
     const [seledKeys, setSeledKeys] = useState<React.Key[]>([]);
     // const [seledRows, setSeledRows] = useState<CommonObj[]>([]);
     const [rows, setRows] = useState<CommonObj[]>([]);
@@ -134,9 +134,19 @@ export default forwardRef(
     //   getBtnObj(btn)
     // );
     allColumns = columns.slice();
-    useImperativeHandle(ref, () => {
-      return { formRef, tableRef, refresh: getList };
-    });
+    useImperativeHandle(
+      ref,
+      () => {
+        return {
+          formRef,
+          tableRef,
+          refresh(cb?: () => void) {
+            getList(undefined, cb);
+          },
+        };
+      },
+      []
+    );
     useEffect(() => {
       if (immediateFetch) {
         initFetch();
@@ -176,8 +186,11 @@ export default forwardRef(
           fields: [],
         };
         //回调函数
-        const callback = (msg?: string) => {
-          message.success(msg === undefined ? `${btnsMap[name].text}成功！` : msg);
+        const callback = (msg: string = `${btnsMap[name].text}成功！`, closeType: ClosePopupType) => {
+          console.log("执行了回调---------");
+          showMessage(msg);
+          closePopup?.(closeType);
+          getList(params.current);
         };
         if (noPopconfirmBtns.includes(name)) {
           Modal.confirm({
@@ -215,7 +228,7 @@ export default forwardRef(
     //   console.log(changedVals, allVals, "handleFieldsChange-------");
     // }
     //点击提交（查询）按钮
-    function handleSubmit(data: CommonObj, next: () => void) {
+    function handleSubmit(data: CommonObj, next: FinallyNext) {
       getList(data, next);
     }
     //当分页的currPage或pageSize改变时

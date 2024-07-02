@@ -35,7 +35,7 @@ function getFields({ regionOpts, genderOpts }: CommonObj): FormField[] {
       },
     },
     {
-      name: "sex",
+      name: "gender",
       label: "性别",
       type: "Radio.Group",
       extra: "options选项传入数组 genderOpts",
@@ -236,7 +236,7 @@ export default () => {
     listSearch: "搜索列表",
     activeType: 1,
     name: "张三",
-    sex: 1,
+    gender: 1,
     age: 26,
     homeAddress: [12, 2, 3],
     phone: "18483221518",

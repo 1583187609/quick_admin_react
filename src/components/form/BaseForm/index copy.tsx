@@ -22,7 +22,6 @@ import { useInitForm } from "@/components/form/_hooks";
 export type FullType = "autoFull" | "allFull" | ""; //autoFull，撑满时，按钮才固定在底部，否则，跟随移动；allFull：按钮始终固定在底部
 interface Props {
   className?: string;
-  loadData?: CommonObj; //请求加载的数据
   style?: CSSProperties;
   initialValues?: CommonObj;
   labelCol?: CommonObj;
@@ -45,7 +44,6 @@ interface Props {
 export default forwardRef((props: Props, ref: any) => {
   const {
     className = "",
-    loadData,
     fields = [],
     submitButton,
     resetButton,
@@ -58,15 +56,16 @@ export default forwardRef((props: Props, ref: any) => {
     // log = true,
     // ...restProps
   } = props;
-  const { loading, form, formProps, pureText, formData, readOnly, labelWidth, newLoadData, handleFinish, handleFinishFailed } =
-    useInitForm(props, ref);
+  const { loading, form, formProps, pureText, formData, readOnly, labelWidth, handleFinish, handleFinishFailed } = useInitForm(
+    props,
+    ref
+  );
   // const [form] = Form.useForm();
   // const { closePopup } = useContext(PopupContext);
   // const [loading, setLoading] = useState(false);
   // const labelWidth = getMaxLength(fields) + "em";
   // const newInitVals = convertDateField(fields, initialValues, "set");
-  // const newLoadData = convertDateField(fields, loadData, "set");
-  // const formData: CommonObj = merge({}, newInitVals, newLoadData);
+  // const formData: CommonObj = merge({}, newInitVals);
   // const {
   //   pureText,
   //   readOnly = false,
@@ -76,9 +75,6 @@ export default forwardRef((props: Props, ref: any) => {
   //   onSubmit,
   //   ...formProps
   // } = merge({ initialValues: newInitVals }, defaultFormProps, restProps);
-  // useEffect(() => {
-  //   form.setFieldsValue(newLoadData);
-  // }, [newLoadData]);
   // useImperativeHandle(ref, () => {
   //   form;
   // });
@@ -101,15 +97,7 @@ export default forwardRef((props: Props, ref: any) => {
         />
       </div>
       {!pureText && (
-        <FormFoot
-          form={form}
-          loading={loading}
-          submitButton={submitButton}
-          resetButton={resetButton}
-          readOnly={readOnly}
-          loadData={loadData}
-          newLoadData={newLoadData}
-        />
+        <FormFoot form={form} loading={loading} submitButton={submitButton} resetButton={resetButton} readOnly={readOnly} />
       )}
     </Form>
   );

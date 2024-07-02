@@ -2,17 +2,15 @@ import { FormField } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { useEffect, useRef, useState } from "react";
 import { GetUserInfo, PostMockCommon } from "@/api-mock";
-// import { useDictMap } from "@/hooks";
 import UploadAvatar from "@/components/upload/UploadAvatar";
-import { CommonObj, OptionItem } from "@/vite-env";
-import { useDictMap, useStoreSpace } from "@/hooks";
+import { CommonObj } from "@/vite-env";
 
 interface Props {
-  id?: string;
-  pureText?: boolean;
-  refresh?: () => void;
+  data?: CommonObj;
+  refreshList?: () => void;
 }
-function getFields({ isAdd = false, genderOpts, roleTypeOpts, formRef }: CommonObj): FormField[] {
+
+function getFields({ isAdd = false, formRef }: CommonObj): FormField[] {
   return [
     {
       name: "avatar",
@@ -23,9 +21,7 @@ function getFields({ isAdd = false, genderOpts, roleTypeOpts, formRef }: CommonO
     !isAdd && {
       name: "nickname",
       label: "昵称",
-      attrs: {
-        pureText: true,
-      },
+      attrs: {},
     },
     {
       name: "name",
@@ -39,15 +35,15 @@ function getFields({ isAdd = false, genderOpts, roleTypeOpts, formRef }: CommonO
       label: "类型",
       type: "Select",
       attrs: {
-        options: roleTypeOpts,
+        options: "RoleType",
       },
     },
     {
-      name: "sex",
+      name: "gender",
       label: "性别",
       type: "Radio.Group",
       attrs: {
-        options: genderOpts,
+        options: "Gender",
       },
     },
     {
@@ -82,44 +78,55 @@ function getFields({ isAdd = false, genderOpts, roleTypeOpts, formRef }: CommonO
   ];
 }
 
-export default ({ id, pureText, refresh }: Props) => {
-  const { getOpts, getCascaderOpts } = useDictMap();
+/**
+ * 直接传入 data 的处理方式
+ */
+// export default ({ data, refreshList }: Props) => {
+//   const formRef = useRef();
+//   const initVals = Object.assign({ type: 3, gender: 1, age: 18 }, data);
+//   return (
+//     <BaseForm
+//       ref={formRef}
+//       initialValues={initVals}
+//       style={{ width: "450px" }}
+//       fields={getFields({
+//         isAdd: !data,
+//         formRef,
+//       })}
+//       fetch={PostMockCommon}
+//       fetchSuccess={refreshList}
+//     />
+//   );
+// };
+
+/**
+ * 通过 id 请求接口的处理方式
+ */
+export default ({ data, refreshList }: Props) => {
   const formRef = useRef();
-  const [loadData, setLoadData] = useState<CommonObj>();
-  const genderOpts = getOpts("Gender");
-  const roleTypeOpts = getOpts("RoleType");
+  const [initVals, setInitVals] = useState<CommonObj | null>(data ? null : { type: 3, gender: 1, age: 18 });
   useEffect(() => {
-    if (id) {
-      getDetail(id);
-    }
-  }, [id]);
+    data && getDetail(data.id);
+  }, [data]);
   //获取详情数据
   function getDetail(id: string) {
     GetUserInfo({ id }).then((res: CommonObj) => {
-      setLoadData(res);
-    });
-  }
-  //点击提交按钮
-  function handleSubmit(data: any, next: (msg?: string) => void): void {
-    PostMockCommon(data).then((res: CommonObj) => {
-      refresh?.();
-      next();
+      setInitVals(res);
     });
   }
   return (
-    <BaseForm
-      ref={formRef}
-      initialValues={!id ? { sex: 0 } : undefined}
-      style={{ width: "450px" }}
-      fields={getFields({
-        isAdd: !id,
-        genderOpts,
-        roleTypeOpts,
-        formRef,
-      })}
-      loadData={loadData}
-      pureText={pureText}
-      onSubmit={handleSubmit as () => void}
-    />
+    (data ? !!initVals : true) && (
+      <BaseForm
+        ref={formRef}
+        initialValues={initVals}
+        style={{ width: "450px" }}
+        fields={getFields({
+          isAdd: !data,
+          formRef,
+        })}
+        fetch={PostMockCommon}
+        fetchSuccess={refreshList}
+      />
+    )
   );
 };

@@ -2,7 +2,7 @@
  * 文件说明-模板文件
  */
 
-import { DeleteUserList, PostMockCommonExport, GetMockCommonList } from "@/api-mock";
+import { DeleteUserList, PostMockCommonExport, GetMockCommonList, PostMockCommon } from "@/api-mock";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { BtnName } from "@/components/BaseBtn";
 import BaseCrud, { ExportBtnParams } from "@/components/BaseCrud";
@@ -11,30 +11,25 @@ import React, { useContext, useRef } from "react";
 import AddEdit from "./AddEdit";
 import { getFormFields, getTableFields } from "./fields";
 import { DownloadOutlined } from "@ant-design/icons";
-import { CommonObj } from "@/vite-env";
-import { useDictMap, useStoreSpace } from "@/hooks";
+import { CommonObj, FinallyNext } from "@/vite-env";
 
 export default () => {
   const { openPopup } = useContext(PopupContext);
-  const { getOpts } = useDictMap();
-  const genderOpts = getOpts("Gender");
-  const roleTypeOpts = getOpts("RoleType");
-  const enableStatusOpts = getOpts("EnableStatus");
   const crudRef = useRef<any>(null);
   //处理额外按钮
-  function onExtraBtn(name: BtnName, { params, ids, fields }: ExportBtnParams, next: (msg?: string) => void) {
+  function onExtraBtn(name: BtnName, { params, ids, fields }: ExportBtnParams, next: FinallyNext) {
     const nameMap: CommonObj = {
-      add: () => openPopup("新增", <AddEdit refresh={refresh} />),
+      add: () => openPopup("新增", <AddEdit refreshList={next} />),
       delete: () => handleDelete(ids, next),
       export: () => handleExport({ ...params, exports: { ids, fields } }, next),
     };
     nameMap[name] ? nameMap[name]() : message.warning(`点击了${name}按钮`);
   }
   //点击操作按钮
-  function onOperateBtn(name: BtnName, row: CommonObj, next: () => void) {
+  function onOperateBtn(name: BtnName, row: CommonObj, next: FinallyNext) {
     const { id } = row;
     const nameMap: CommonObj = {
-      edit: () => openPopup("编辑", <AddEdit id={id} refresh={refresh} />),
+      edit: () => openPopup("编辑", <AddEdit id={id} refreshList={next} />),
       view: () => openPopup("查看", <AddEdit id={id} disabled />),
       delete: () => handleDelete([id], next),
       forbid: () => handleForbid(id, next),
@@ -43,34 +38,29 @@ export default () => {
     nameMap[name] ? nameMap[name]() : message.warning(`点击了${name}按钮`);
   }
   //删除
-  function handleDelete(ids: React.Key[], next: () => void) {
+  function handleDelete(ids: React.Key[], next: FinallyNext) {
     DeleteUserList(ids).then((res: CommonObj) => {
       next();
     });
   }
   //导出
-  function handleExport(params: CommonObj, next: () => void) {
+  function handleExport(params: CommonObj, next: FinallyNext) {
     PostMockCommonExport(params).then((res: CommonObj) => {
       next();
     });
   }
   //启用
-  function handleEnable(id: string, next: (msg?: string) => void) {
-    next();
+  function handleEnable(id: string, next: FinallyNext) {
+    PostMockCommon({ id }).then(res => next());
   }
   //禁用
-  function handleForbid(id: string, next: (msg?: string) => void) {
-    next();
-  }
-  //刷新列表
-  function refresh() {
-    console.log("refresh-刷新了列表-------------");
-    crudRef?.current?.refresh();
+  function handleForbid(id: string, next: FinallyNext) {
+    PostMockCommon({ id }).then(res => next());
   }
   return (
     <BaseCrud
       ref={crudRef}
-      fields={getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts })}
+      fields={getFormFields()}
       columns={getTableFields({})}
       fetch={GetMockCommonList}
       extraBtns={["add", "delete", "export"]}

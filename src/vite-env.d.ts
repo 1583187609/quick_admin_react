@@ -13,7 +13,7 @@ type UniteFetchType = FetchType | ((params: CommonObj) => FetchType);
 type SetTimeout = null | NodeJS.Timeout;
 type SetInterval = null | NodeJS.SetInterval;
 type TostMessageType = messageType;
-type NextHintCb = (
+type FinallyNext = (
   hint?: string | MessageParams,
   closeType?: ClosePopupType,
   cb?: () => void,

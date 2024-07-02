@@ -3,7 +3,7 @@ import { FormField } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
 import { CommonObj } from "@/vite-env";
 
-export function getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts }: CommonObj): FormField[] {
+export function getFormFields(): FormField[] {
   return [
     {
       name: "id",
@@ -14,11 +14,11 @@ export function getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts }: Co
       label: "用户姓名",
     },
     {
-      name: "sex",
+      name: "gender",
       label: "性别",
       type: "Select",
       attrs: {
-        options: genderOpts,
+        options: "Gender",
       },
     },
     {
@@ -32,7 +32,7 @@ export function getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts }: Co
       label: "用户类型",
       type: "Select",
       attrs: {
-        options: roleTypeOpts,
+        options: "RoleType",
       },
     },
     {
@@ -40,7 +40,7 @@ export function getFormFields({ genderOpts, roleTypeOpts, enableStatusOpts }: Co
       label: "账号状态",
       type: "Select",
       attrs: {
-        options: enableStatusOpts,
+        options: "EnableStatus",
       },
     },
   ];
@@ -59,7 +59,7 @@ export const getTableFields = ({}: CommonObj): ColItem[] => {
       width: 100,
     },
     {
-      name: "sex",
+      name: "gender",
       title: "性别",
       width: 100,
     },

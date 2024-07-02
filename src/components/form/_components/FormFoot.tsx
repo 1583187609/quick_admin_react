@@ -9,22 +9,16 @@ interface Props {
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
   readOnly: boolean;
-  loadData?: CommonObj;
-  newLoadData?: CommonObj;
   form?: any;
 }
 
-export default ({ loading, submitButton = "提交", resetButton = "重置", readOnly, loadData, newLoadData, form }: Props) => {
+export default ({ loading, submitButton = "提交", resetButton = "重置", readOnly, form }: Props) => {
   const submitBtn = getBtnProps(submitButton);
   const resetBtn = getBtnProps(resetButton);
   //点击重置按钮
   function handleReset() {
     if (readOnly) return message.info("只读模式-不可重置");
-    if (loadData) {
-      form.setFieldsValue(newLoadData);
-    } else {
-      form.resetFields();
-    }
+    form.resetFields();
   }
   return (
     <div className={`pt-half pb-half f-c-c f-0`}>

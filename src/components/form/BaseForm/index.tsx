@@ -2,18 +2,18 @@
  * 基础表单 - BaseForm
  */
 
-import { useContext, useEffect, useRef, useImperativeHandle, forwardRef, useState } from "react";
-import { Button, Form, message } from "antd";
+import { useContext, useImperativeHandle, forwardRef, useState } from "react";
+import { Form } from "antd";
 import { CSSProperties } from "react";
-import BaseFormItem, { FormField } from "@/components/BaseFormItem";
-import { getMaxLength, convertDateField, omitAttrs, printLog } from "@/utils";
+import { FormField } from "@/components/BaseFormItem";
+import { getMaxLength, convertDateField } from "@/utils";
 import { merge } from "lodash";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import FormFields from "@/components/form/_components/FormFields";
 import FormFoot from "@/components/form/_components/FormFoot";
 import { handleFinish, handleFinishFailed } from "@/components/form/_utils";
-import { CommonObj, FetchType } from "@/vite-env";
+import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { BtnAttrs } from "@/components/form/_types";
 import { defaultFormProps } from "@/components/form/_config";
 import s from "./index.module.less";
@@ -36,11 +36,12 @@ interface Props {
   fields?: FormField[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
-  loadData?: CommonObj; //请求加载的数据
   readOnly?: boolean;
   pureText?: boolean;
   // formItemWidthFull?: boolean;
   fetch?: FetchType;
+  fetchSuccess?: FinallyNext; //fetch请求成功之后的回调方法
+  fetchFail?: FinallyNext; //fetch请求失败之后的回调方法
   onSubmit?: (data: CommonObj, next: () => void) => void;
   isOmit?: boolean; // 表单提交时，是否剔除空的属性
   // fullType?: FullType; //是否自动撑满，是否自动滚动
@@ -51,7 +52,6 @@ export default forwardRef((props: Props, ref: any) => {
   const {
     className = "",
     initialValues,
-    loadData,
     fields = [],
     submitButton,
     resetButton,
@@ -68,20 +68,18 @@ export default forwardRef((props: Props, ref: any) => {
   const [loading, setLoading] = useState(false);
   const labelWidth = getMaxLength(fields) + "em";
   const newInitVals = convertDateField(fields, initialValues, "set");
-  const newLoadData = convertDateField(fields, loadData, "set");
-  const formData: CommonObj = merge({}, newInitVals, newLoadData);
+  const formData: CommonObj = merge({}, newInitVals);
   const {
     pureText,
     readOnly = false,
     isOmit,
     log,
     fetch,
+    fetchSuccess,
+    fetchFail,
     onSubmit,
     ...formProps
   } = merge({ initialValues: newInitVals }, defaultFormProps, restProps);
-  useEffect(() => {
-    form.setFieldsValue(newLoadData);
-  }, [newLoadData]);
   useImperativeHandle(ref, () => {
     form;
   });
@@ -89,7 +87,7 @@ export default forwardRef((props: Props, ref: any) => {
     <Form
       form={form}
       className={`${className} ${s["base-form"]}  f-fs-s-c`} //${s[fullType]}
-      onFinish={(args: CommonObj) => handleFinish(args, fields, props, { setLoading, closePopup })}
+      onFinish={(args: CommonObj) => handleFinish(args, fields, props, { setLoading, closePopup, fetchSuccess, fetchFail })}
       onFinishFailed={handleFinishFailed}
       {...formProps}
     >
@@ -104,15 +102,7 @@ export default forwardRef((props: Props, ref: any) => {
         />
       </div>
       {!pureText && (
-        <FormFoot
-          form={form}
-          loading={loading}
-          submitButton={submitButton}
-          resetButton={resetButton}
-          readOnly={readOnly}
-          loadData={loadData}
-          newLoadData={newLoadData}
-        />
+        <FormFoot form={form} loading={loading} submitButton={submitButton} resetButton={resetButton} readOnly={readOnly} />
       )}
     </Form>
   );

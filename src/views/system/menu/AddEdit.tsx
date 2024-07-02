@@ -3,10 +3,9 @@ import IconPicker from "./_components/IconPicker";
 import { Tabs } from "antd";
 import { useState } from "react";
 import { CommonObj } from "@/vite-env";
-import { useDictMap } from "@/hooks";
 
 interface Props {}
-function getFields({ activeKey = "1", yesNoStatusOpts }: CommonObj): any[] {
+function getFields({ activeKey = "1" }: CommonObj): any[] {
   return [
     {
       name: "menu_name",
@@ -60,7 +59,7 @@ function getFields({ activeKey = "1", yesNoStatusOpts }: CommonObj): any[] {
       label: "是否缓存",
       type: "Radio.Group",
       attrs: {
-        options: yesNoStatusOpts,
+        options: "YesNoStatus",
       },
     },
 
@@ -69,7 +68,7 @@ function getFields({ activeKey = "1", yesNoStatusOpts }: CommonObj): any[] {
       label: "是否为外链",
       type: "Radio.Group",
       attrs: {
-        options: yesNoStatusOpts,
+        options: "YesNoStatus",
       },
     },
     activeKey !== "3" && {
@@ -77,7 +76,7 @@ function getFields({ activeKey = "1", yesNoStatusOpts }: CommonObj): any[] {
       label: "是否显示",
       type: "Radio.Group",
       attrs: {
-        options: yesNoStatusOpts,
+        options: "YesNoStatus",
       },
     },
     ,
@@ -86,7 +85,7 @@ function getFields({ activeKey = "1", yesNoStatusOpts }: CommonObj): any[] {
       label: "是否启用",
       type: "Radio.Group",
       attrs: {
-        options: yesNoStatusOpts,
+        options: "YesNoStatus",
       },
     },
     {
@@ -113,8 +112,6 @@ const tabs = [
 ];
 export default ({}: Props) => {
   const [activeKey, setActiveKey] = useState("1");
-  const { getOpts } = useDictMap();
-  const yesNoStatusOpts = getOpts("YesNoStatus");
   function handleClickTabItem(key: string) {
     setActiveKey(key);
   }
@@ -130,7 +127,7 @@ export default ({}: Props) => {
           };
         })}
       />
-      <BaseForm initialValues={initVals} style={{ width: "600px" }} fields={getFields({ activeKey, yesNoStatusOpts })} />
+      <BaseForm initialValues={initVals} style={{ width: "600px" }} fields={getFields({ activeKey })} />
     </>
   );
 };
