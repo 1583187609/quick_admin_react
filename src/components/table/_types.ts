@@ -1,7 +1,15 @@
-import { BaseDataType, CommonObj } from "@/vite-env";
+import { BaseDataType, CommonObj, GetPartial } from "@/vite-env";
 import { GetRowKey } from "antd/es/table/interface";
-import { SpecialColName } from "./_utils";
+import { specialColMap } from "./_utils";
 import { ColumnGroupType, ColumnType } from "antd/es/table";
+
+export type SpecialColKeys = "index" | "sort" | "operate";
+export type SpecialColName = keyof typeof specialColMap;
+
+// 系统内置列： 图片、文本、复制、创建时间、更新时间、备注
+export type InnerColName = "BaseImg" | "BaseText" | "BaseCopy" | "BaseTag" | "create" | "update" | "remark" | "id" | "switch";
+// 外部扩展列：用户信息
+export type OutterColName = "UserInfo";
 
 export type RowKeyType = string | number | GetRowKey<CommonObj> | undefined;
 
@@ -10,13 +18,13 @@ export interface TableColAttrs {
   /**
    * 这是新增的属性
    */
-  type?: SpecialColName;
+  type?: SpecialColName | InnerColName | OutterColName;
 
   /**
    * 下面是antd提供的属性
    */
   key?: string;
-  name?: string;
+  dataIndex?: string;
   title: string;
   width?: number;
   align?: string;

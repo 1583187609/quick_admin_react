@@ -13,8 +13,7 @@ body {
   overflow: auto;
   color: @color-text-main;
   font-size: @font-size-main; //所有字体大小、行高的参照基准(一般是14px）
-  font-family: "PingFang SC", "Microsoft YaHei", "Gill Sans", "Gill Sans MT",
-    "Calibri", "Trebuchet MS", sans-serif; //根据情况设置多个字体，依次选择字体显示
+  font-family: "PingFang SC", "Microsoft YaHei", "Gill Sans", "Gill Sans MT", "Calibri", "Trebuchet MS", sans-serif; //根据情况设置多个字体，依次选择字体显示
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   /* 用于移动端。touch：当手指从触摸屏上移开，会保持一段时间的滚动；auto：当手指从触摸屏上移开，滚动会立即停止。touch解决IOS端，经常遇到元素滚动时卡顿的问题 */
@@ -292,9 +291,9 @@ a {
 
 /**
 * 文本省略
-* line-1 ~ line-3
+* line-1 ~ line-5
 */
-.for-line(@i) when (@i <=3) {
+.for-line(@i) when (@i <=5) {
   .line-@{i} {
     .text-ellipsis(@i);
   }

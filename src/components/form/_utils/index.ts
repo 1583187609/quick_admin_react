@@ -1,7 +1,6 @@
 import { FormField } from "@/components/BaseFormItem";
 import { convertDateField, omitAttrs, printLog, showMessage } from "@/utils";
 import { CommonObj, FinallyNext } from "@/vite-env";
-import { message } from "antd";
 import { BtnAttrs } from "@/components/form/_types";
 import { ClosePopupType } from "@/components/provider/PopupProvider";
 
@@ -20,7 +19,7 @@ export function handleFinish(params: CommonObj, fields: FormField[] = [], props:
     closePopup(closeType);
     cb?.();
   }
-  if (readOnly) return message.info("只读模式 - 不可提交");
+  if (readOnly) return showMessage("只读模式 - 不可提交", "info");
   const newParams = convertDateField(fields, isOmit ? omitAttrs(params) : params);
   log && printLog(newParams, "req");
   setLoading(true);
@@ -50,5 +49,5 @@ export function handleFinish(params: CommonObj, fields: FormField[] = [], props:
 // 处理表单提交时，校验未通过时的逻辑
 export function handleFinishFailed(err: CommonObj) {
   const tips = err.errorFields?.[0]?.errors?.[0];
-  message.error(tips);
+  showMessage(tips, "error");
 }

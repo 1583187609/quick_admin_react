@@ -2,7 +2,7 @@
  * 文件说明-模板文件
  */
 
-import React, { useContext, useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
+import React, { useContext, useEffect, useRef, useState, useImperativeHandle, forwardRef, CSSProperties } from "react";
 import { FormField } from "@/components/BaseFormItem";
 import QueryForm from "./_components/QueryForm";
 import QueryTable from "./_components/QueryTable";
@@ -13,16 +13,18 @@ import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvide
 import ImportModal from "./_components/ImportModal";
 import { merge } from "lodash";
 import { getUserInfo, omitAttrs, printLog, showMessage } from "@/utils";
-import StrongText from "./_components/StrongText";
 import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { ExportBtnParams, FormAttrs, TableAttrs, ReqMap, ResMap } from "./_types";
-import { TableCol } from "@/components/table/_types";
+import { TableCol, TableColAttrs } from "@/components/table/_types";
+import { batchBtns, defaultReqMap, defaultResMap, noPopconfirmBtns } from "./_config";
+import { getBtnModalTips } from "./_utils";
 import s from "./index.module.less";
 
 export * from "./_types";
 
 interface Props {
   className?: string;
+  style?: CSSProperties;
   formAttrs?: FormAttrs;
   tableAttrs?: TableAttrs;
   fields?: FormField[];
@@ -46,37 +48,9 @@ interface Props {
   resMap?: ResMap; //是否展示序号列
   filterByAuth?: (auth: number[]) => boolean;
 }
-let allColumns = [];
-const defaultReqMap: ReqMap = {
-  curr_page: "curr_page",
-  page_size: "page_size",
-};
-const defaultResMap: ResMap = {
-  curr_page: "curr_page",
-  page_size: "page_size",
-  total_num: "total_num",
-  records: "records",
-};
-const noPopconfirmBtns: BtnName[] = ["delete", "export"]; //有dialog提示又有ponconfirm提示，且不需要ponconfirm提示的按钮
-//点击按钮后的弹出层提示内容
-function getBtnModalTips(name: BtnName, num = 0, max: number) {
-  const { text, attrs } = btnsMap[name];
-  const type = attrs?.danger ? "danger" : "primary";
-  let tips = (
-    <div className="f-fs-b-w">
-      确定<StrongText type={type}>{text}</StrongText>共<StrongText type={type}>{num}</StrongText> 条数据？
-    </div>
-  );
-  if (name === "export" && num > max) {
-    tips = (
-      <div className="f-fs-b-w">
-        单次导出数量不能超过 <StrongText type={type}>{max}</StrongText>
-        条，请缩小查询范围！
-      </div>
-    );
-  }
-  return tips;
-}
+
+let allColumns: TableColAttrs[] = [];
+
 export default forwardRef(
   (
     {
@@ -98,39 +72,39 @@ export default forwardRef(
       sort = false,
       index = false,
       selection = false,
-      children,
       reqMap = defaultReqMap,
       resMap = defaultResMap,
       log = true,
+      children,
       filterByAuth = (auth: number[]) => auth.includes(getUserInfo().type),
     }: Props,
     ref: any
   ) => {
-    const loadingRef = useRef(false);
     const formRef = useRef(null);
     const tableRef = useRef(null);
     const totalRef = useRef(0);
     const params = useRef<CommonObj>({});
     const { openPopup, closePopup } = useContext(PopupContext);
     const [seledKeys, setSeledKeys] = useState<React.Key[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
     const [rows, setRows] = useState<CommonObj[]>([]);
     //初始化分页信息
     const initPage = {
       [`${reqMap.curr_page}`]: 1,
       [`${reqMap.page_size}`]: 20,
     };
-    const [newCols, setNewCols] = useState(columns.slice()); //深克隆
+    const [newCols, setNewCols] = useState<TableColAttrs[]>(columns.filter(it => !!it) as TableColAttrs[]); // 浅克隆
     const newExtraBtns = extraBtns.map(item => {
       const btn: BtnItem = getBtnObj(item);
       if (noPopconfirmBtns.includes(btn.name)) {
         btn.popconfirm = false;
       }
-      if (["delete", "import", "export"].includes(btn.name)) {
+      if (batchBtns.includes(btn.name)) {
         btn!.attrs!.disabled = !seledKeys.length;
       }
       return btn;
     });
-    allColumns = columns.slice();
+    allColumns = columns.filter(it => !!it) as TableColAttrs[];
     useImperativeHandle(
       ref,
       () => {
@@ -145,9 +119,7 @@ export default forwardRef(
       []
     );
     useEffect(() => {
-      if (immediateFetch) {
-        initFetch();
-      }
+      if (immediateFetch) initFetch();
     }, []);
     //初始化请求数据
     function initFetch() {
@@ -156,7 +128,7 @@ export default forwardRef(
     }
     //获取表格列表数据
     function getList(args: CommonObj = params.current, cb?: () => void) {
-      loadingRef.current = true;
+      setLoading(true);
       isOmit && (args = omitAttrs(args)); //剔除掉undefined, ''的属性值
       log && printLog(args, "req");
       fetch?.(args)
@@ -168,44 +140,44 @@ export default forwardRef(
           cb?.();
         })
         .finally(() => {
-          loadingRef.current = false;
+          setLoading(false);
         });
     }
     //处理点击额外按钮
     function handleExtraBtn(name: BtnName) {
       if (name === "import") {
-        openPopup({ title: "温馨提示", footer: null }, <ImportModal />, "modal");
-      } else {
-        //要传递的参数信息
-        const argsInfo = {
-          params: params.current,
-          ids: seledKeys,
-          fields: [],
-        };
-        //回调函数
-        const callback = (msg: string = `${btnsMap[name].text}成功！`, closeType: ClosePopupType) => {
-          showMessage(msg);
-          closePopup?.(closeType);
-          getList(params.current);
-        };
-        if (noPopconfirmBtns.includes(name)) {
-          Modal.confirm({
-            title: "温馨提示",
-            content: getBtnModalTips(name, seledKeys.length, exportMax),
-            onOk: () => onExtraBtn?.(name, argsInfo, callback),
-          });
-        } else {
-          onExtraBtn?.(name, argsInfo, callback);
-        }
+        return openPopup({ title: "温馨提示", footer: null }, <ImportModal />, "modal");
       }
+      //要传递的参数信息
+      const argsInfo = {
+        params: params.current,
+        ids: seledKeys,
+        fields: [],
+      };
+      //回调函数
+      const callback = (
+        msg: string = `${btnsMap[name].text}成功！`,
+        closeType: ClosePopupType,
+        cb?: () => void,
+        isRefresh: boolean = true
+      ) => {
+        showMessage(msg);
+        closePopup?.(closeType);
+        isRefresh && getList(params.current);
+        cb?.();
+      };
+      if (!noPopconfirmBtns.includes(name)) return onExtraBtn?.(name, argsInfo, callback);
+      Modal.confirm({
+        title: "温馨提示",
+        content: getBtnModalTips(name, seledKeys.length, exportMax),
+        onOk: () => onExtraBtn?.(name, argsInfo, callback),
+      });
     }
     //处理表单中的值变化时
     function handleValuesChange(changedVals: CommonObj, allVals: CommonObj) {
       //因为 lodash 的 merge 不会用 undefined 覆盖其他值，故做此处理
       for (let key in changedVals) {
-        if (changedVals[key] === undefined) {
-          changedVals[key] = "";
-        }
+        if (changedVals[key] === undefined) changedVals[key] = "";
       }
       merge(params.current, changedVals, initPage);
       if (changeFetch) {
@@ -237,26 +209,20 @@ export default forwardRef(
     }
     //当多选框的选择改变时
     function handleSelectionChange(sKeys: React.Key[], sRows: CommonObj[]) {
-      if (sKeys.length) {
-        setSeledKeys(seledKeys.concat(sKeys));
-      } else {
-        const currPage = params.current[reqMap.curr_page];
-        const pageSize = params.current[reqMap.page_size];
-        const sInd = (currPage - 1) * 20;
-        const cloneSeledKeys = seledKeys.slice();
-        cloneSeledKeys.splice(sInd, pageSize);
-        setSeledKeys(cloneSeledKeys);
-      }
+      if (sKeys.length) return setSeledKeys(seledKeys.concat(sKeys));
+      const currPage = params.current[reqMap.curr_page];
+      const pageSize = params.current[reqMap.page_size];
+      const sInd = (currPage - 1) * 20;
+      const cloneSeledKeys = seledKeys.slice();
+      cloneSeledKeys.splice(sInd, pageSize);
+      setSeledKeys(cloneSeledKeys);
     }
     //根据权限对按钮进行过滤
     function filterBtnsByAuth(btns: BtnItem[]) {
-      if (filterByAuth) {
-        return btns.filter(({ auth }) => {
-          return auth?.length ? filterByAuth(auth) : true;
-        });
-      } else {
-        return btns;
-      }
+      if (!filterByAuth) return btns;
+      return btns.filter(({ auth }) => {
+        return auth?.length ? filterByAuth(auth) : true;
+      });
     }
     return (
       <div className={`${className} ${s["base-crud"]} auto-scroll-table f-1 f-fs-s-c`}>
@@ -298,7 +264,7 @@ export default forwardRef(
           onPageChange={handlePageChange}
           selectedRowKeys={seledKeys}
           onSelectionChange={handleSelectionChange}
-          loading={loadingRef.current}
+          loading={loading}
           {...tableAttrs}
         />
       </div>

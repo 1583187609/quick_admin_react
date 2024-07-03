@@ -1,4 +1,4 @@
-import { BaseDataType, CommonObj, OptionItem } from "@/vite-env";
+import { BaseDataType, CommonObj, OptionItem, StrNum } from "@/vite-env";
 import { CSSProperties, ReactNode, RefAttributes } from "react";
 import { defaultValidTypes } from "./_config";
 import { CheckboxGroupProps } from "antd/es/checkbox";
@@ -105,3 +105,8 @@ export interface FormItemAttrs {
 }
 
 export type FormField = BaseDataType | FormItemAttrs;
+
+export interface PopoverAttrs {
+  content?: ReactNode | (() => ReactNode);
+  title?: ReactNode | (() => ReactNode);
+}

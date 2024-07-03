@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+
 declare module "lodash";
 
 declare var window: Window & typeof globalThis;
@@ -12,7 +13,7 @@ type FetchType = (data?: CommonObj) => Promise<AxiosResponse<any, any>>;
 type UniteFetchType = FetchType | ((params: CommonObj) => FetchType);
 type SetTimeout = null | NodeJS.Timeout;
 type SetInterval = null | NodeJS.SetInterval;
-type TostMessageType = messageType;
+type TostMessageType = "success" | "error" | "info" | "warning" | "loading";
 type FinallyNext = (
   hint?: string | MessageParams,
   closeType?: ClosePopupType,

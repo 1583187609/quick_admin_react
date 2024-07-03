@@ -1,17 +1,17 @@
-import { IButtonMenu, IDomEditor } from '@wangeditor/editor';
-import { message } from 'antd';
+import { showMessage } from "@/utils";
+import { IButtonMenu, IDomEditor } from "@wangeditor/editor";
 
-export type TypeTypes = 'text' | 'html';
+export type TypeTypes = "text" | "html";
 class Copy implements IButtonMenu {
   title: string;
   type: TypeTypes;
   // iconSvg?: string | undefined;
   tag: string;
-  constructor(type: TypeTypes, title = '') {
+  constructor(type: TypeTypes, title = "") {
     this.title = title; // 自定义菜单标题
     this.type = type;
     // this.iconSvg = '<svg>...</svg>' // 可选
-    this.tag = 'button';
+    this.tag = "button";
   }
 
   // 获取菜单执行时的 value ，用不到则返回空 字符串或 false
@@ -33,14 +33,14 @@ class Copy implements IButtonMenu {
   exec(editor: IDomEditor, value: string | boolean) {
     // if (this.isDisabled(editor)) return;
     // editor.insertText(value as string); // value 即 this.value(editor) 的返回值
-    const textarea = document.createElement('textarea');
+    const textarea = document.createElement("textarea");
     // 防止手机上弹出软键盘
-    textarea.setAttribute('readonly', 'readonly');
-    textarea.value = this.type === 'text' ? editor.getText() : editor.getHtml();
+    textarea.setAttribute("readonly", "readonly");
+    textarea.value = this.type === "text" ? editor.getText() : editor.getHtml();
     document.body.appendChild(textarea);
     textarea.select();
     document.body.removeChild(textarea);
-    message.success('复制成功!');
+    showMessage("复制成功!");
     // const res = document.execCommand('copy');
     // return res;
   }

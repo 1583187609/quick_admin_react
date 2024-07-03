@@ -16,10 +16,10 @@ const tabs = [
     label: "我的待办",
     value: 1,
     columns: [
-      { name: "follow", title: "关注" },
-      { name: "title", title: "标题" },
-      { name: "from_unit", title: "来文单位" },
-      { name: "accept_time", title: "接受时间" },
+      { dataIndex: "follow", title: "关注" },
+      { dataIndex: "title", title: "标题" },
+      { dataIndex: "from_unit", title: "来文单位" },
+      { dataIndex: "accept_time", title: "接受时间" },
     ],
     dataSource: [],
   },
@@ -27,10 +27,10 @@ const tabs = [
     label: "我的待阅",
     value: 2,
     columns: [
-      { name: "follow", title: "关注1" },
-      { name: "title", title: "标题1" },
-      { name: "from_unit", title: "来文单位1" },
-      { name: "accept_time", title: "接受时间1" },
+      { dataIndex: "follow", title: "关注1" },
+      { dataIndex: "title", title: "标题1" },
+      { dataIndex: "from_unit", title: "来文单位1" },
+      { dataIndex: "accept_time", title: "接受时间1" },
     ],
     dataSource: [],
   },
@@ -38,10 +38,10 @@ const tabs = [
     label: "我的已办",
     value: 3,
     columns: [
-      { name: "follow", title: "关注2" },
-      { name: "title", title: "标题2" },
-      { name: "from_unit", title: "来文单位2" },
-      { name: "accept_time", title: "接受时间2" },
+      { dataIndex: "follow", title: "关注2" },
+      { dataIndex: "title", title: "标题2" },
+      { dataIndex: "from_unit", title: "来文单位2" },
+      { dataIndex: "accept_time", title: "接受时间2" },
     ],
     dataSource: [],
   },
@@ -49,10 +49,10 @@ const tabs = [
     label: "我发起的",
     value: 4,
     columns: [
-      { name: "follow", title: "关注3" },
-      { name: "title", title: "标题3" },
-      { name: "from_unit", title: "来文单位3" },
-      { name: "accept_time", title: "接受时间3" },
+      { dataIndex: "follow", title: "关注3" },
+      { dataIndex: "title", title: "标题3" },
+      { dataIndex: "from_unit", title: "来文单位3" },
+      { dataIndex: "accept_time", title: "接受时间3" },
     ],
     dataSource: [],
   },
@@ -67,11 +67,7 @@ export default ({}: Props) => {
   return (
     <div className={`${s.wrap}`}>
       <div className={`${s.row} f-sb-s`}>
-        <BaseSection
-          title="待办事项"
-          count={108}
-          className={`${s.section} f-2`}
-        >
+        <BaseSection title="待办事项" count={108} className={`${s.section} f-2`}>
           <Tabs
             onChange={onChange}
             type="card"
@@ -81,13 +77,7 @@ export default ({}: Props) => {
               return {
                 label,
                 key: String(value),
-                children: (
-                  <BaseTable
-                    size="small"
-                    columns={columns}
-                    dataSource={dataSource}
-                  />
-                ),
+                children: <BaseTable size="small" columns={columns} dataSource={dataSource} />,
               };
             })}
           />
@@ -109,17 +99,11 @@ export default ({}: Props) => {
           </ul>
         </BaseSection>
       </div>
-      <BaseSection
-        title="通图图表 - 折线图"
-        className={`${s.row} ${s.section}`}
-      >
+      <BaseSection title="通图图表 - 折线图" className={`${s.row} ${s.section}`}>
         <LineChart unit="亿元" />
       </BaseSection>
       <div className={`${s.row} f-sb-s`}>
-        <BaseSection
-          title="基础万能图 - BaseChart"
-          className={`${s.section} f-1`}
-        >
+        <BaseSection title="基础万能图 - BaseChart" className={`${s.section} f-1`}>
           {<BaseChart />}
         </BaseSection>
         <BaseSection title="折线图 - LineChart" className={`${s.section} f-1`}>
@@ -127,10 +111,7 @@ export default ({}: Props) => {
         </BaseSection>
       </div>
       <div className={`${s.row} f-sb-s`}>
-        <BaseSection
-          title="柱状图 - BarChart（单维度）"
-          className={`${s.section} f-1`}
-        >
+        <BaseSection title="柱状图 - BarChart（单维度）" className={`${s.section} f-1`}>
           <BarChart
             unit="亿元"
             data={[
@@ -142,16 +123,10 @@ export default ({}: Props) => {
             ]}
           />
         </BaseSection>
-        <BaseSection
-          title="柱状图 - BarChart（多维度）"
-          className={`${s.section} f-1`}
-        >
+        <BaseSection title="柱状图 - BarChart（多维度）" className={`${s.section} f-1`}>
           <BarChart unit="亿元" />
         </BaseSection>
-        <BaseSection
-          title="柱状图 - BarsChart（多个）"
-          className={`${s.section} f-1`}
-        >
+        <BaseSection title="柱状图 - BarsChart（多个）" className={`${s.section} f-1`}>
           <BarsChart />
         </BaseSection>
         <BaseSection title="饼图 - PieChart" className={`${s.section} f-1`}>

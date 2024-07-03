@@ -1,11 +1,11 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, useContext, useMemo, useState } from "react";
 import BaseTable from "@/components/table/BaseTable";
 import BaseBtn from "@/components/BaseBtn";
-import { message, Switch } from "antd";
+import { Switch } from "antd";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { useLocation } from "react-router-dom";
-import { TableCol } from "@/components/table/_types";
-import { storage } from "@/utils";
+import { TableColAttrs } from "@/components/table/_types";
+import { showMessage, storage } from "@/utils";
 import { CommonObj } from "@/vite-env";
 
 export interface SetTableRowItem {
@@ -16,15 +16,18 @@ export interface SetTableRowItem {
   isOrder: boolean;
 }
 interface Props {
-  allColumns?: TableCol[];
-  columns?: TableCol[];
+  className?: string;
+  style?: CSSProperties;
+  allColumns?: TableColAttrs[];
+  columns?: TableColAttrs[];
   resetColumns?: () => void;
   onShowChange: (name: string, val: boolean, ind: number) => void;
   onExportChange: (name: string, val: boolean, ind: number) => void;
   onSortChange: (name: string, val: boolean, ind: number) => void;
+  [key: string]: any;
 }
 
-function getCols({ onShowChange, onExportChange, onSortChange }: CommonObj): TableCol[] {
+function getCols({ onShowChange, onExportChange, onSortChange }: CommonObj): TableColAttrs[] {
   return [
     { name: "colText", title: "列名称" },
     // { name: "colName", title: "属性名" },
@@ -74,7 +77,17 @@ function getCols({ onShowChange, onExportChange, onSortChange }: CommonObj): Tab
     },
   ];
 }
-export default ({ allColumns = [], columns = [], resetColumns, onShowChange, onExportChange, onSortChange }: Props) => {
+export default ({
+  className = "",
+  style,
+  allColumns = [],
+  columns = [],
+  resetColumns,
+  onShowChange,
+  onExportChange,
+  onSortChange,
+  ...restProps
+}: Props) => {
   const { pathname } = useLocation();
   const { closePopup } = useContext(PopupContext);
   const [tableKey, setTableKey] = useState(Date.now());
@@ -96,7 +109,7 @@ export default ({ allColumns = [], columns = [], resetColumns, onShowChange, onE
     // storeColFields[pathname] = colFields;
     // console.log(storeColFields, "storeColFields-------保存");
     // storage.setItem("colFields", storeColFields);
-    message.success("保存成功");
+    showMessage("保存成功");
     closePopup("drawer");
   }
   function handleReset() {
@@ -104,12 +117,12 @@ export default ({ allColumns = [], columns = [], resetColumns, onShowChange, onE
     setTableKey(Date.now());
   }
   return (
-    <>
+    <div className={`${className}`} style={{ width: "600px", ...style }} {...restProps}>
       <BaseTable columns={getCols({ onShowChange, onExportChange, onSortChange })} dataSource={colFields} key={tableKey} />
       <div className="f-c-c mt-16">
         <BaseBtn onClick={handleSave} btn={{ name: "submit", text: "保存" }} />
         <BaseBtn onClick={handleReset} btn="reset" />
       </div>
-    </>
+    </div>
   );
 };

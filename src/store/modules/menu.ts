@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { LinkType, ResponseMenuItem } from "@/layout/_components/SideMenu/_types";
 import { AntdMenuItem } from "@/layout/_components/TheMenu";
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
-import { defaultHomePath, storage } from "@/utils";
-import { baseStore } from "@/store";
+import { createSlice, current } from "@reduxjs/toolkit";
+import { storage } from "@/utils";
 import * as Icons from "@ant-design/icons";
 import { CommonObj } from "@/vite-env";
 import { updateState } from "../_utils";
@@ -14,7 +13,7 @@ export function getMenuNavs(menus: ResponseMenuItem[] = [], level = 0): AntdMenu
     let { path, icon = "TwitterOutlined", children, label, type } = item;
     const obj: CommonObj = {
       key: path,
-      icon: level < 1 ? React.createElement(Icons[icon] ?? Icons.TwitterOutlined) : null,
+      icon: level < 1 ? React.createElement(Icons[icon] ?? Icons.TwitterOutlined) : null, //为了保持统一美观好看性，菜单多语两级的就不展示图标了
       label,
       type,
     };

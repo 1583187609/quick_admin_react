@@ -1,5 +1,28 @@
 .base-img {
-}
-.round {
-  border-radius: 50%;
+  display: block; //去除inline-block的间隙
+  height: 120px;
+  width: 120px;
+  border-radius: @radius-main;
+  &.round {
+    border-radius: 50%;
+  }
+  &.to {
+    cursor: pointer;
+  }
+  &.empty {
+    color: @color-text-light;
+    font-size: 12px;
+    background: @color-bg-lighter;
+  }
+  .err-box {
+    height: 100%;
+    width: 100%;
+    color: @color-text-light;
+    background: @color-bg-lighter;
+    .tips {
+      margin-top: @gap-qtr;
+      font-size: 12px;
+      line-height: 1;
+    }
+  }
 }

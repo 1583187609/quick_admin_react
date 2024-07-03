@@ -101,7 +101,7 @@ const handleLoginOut = createAsyncThunk("userLoginOut", async (payload: CommonOb
     });
     storage.clear("session"); //清除sessionStorage的数据
     // menuStore.actions.changeActiveIndex(0);
-    showMessage("退出成功！", "success");
+    showMessage("退出成功！");
     const { pathname } = location;
     // const { path, fullPath, name } = route;
     // router.push({

@@ -3,7 +3,7 @@
  */
 import { HomeOutlined, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { storage, copyText, defaultHomePath } from "@/utils";
+import { storage, copyText, defaultHomePath, showMessage } from "@/utils";
 import { useEventListener, useRouter } from "@/hooks";
 import { useLocation } from "react-router-dom";
 import PageTagItem from "./TagItem";
@@ -134,16 +134,16 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
       cloneTags = [];
       newPath = defaultHomePath;
     } else if (type === "reload") {
-      reload?.(() => message.success("刷新成功"));
+      reload?.(() => showMessage("刷新成功"));
     } else if (type === "copyPath") {
       copyText(cloneTags[ind]?.path || defaultHomePath);
     } else if (type === "copyWholePath") {
       const path = isHome ? defaultHomePath : cloneTags[menuInd]!.path;
       copyText(window.location.origin + path);
     } else if (type === "closeSaved") {
-      message.warning("暂未开通关闭已保存功能");
+      showMessage("暂未开通关闭已保存功能", "warning");
     } else {
-      message.error("暂不支持此类型：" + type);
+      showMessage("暂不支持此类型：" + type, "error");
     }
     setTags(cloneTags);
     // router.push(newPath);

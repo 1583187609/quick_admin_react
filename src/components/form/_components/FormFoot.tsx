@@ -3,6 +3,7 @@ import { RedoOutlined, LoadingOutlined, CloudUploadOutlined } from "@ant-design/
 import { CommonObj } from "@/vite-env";
 import { getBtnProps } from "../_utils";
 import { BtnAttrs } from "@/components/form/_types";
+import { showMessage } from "@/utils";
 
 interface Props {
   loading: boolean;
@@ -17,7 +18,7 @@ export default ({ loading, submitButton = "提交", resetButton = "重置", read
   const resetBtn = getBtnProps(resetButton);
   //点击重置按钮
   function handleReset() {
-    if (readOnly) return message.info("只读模式-不可重置");
+    if (readOnly) return showMessage("只读模式-不可重置", "info");
     form.resetFields();
   }
   return (

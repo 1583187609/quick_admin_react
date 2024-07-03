@@ -1,39 +1,37 @@
-import { CSSProperties, MouseEventHandler } from "react";
-import avatar from "@/assets/images/default/avatar.png";
-import { toCssVal } from "@/utils";
-import { useRouter } from "@/hooks";
+import { CSSProperties } from "react";
+import avatarImg from "@/assets/images/default/avatar.png";
+import avatarManImg from "@/assets/images/default/avatar-man.png";
+import avatarWomanImg from "@/assets/images/default/avatar-woman.png";
+import BaseImg from "@/components/BaseImg";
+import { StrNum } from "@/vite-env";
 import s from "./index.module.less";
 
-type Props = {
+interface Props {
   className?: string;
   style?: CSSProperties;
-  onClick?: Function;
-  size?: number | string;
+  onClick?: (e: Event) => void;
+  size?: StrNum;
+  height?: StrNum;
+  width?: StrNum;
   src?: string;
   to?: string; //要跳转的页面地址
   round?: boolean;
+  gender?: 0 | 1; //性别
   [key: string]: any;
+}
+const avatarMap: Record<1 | 2, any> = {
+  1: avatarManImg,
+  2: avatarWomanImg,
 };
-export default ({ className = "", style, onClick, size, src, to, round = true, ...restProps }: Props) => {
-  const router = useRouter();
-  function handleClick(e: MouseEventHandler<HTMLImageElement>) {
-    to ? router.push(to) : onClick?.(e);
-  }
+export default ({ className = "", style, size, height, width, src, gender, preview = !!src, ...restProps }: Props) => {
   return (
-    <>
-      <img
-        className={`${s["base-avatar"]} ${round ? s.round : ""} ${className}`}
-        style={{
-          cursor: to || onClick ? "pointer" : "inherit",
-          height: toCssVal(size),
-          width: toCssVal(size),
-          ...style,
-        }}
-        onClick={handleClick}
-        src={src || avatar}
-        alt="图片加载失败"
-        {...restProps}
-      />
-    </>
+    <BaseImg
+      className={`${className} ${s["base-avatar"]}`}
+      height={size ?? height}
+      width={size ?? width}
+      src={src || avatarMap[gender as 1 | 2] || avatarImg}
+      preview={preview}
+      {...restProps}
+    />
   );
 };

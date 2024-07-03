@@ -45,42 +45,42 @@ export const fields: FormField[] = [
 
 export const columns: TableCol[] = [
   {
-    name: "id",
+    dataIndex: "id",
     title: "ID",
     width: 100,
   },
   {
-    name: "name",
+    dataIndex: "name",
     title: "姓名",
     width: 100,
   },
   {
-    name: "gender_text",
+    dataIndex: "gender_text",
     title: "性别",
     width: 100,
   },
   {
-    name: "age",
+    dataIndex: "age",
     title: "年龄",
     width: 50,
   },
   {
-    name: "address_text",
+    dataIndex: "address_text",
     title: "地址",
     width: 250,
   },
   {
-    name: "phone",
+    dataIndex: "phone",
     title: "电话",
     width: 120,
   },
   {
-    name: "type_text",
+    dataIndex: "type_text",
     title: "用户类型",
     width: 100,
   },
   {
-    name: "status_text",
+    dataIndex: "status_text",
     title: "账号状态",
     width: 80,
   },

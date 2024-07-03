@@ -12,6 +12,7 @@ export const defaultTableAttrs: CommonObj = {
 // 默认的表格列属性
 export const defaultColumnAttrs: CommonObj = {
   align: "center",
+  className: "table-center",
 };
 
 // 默认的表格分页属性

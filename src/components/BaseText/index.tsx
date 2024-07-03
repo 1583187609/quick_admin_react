@@ -16,7 +16,7 @@ interface Props {
   width?: StrNum;
   [key: string]: any;
 }
-export default ({ className = "", maxLine = 5, title = "查看完整内容", width = "500px", children, ...restProps }: Props) => {
+export default ({ className = "", maxLine = 5, title = "详情", width = "500px", children, ...restProps }: Props) => {
   const { openPopup } = useContext(PopupContext);
   const baseTextRef = useRef<any>(null);
   const [isOver, setIsOver] = useState<boolean>(false);

@@ -13,8 +13,7 @@ import { Button, Form, message, Col } from "antd";
 import { CSSProperties } from "react";
 import BaseFormItem, { FormField } from "@/components/BaseFormItem";
 import { RedoOutlined, LoadingOutlined, SearchOutlined, DownOutlined } from "@ant-design/icons";
-import { getMaxLength, typeOf, convertDateField } from "@/utils";
-import { merge } from "lodash";
+import { getMaxLength, typeOf, convertDateField, showMessage } from "@/utils";
 import { useEventListener } from "@/hooks";
 import { CommonObj } from "@/vite-env";
 import { defaultFormProps } from "@/components/form/_config";
@@ -33,6 +32,7 @@ interface Props {
   onFieldsChange?: (changedVals: CommonObj, allVals: CommonObj) => void;
   onSubmit?: (data: CommonObj, cb: () => void) => void;
   onReset?: () => void;
+  [key: string]: any;
 }
 const colSpanAttrs: CommonObj = {
   xs: 24, // <576
@@ -73,7 +73,7 @@ export default forwardRef(
       fields = [],
       extraParams,
       onValuesChange,
-      onSubmit = (data: CommonObj) => message.warning(`暂未处理 【查询】事件 - onSubmit`),
+      onSubmit = (data: CommonObj) => showMessage(`暂未处理 【查询】事件 - onSubmit`, "warning"),
       onReset,
       ...restProps
     }: Props,
@@ -84,7 +84,7 @@ export default forwardRef(
     const [colNum, setColNum] = useState(2);
     const [isFold, setIsFold] = useState(true);
     const labelWidth = getMaxLength(fields) + "em"; //label中最长字符的个数
-    const formProps = merge({}, defaultFormProps, restProps);
+    const formProps = Object.assign({}, defaultFormProps, restProps);
     const sliceEndInd = useMemo(() => {
       return isFold ? (colNum > 1 ? colNum * rowNum - 1 : 1 * rowNum) : undefined;
     }, [isFold, colNum, rowNum]);
@@ -99,7 +99,7 @@ export default forwardRef(
     }
     function handleFinishFailed(err: any) {
       const tips = err.errorFields?.[0]?.errors?.[0];
-      message.error(tips);
+      showMessage(tips, "error");
     }
     function handleReset() {
       form.resetFields();

@@ -7,16 +7,10 @@ import { ButtonSize } from "antd/es/button";
 import { ButtonType } from "antd/lib/button";
 import { useMemo, CSSProperties } from "react";
 
-import {
-  BaseBtnType,
-  BtnItem,
-  BtnName,
-  BtnMap,
-  PopconfirmAttrs,
-  BtnFn,
-} from "./_types";
+import { BaseBtnType, BtnItem, BtnName, BtnMap, PopconfirmAttrs, BtnFn } from "./_types";
 import { getPopconfirmAttrs, getBtnObj } from "./_utils";
 import { useRouter } from "@/hooks";
+import { showMessage } from "../_utils";
 
 export * from "./_types";
 export * from "./_utils";
@@ -32,60 +26,29 @@ interface Props {
     type?: ButtonType;
   };
   onClick?: (name: BtnName) => void;
+  [key: string]: any;
 }
 
-export default ({
-  className = "",
-  style,
-  btn,
-  attrs,
-  children = "",
-  onClick,
-}: Props) => {
+export default ({ className = "", style, btn, attrs, onClick, children, ...restProps }: Props) => {
   const router = useRouter();
-  const newBtn: BtnItem = useMemo(
-    () => getBtnObj(btn, { attrs } as BtnItem),
-    [btn]
-  );
+  const newBtn: BtnItem = getBtnObj(btn, { attrs } as BtnItem);
   //处理点击事件
   function handleClick() {
     const { name, text, to } = newBtn;
-    if (to) {
-      router.push(to);
-    } else if (onClick) {
-      onClick(name);
-    } else {
-      message.error(`暂未处理 【${text}】按钮 - ${name}`);
-    }
+    if (to) return router.push(to);
+    if (onClick) return onClick(name);
+    showMessage(`暂未处理 【${text}】按钮 - ${name}`, "error");
   }
 
-  return (
-    <>
-      {newBtn.popconfirm ? (
-        <Popconfirm
-          onConfirm={handleClick}
-          {...(newBtn.popconfirm as PopconfirmAttrs)}
-        >
-          <Button
-            className={`${className}`}
-            style={style}
-            icon={newBtn.icon}
-            {...newBtn.attrs}
-          >
-            {children || newBtn.text}
-          </Button>
-        </Popconfirm>
-      ) : (
-        <Button
-          onClick={handleClick}
-          className={`${className}`}
-          style={style}
-          icon={newBtn.icon}
-          {...newBtn.attrs}
-        >
-          {children || newBtn.text}
-        </Button>
-      )}
-    </>
+  return newBtn.popconfirm ? (
+    <Popconfirm onConfirm={handleClick} {...(newBtn.popconfirm as PopconfirmAttrs)}>
+      <Button className={`${className}`} style={style} icon={newBtn.icon} {...restProps} {...newBtn.attrs}>
+        {children ?? newBtn.text}
+      </Button>
+    </Popconfirm>
+  ) : (
+    <Button onClick={handleClick} className={`${className}`} style={style} icon={newBtn.icon} {...restProps} {...newBtn.attrs}>
+      {children ?? newBtn.text}
+    </Button>
   );
 };

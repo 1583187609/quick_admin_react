@@ -8,10 +8,10 @@ import { BtnName } from "@/components/BaseBtn";
 import BaseCrud from "@/components/BaseCrud";
 import { FormField } from "@/components/BaseFormItem";
 import { TableCol } from "@/components/table/_types";
-import { message } from "antd";
 import { useContext } from "react";
 import AddEdit from "./AddEdit";
 import { CommonObj, FinallyNext } from "@/vite-env";
+import { showMessage } from "@/utils";
 
 const fields: FormField[] = [
   {
@@ -34,11 +34,11 @@ const fields: FormField[] = [
 ];
 
 const columns: TableCol[] = [
-  { name: "role_text", title: "角色类型", width: 150 },
-  { name: "status", title: "启用状态", width: 80 },
-  { name: "create_time", title: "创建时间", width: 180 },
-  { name: "update_time", title: "更新时间", width: 180 },
-  { name: "remark", title: "备注", width: 250 },
+  { dataIndex: "role_text", title: "角色类型", width: 150 },
+  { dataIndex: "status", title: "启用状态", width: 80 },
+  { dataIndex: "create_time", title: "创建时间", width: 180 },
+  { dataIndex: "update_time", title: "更新时间", width: 180 },
+  { dataIndex: "remark", title: "备注", width: 250 },
 ];
 
 export default () => {
@@ -49,7 +49,7 @@ export default () => {
       add: () => openPopup("新增", <AddEdit />),
       delete: () => handleDelete(ids, next),
     };
-    map[name] ? map[name]() : message.info(`点击了${name}按钮`);
+    map[name] ? map[name]() : showMessage(`点击了${name}按钮`, "info");
   }
   function handleOperateBtn(name: BtnName, row: CommonObj, next: FinallyNext) {
     const { id } = row;
@@ -60,7 +60,7 @@ export default () => {
       forbid: () => handleToggleStatus(name, id, next),
       enable: () => handleToggleStatus(name, id, next),
     };
-    map[name] ? map[name]() : message.info(`点击了${name}按钮`);
+    map[name] ? map[name]() : showMessage(`点击了${name}按钮`, "info");
   }
   function handleDelete(ids: string[], next: FinallyNext) {
     next();

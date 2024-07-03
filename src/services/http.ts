@@ -8,9 +8,9 @@ const realUrl = "https://cloudapi.nsusn.com/api/csmweb";
 //   ? "https://mockapi.eolink.com/wejlzfKceefd6d629b89a3818c1b5f4d447d672cdbde39c"
 //   : realUrl;
 import axios, { AxiosResponse, AxiosRequestConfig } from "axios";
-import { message } from "antd";
-import { storage, typeOf } from "@/utils";
+import { showMessage, storage, typeOf } from "@/utils";
 import qs from "qs";
+import { CommonObj, SetTimeout, TostMessageType } from "@/vite-env";
 // import { useRouter } from "vue-router";
 
 type ToastType = "warning" | "info" | "success" | "error";
@@ -57,7 +57,7 @@ const hideLoading = () => {
 };
 const service = axios.create({ timeout: 6000 });
 const isDev = process.env.NODE_ENV === "development";
-function showToast(msg: string, type: ToastType = "warning") {
+function showToast(msg: string, type: TostMessageType = "warning") {
   if (historyMsg === msg) {
     historyMsg = "";
     return;
@@ -68,7 +68,7 @@ function showToast(msg: string, type: ToastType = "warning") {
     historyMsg = "";
     timer && clearTimeout(timer);
   }, 300);
-  message[type](msg);
+  showMessage(msg, type);
 }
 
 service.interceptors.request.use(
@@ -110,10 +110,7 @@ service.interceptors.response.use(
     const { message, config } = err;
     hideLoading();
     if (message === "Network Error") {
-      showToast(
-        useMock ? "请输入命令【npm run mock】启动mock服务！" : "网络错误",
-        "error"
-      );
+      showToast(useMock ? "请输入命令【npm run mock】启动mock服务！" : "网络错误", "error");
     } else if (message.includes("404")) {
       console.error("接口不存在：" + config.url);
       showToast("接口不存在");
@@ -140,13 +137,7 @@ service.interceptors.response.use(
  * @param {Object} others 除上述三个axios配置参数外，其余任意多个axios的标准参数
  * @returns
  */
-export default (
-  method = "get",
-  url = "",
-  data: any,
-  others = {},
-  isStringify = false
-) => {
+export default (method = "get", url = "", data: any, others = {}, isStringify = false) => {
   method = method.toLowerCase();
   // if (!url.startsWith("http")) {
   //   url = baseUrl + url;

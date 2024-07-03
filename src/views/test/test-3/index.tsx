@@ -6,12 +6,125 @@ import { DeleteUserList, PostMockCommonExport, GetMockCommonList, PostMockCommon
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { BtnName } from "@/components/BaseBtn";
 import BaseCrud, { ExportBtnParams } from "@/components/BaseCrud";
-import { message } from "antd";
 import React, { useContext, useRef } from "react";
 import AddEdit from "./AddEdit";
-import { fields, columns } from "./fields";
 import { DownloadOutlined } from "@ant-design/icons";
 import { CommonObj, FinallyNext } from "@/vite-env";
+import { showMessage } from "@/utils";
+import { TableCol } from "@/components/table/_types";
+import { FormField } from "@/components/BaseFormItem";
+import BaseRange from "@/components/BaseRange";
+import InfoSteps from "@/views/_components/InfoSteps";
+
+export const fields: FormField[] = [
+  {
+    name: "id",
+    label: "用户ID",
+  },
+  {
+    name: "id",
+    label: "用户ID",
+  },
+  {
+    name: "name",
+    label: "用户姓名",
+  },
+  {
+    name: "gender",
+    label: "性别",
+    type: "Select",
+    attrs: {
+      options: "Gender",
+    },
+  },
+  {
+    name: "age",
+    label: "年龄",
+    type: "Custom",
+    element: <BaseRange />,
+  },
+  {
+    name: "type",
+    label: "用户类型",
+    type: "Select",
+    attrs: {
+      options: "RoleType",
+    },
+  },
+  {
+    name: "status",
+    label: "账号状态",
+    type: "Select",
+    attrs: {
+      options: "EnableStatus",
+    },
+  },
+];
+
+export const columns: TableCol[] = [
+  {
+    type: "UserInfo",
+    title: "自定义组件列-内置[UserInfo]",
+  },
+  {
+    dataIndex: "zdyzj",
+    title: "自定义组件-非内置",
+    width: 150,
+    render: (text: any, row: CommonObj, ind: number) => <InfoSteps data={row} />,
+  },
+  {
+    dataIndex: "name",
+    title: "自定义表格头",
+    width: 120,
+  },
+  {
+    type: "BaseImg",
+    title: "图片[BaseImg]",
+  },
+  {
+    type: "BaseText",
+    dataIndex: "produce",
+    title: "自我介绍[BaseText]",
+  },
+  {
+    dataIndex: "phone",
+    title: "formatter列",
+    render(text: any, row: CommonObj, ind: number) {
+      return "formatter列";
+    },
+  },
+  {
+    type: "BaseTag",
+    title: "状态[BaseTag]",
+    width: 120,
+  },
+  {
+    dataIndex: "create_time",
+    title: "时间（内置宽度）",
+  },
+  {
+    type: "create",
+    dataIndex: "create_time",
+    title: "创建时间[create]",
+  },
+  {
+    type: "update",
+    dataIndex: "update_time",
+    title: "修改时间[update]",
+  },
+  {
+    type: "switch",
+    title: "启/禁用",
+  },
+  {
+    type: "remark",
+    title: "备注[remark]",
+  },
+  {
+    dataIndex: "wltl",
+    title: "未联调列",
+  },
+];
 
 export default () => {
   const { openPopup } = useContext(PopupContext);
@@ -23,7 +136,7 @@ export default () => {
       delete: () => handleDelete(ids, next),
       export: () => handleExport({ ...params, exports: { ids, fields } }, next),
     };
-    nameMap[name] ? nameMap[name]() : message.warning(`点击了${name}按钮`);
+    nameMap[name] ? nameMap[name]() : showMessage(`点击了${name}按钮`, "info");
   }
   //点击操作按钮
   function onOperateBtn(name: BtnName, row: CommonObj, next: FinallyNext) {
@@ -35,7 +148,7 @@ export default () => {
       forbid: () => handleForbid(id, next),
       enable: () => handleEnable(id, next),
     };
-    nameMap[name] ? nameMap[name]() : message.warning(`点击了${name}按钮`);
+    nameMap[name] ? nameMap[name]() : showMessage(`点击了${name}按钮`, "info");
   }
   //删除
   function handleDelete(ids: React.Key[], next: FinallyNext) {

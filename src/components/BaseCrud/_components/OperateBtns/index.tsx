@@ -5,34 +5,30 @@
 import { Button, Dropdown } from "antd";
 import BaseBtn, { BtnName, BtnItem } from "@/components/BaseBtn";
 import { DownOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import { merge } from "lodash";
+import { CSSProperties, useState } from "react";
+import { CommonObj } from "@/vite-env";
 import s from "./index.module.less";
 interface Props {
   className?: string;
+  style?: CSSProperties;
   btns?: BtnItem[];
   maxNum?: number;
   onClick?: (name: BtnName) => void;
+  [key: string]: any;
 }
+
 const defaultBaseBtnAttrs: CommonObj = {
   size: "small",
   type: "link",
 };
-export default ({ className = "", btns = [], maxNum = 3, onClick }: Props) => {
+
+export default ({ className = "", btns = [], maxNum = 3, onClick, ...restProps }: Props) => {
   const [show, setShow] = useState(false);
   const isOver = btns.length > maxNum;
   return (
-    <div className={`${className} ${s["operate-btns"]}`}>
+    <div className={`${className} ${s["operate-btns"]}`} {...restProps}>
       {btns.slice(0, isOver ? maxNum - 1 : maxNum).map((btn, ind: number) => {
-        return (
-          <BaseBtn
-            attrs={defaultBaseBtnAttrs}
-            className={s.btn}
-            btn={btn}
-            onClick={onClick}
-            key={ind}
-          />
-        );
+        return <BaseBtn attrs={defaultBaseBtnAttrs} className={s.btn} btn={btn} onClick={onClick} key={ind} />;
       })}
       {isOver && (
         <Dropdown
@@ -59,10 +55,7 @@ export default ({ className = "", btns = [], maxNum = 3, onClick }: Props) => {
             }),
           }}
         >
-          <Button
-            icon={<DownOutlined />}
-            {...merge({}, defaultBaseBtnAttrs, { type: "text" })}
-          >
+          <Button icon={<DownOutlined />} {...Object.assign({}, defaultBaseBtnAttrs, { type: "text" })}>
             更多
           </Button>
         </Dropdown>

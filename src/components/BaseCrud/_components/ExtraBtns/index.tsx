@@ -4,7 +4,7 @@
 
 import BaseBtn, { BtnItem, BtnName } from "@/components/BaseBtn";
 import { sortObjArrByKey } from "@/utils";
-import { useContext, useEffect, useState } from "react";
+import { CSSProperties, useContext, useEffect } from "react";
 import {
   PrinterTwoTone,
   SettingTwoTone,
@@ -17,7 +17,7 @@ import { Button, Tooltip, Dropdown } from "antd";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import SetPrint from "../SetPrint";
 import SetTable, { SetTableRowItem } from "../SetTable";
-import { TableCol } from "@/components/table/_types";
+import { TableColAttrs } from "@/components/table/_types";
 
 export type ToolsType = "print" | "colSet";
 export interface ExportFieldItem {
@@ -26,15 +26,17 @@ export interface ExportFieldItem {
 }
 interface Props {
   className?: string;
-  allColumns: TableCol[];
-  columns: TableCol[];
-  setColumns: (columns: TableCol[]) => void;
+  style?: CSSProperties;
+  allColumns: TableColAttrs[];
+  columns: TableColAttrs[];
+  setColumns: (columns: TableColAttrs[]) => void;
   btns?: BtnItem[];
   tools?: ToolsType[];
   batchBtn?: boolean; //是否显示批量选择按钮
   seledNum?: number; //已选择的数量
   total?: number; //总记录数量
   onClick?: (name: BtnName) => void;
+  [key: string]: any;
 }
 const toolsMap = {
   print: {
@@ -83,6 +85,7 @@ export default ({
   seledNum = 0,
   batchBtn = false,
   total = 0,
+  ...restProps
 }: Props) => {
   const { openPopup } = useContext(PopupContext);
 
@@ -138,7 +141,7 @@ export default ({
     console.log(name, isShow, "handleSortChange-------");
   }
   return (
-    <div className={`${className} f-sb-c`}>
+    <div className={`${className} f-sb-c`} {...restProps}>
       {btns.map((btn, ind) => {
         return <BaseBtn onClick={onClick} btn={btn} key={ind} />;
       })}

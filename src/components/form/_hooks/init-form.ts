@@ -49,7 +49,7 @@ export default (props: CommonObj, ref: any) => {
     handleFinish(params: CommonObj) {
       const { readOnly, isOmit = true, log = true, onSubmit, fetch, submitButton = "提交" } = props;
       const text = getBtnProps(submitButton).children;
-      if (readOnly) return message.info("只读模式 - 不可提交");
+      if (readOnly) return showMessage("只读模式 - 不可提交", "info");
       const newParams = convertDateField(fields, isOmit ? omitAttrs(params) : params);
       log && printLog(newParams, "req");
       setLoading(true);
@@ -66,7 +66,7 @@ export default (props: CommonObj, ref: any) => {
       } else {
         fetch(newParams)
           .then((res: any) => {
-            message.success(`${text}成功！`);
+            showMessage(`${text}成功！`);
             closePopup?.();
           })
           .finally(() => setLoading(false));
@@ -75,7 +75,7 @@ export default (props: CommonObj, ref: any) => {
     // 处理表单提交时，校验未通过时的逻辑
     handleFinishFailed(err: CommonObj) {
       const tips = err.errorFields?.[0]?.errors?.[0];
-      message.error(tips);
+      showMessage(tips, "error");
     },
   };
 };

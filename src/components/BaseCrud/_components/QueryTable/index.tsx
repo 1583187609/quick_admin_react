@@ -8,7 +8,7 @@ import { BtnName, BaseBtnType, BtnItem, getBtnObj } from "@/components/BaseBtn";
 import { btnsMap } from "@/components/BaseBtn";
 import { emptyVals, showMessage } from "@/utils";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
-import { TableCol, TableColAttrs, RowKeyType, StandardTableColAttrs } from "@/components/table/_types";
+import { TableCol, TableColAttrs, RowKeyType, StandardTableColAttrs, SpecialColKeys } from "@/components/table/_types";
 import { defaultColumnAttrs, defaultTableAttrs, defaultPagination } from "@/components/table/_config";
 import { specialColMap } from "@/components/table/_utils";
 import { CommonObj, FinallyNext } from "@/vite-env";
@@ -82,22 +82,24 @@ export default forwardRef(
     }: Props,
     ref: any
   ) => {
+    let rowSelection: undefined | CommonObj;
     const tableRef = useRef(null);
     const { closePopup } = useContext(PopupContext);
     const tableAttrs = Object.assign({}, defaultTableAttrs, restProps);
+    const colKeys: string[] = [];
     const newCols = useMemo(() => {
-      columns = columns.filter(it => !!it);
-      columns = columns.map((item: TableCol) => {
-        const { name, type, ...rest } = item as TableColAttrs;
-        let tempCols = {
-          dataIndex: name,
+      let cols = columns.filter(it => !!it) as TableColAttrs[];
+      cols = cols.map((item: TableColAttrs) => {
+        const { title, type, ...rest } = item;
+        colKeys.push(rest.dataIndex ?? specialColMap[type].dataIndex);
+        return Object.assign({ width: title.includes("时间") ? 160 : 100 }, defaultColumnAttrs, {
+          ...(type ? specialColMap[type as SpecialColKeys] ?? {} : {}),
+          title,
           ...rest,
-        };
-        tempCols = Object.assign({}, type ? specialColMap[type] : undefined, defaultColumnAttrs, tempCols);
-        return tempCols;
+        });
       });
-      if (index) columns.unshift(specialColMap.index);
-      if (sort) columns.unshift(specialColMap.sort);
+      if (index) cols.unshift(specialColMap.index);
+      if (sort) cols.unshift(specialColMap.sort);
       if (operateBtns?.length) {
         const col = Object.assign({ width: getOperateColWidth(operateBtns) }, specialColMap.operate, {
           render: (text: any, row: CommonObj, ind: number) => (
@@ -107,33 +109,34 @@ export default forwardRef(
             />
           ),
         });
-        columns.push(col as TableColAttrs);
+        cols.push(col as TableColAttrs);
       }
-      return columns;
+      return cols;
     }, [columns, index, sort]);
-    const newRows = useMemo(() => {
-      return dataSource.map((item: CommonObj, ind: number) => {
-        for (let key in item) {
-          if (emptyVals.includes(item[key])) item[key] = "-";
-        }
-        if (!item[rowKey]) item[rowKey] = ind;
-        return item;
+    const newRows = dataSource.map((item: CommonObj, ind: number) => {
+      colKeys.forEach((key: string) => {
+        const val = item[key];
+        // if (key === "wltl") console.log(val, "val---------------");
+        // const isWlt = typeof val === "undefined";
+        if (emptyVals.includes(val)) item[key] = "-";
       });
-    }, [dataSource]);
-    const rowSelection: any = selection
-      ? {
-          selectedRowKeys,
-          onChange(seledKeys: string[], seledRows: CommonObj[]) {
-            onSelectionChange?.(seledKeys, seledRows);
-          },
-          onSelect(row: CommonObj, isSeled: boolean, seledRows: CommonObj[]) {
-            onSelectionSelect?.(row, isSeled, seledRows);
-          },
-          onSelectAll(isSeled: boolean, seledRows: CommonObj[], changeRows: CommonObj[]) {
-            onSelectionSelectAll?.(isSeled, seledRows, changeRows);
-          },
-        }
-      : undefined;
+      if (!item[rowKey]) item[rowKey] = ind;
+      return item;
+    });
+    if (selection) {
+      rowSelection = {
+        selectedRowKeys,
+        onChange(seledKeys: string[], seledRows: CommonObj[]) {
+          onSelectionChange?.(seledKeys, seledRows);
+        },
+        onSelect(row: CommonObj, isSeled: boolean, seledRows: CommonObj[]) {
+          onSelectionSelect?.(row, isSeled, seledRows);
+        },
+        onSelectAll(isSeled: boolean, seledRows: CommonObj[], changeRows: CommonObj[]) {
+          onSelectionSelectAll?.(isSeled, seledRows, changeRows);
+        },
+      };
+    }
     useImperativeHandle(
       ref,
       () => {
@@ -170,9 +173,9 @@ export default forwardRef(
     }
     return (
       <Table
+        className={`${className} ${s["query-table"]}`}
         rowKey={rowKey}
         rowSelection={rowSelection}
-        className={`${className} ${s["query-table"]}`}
         columns={newCols as StandardTableColAttrs[]}
         pagination={{
           ...Object.assign({}, defaultPagination, pagination),

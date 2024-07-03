@@ -35,8 +35,8 @@ export const LazyLoad = (path: string) => {
   return <Module />;
 };
 
-//将菜单allMenus处理成路由routes
-function getRoutes(menus: ResponseMenuItem[]): RouteItem[] {
+//将菜单allMenus处理成路由routes，将多层嵌套路由拉平成一级
+function getFlatRoutes(menus: ResponseMenuItem[]): RouteItem[] {
   const routes: RouteItem[] = [];
   menus.forEach((menu: ResponseMenuItem) => {
     const { children } = menu;
@@ -48,8 +48,9 @@ function getRoutes(menus: ResponseMenuItem[]): RouteItem[] {
         path,
       };
       if (children?.length) {
-        // route.children = children.map(child => getRoutes(child));
-        route.children = getRoutes(children);
+        // route.children = children.map(child => pushRoutes(child));
+        // route.children = getFlatRoutes(children);
+        children.forEach(child => pushRoutes(child));
       } else {
         route.element = LazyLoad(component as string);
         route.meta = {
@@ -93,7 +94,11 @@ export default () => {
     }
   }, [routes]);
   function createRoutes(menus: ResponseMenuItem[]) {
-    routes[0].children = [{ path: "", name: "home", element: LazyLoad("/home/index.tsx") }, ...getRoutes(menus), notFoundRoute];
+    routes[0].children = [
+      { path: "", name: "home", element: LazyLoad("/home/index.tsx") },
+      ...getFlatRoutes(menus),
+      notFoundRoute,
+    ];
     //重置一下，解决刷新后，初次加载会白屏的问题
     setRoutes([...routes, notFoundRoute]);
   }

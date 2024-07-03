@@ -1,5 +1,7 @@
+import { CommonObj } from "@/vite-env";
 import { Form, InputNumber, message } from "antd";
 import { merge } from "lodash";
+import { showMessage } from "./_utils";
 
 interface Props {
   //下面四个是默认会自动传入的属性
@@ -35,7 +37,7 @@ export default ({ id = "", names, attrs }: Props) => {
           return Promise.resolve();
         } else {
           if (minVal > maxVal) {
-            message.error("最小值不能超过最大值");
+            showMessage("最小值不能超过最大值", "error");
             return Promise.reject();
           } else {
             return Promise.resolve();

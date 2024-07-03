@@ -100,6 +100,10 @@ export function createUserList(defObj: CommonObj = {}, num = 100, idStart = 1) {
         update_time() {
           return Random.datetime();
         },
+        //备注
+        remark() {
+          return Random.ctitle(0, 20);
+        },
       },
     ],
   });

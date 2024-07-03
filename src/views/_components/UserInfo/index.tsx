@@ -67,7 +67,7 @@ export default ({ className = "", data = {}, simple, children, ...restProps }: P
           <div className={`${s["avatar-box"]} f-0 mr-8`}>
             {data.companyStatus === 0 && (
               <Popover content={data.companyName}>
-                <BaseTag className={s.company} name="AuthCase" value="3">
+                <BaseTag className={`${s.company} ${s.tag}`} name="AuthCase" value="3">
                   公司
                 </BaseTag>
               </Popover>
@@ -75,7 +75,7 @@ export default ({ className = "", data = {}, simple, children, ...restProps }: P
             <BaseAvatar className={s.avatar} src={data.avatar} gender={data.gender} />
             {data.schoolStatus === 0 && (
               <Popover content={getText("EducationType", data.schoolCertificateLevel) || "-"}>
-                <BaseTag className={s.education} name="AuthCase" value="2">
+                <BaseTag className={`${s.education} ${s.tag}`} name="AuthCase" value="2">
                   学历
                 </BaseTag>
               </Popover>

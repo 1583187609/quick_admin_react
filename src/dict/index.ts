@@ -15,7 +15,7 @@ export default {
     "1": {
       text: "未认证",
       attrs: {
-        type: "info",
+        color: "default",
       },
     },
     "2": {
@@ -39,7 +39,7 @@ export default {
     "4": {
       text: "双认证",
       attrs: {
-        type: "success",
+        color: "success",
       },
     },
   },
@@ -48,31 +48,31 @@ export default {
     0: {
       text: "未知",
       attrs: {
-        type: "info",
+        color: "default",
       },
     },
     1: {
       text: "专科",
       attrs: {
-        type: "info",
+        color: "default",
       },
     },
     2: {
       text: "本科",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     3: {
       text: "硕士",
       attrs: {
-        type: "warning",
+        color: "warning",
       },
     },
     4: {
       text: "博士",
       attrs: {
-        type: "success",
+        color: "success",
       },
     },
   },
@@ -81,13 +81,13 @@ export default {
     0: {
       text: "禁用",
       attrs: {
-        type: "info",
+        color: "default",
       },
     },
     1: {
       text: "启用",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
   },
@@ -96,13 +96,13 @@ export default {
     0: {
       text: "手动",
       attrs: {
-        type: "info",
+        color: "default",
       },
     },
     1: {
       text: "自动",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
   },
@@ -111,13 +111,13 @@ export default {
     1: {
       text: "金币",
       attrs: {
-        type: "warning",
+        color: "warning",
       },
     },
     2: {
       text: "心动嘉宾",
       attrs: {
-        type: "danger",
+        color: "error",
       },
     },
   },
@@ -126,25 +126,25 @@ export default {
     0: {
       text: "目录",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     1: {
       text: "菜单",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     2: {
       text: "按钮",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     // 3: {
     //   text: "外链",
     //   attrs: {
-    //     type: "primary",
+    //     color: "processing",
     //   },
     // },
   },
@@ -153,19 +153,19 @@ export default {
     0: {
       text: "未知",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     1: {
       text: "男",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     2: {
       text: "女",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
   },
@@ -174,37 +174,37 @@ export default {
     0: {
       text: "超级管理员",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     1: {
       text: "普通管理员",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     2: {
       text: "特殊用户",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     3: {
       text: "普通用户",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     4: {
       text: "游客用户",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     5: {
       text: "开发人员",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
   },
@@ -213,13 +213,13 @@ export default {
     0: {
       text: "否",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
     1: {
       text: "是",
       attrs: {
-        type: "primary",
+        color: "processing",
       },
     },
   },

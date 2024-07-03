@@ -3,6 +3,7 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { message, Upload } from "antd";
 import type { UploadChangeParam } from "antd/es/upload";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
+import { showMessage } from "../_utils";
 
 interface Props {
   value?: string;
@@ -18,26 +19,24 @@ const getBase64 = (img: RcFile, callback: (url: string) => void) => {
 const beforeUpload = (file: RcFile) => {
   const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
   if (!isJpgOrPng) {
-    message.error("只支持上传 JPG/PNG 格式!");
+    showMessage("只支持上传 JPG/PNG 格式!", "error");
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error("图片大小不能超过 2MB!");
+    showMessage("图片大小不能超过 2MB!", "error");
   }
   return isJpgOrPng && isLt2M;
 };
 export default ({ value, formRef, name }: Props) => {
   const [loading, setLoading] = useState(false);
-  const handleChange: UploadProps["onChange"] = (
-    info: UploadChangeParam<UploadFile>
-  ) => {
+  const handleChange: UploadProps["onChange"] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === "uploading") {
       setLoading(true);
       return;
     }
     if (info.file.status === "done") {
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj as RcFile, (url) => {
+      getBase64(info.file.originFileObj as RcFile, url => {
         setLoading(false);
         formRef?.current?.setFieldValue({ [name as string]: url });
       });
@@ -60,11 +59,7 @@ export default ({ value, formRef, name }: Props) => {
       beforeUpload={beforeUpload}
       onChange={handleChange}
     >
-      {value ? (
-        <img src={value} alt="avatar" style={{ width: "100%" }} />
-      ) : (
-        uploadButton
-      )}
+      {value ? <img src={value} alt="avatar" style={{ width: "100%" }} /> : uploadButton}
     </Upload>
   );
 };

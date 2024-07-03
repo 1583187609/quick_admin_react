@@ -1,6 +1,7 @@
+import { CommonObj } from "@/vite-env";
 import { IDomEditor } from "@wangeditor/editor";
-import { message } from "antd";
 import { CSSProperties } from "react";
+import { showMessage } from "../_utils";
 
 type InsertFnType = (url: string, alt: string, href: string) => void;
 
@@ -38,17 +39,14 @@ export function getUploadImageConfig(maxSize = 5 * 1024 * 1024) {
     },
     withCredentials: true,
     // 自定义插入图片
-    customInsert(
-      res: { data: { url: string }; code: number; msg: string },
-      insertFn: InsertFnType
-    ) {
+    customInsert(res: { data: { url: string }; code: number; msg: string }, insertFn: InsertFnType) {
       if (!res) {
-        message.error("系统异常");
+        showMessage("系统异常", "error");
         return;
       }
-      const { data, code, msg } = res;
+      const { data, code, msg = "上传失败" } = res;
       if (code !== 200) {
-        message.error(msg === undefined ? "上传失败" : msg);
+        showMessage(msg, "error");
         return;
       }
       insertFn(data?.url, "", "");
@@ -57,7 +55,7 @@ export function getUploadImageConfig(maxSize = 5 * 1024 * 1024) {
     onError(file: CommonObj) {
       const { size } = file;
       if (size > maxSize) {
-        message.warning(`图片大小不能超过${toFileSizeStr(maxSize)}`);
+        showMessage(`图片大小不能超过${toFileSizeStr(maxSize)}`, "warning");
       }
     },
   };
@@ -81,20 +79,12 @@ export function textToHtmlWithWords(
 ) {
   // wrongGroups=['假象->家乡']
   // const wrongWords = wrongGroups.map(it=>it.split("->")[0])
-  const reg = new RegExp(
-    `(${wrongWords.join("|")})|(${sensWords.join("|")})`,
-    "gi"
-  );
+  const reg = new RegExp(`(${wrongWords.join("|")})|(${sensWords.join("|")})`, "gi");
   if (str) {
-    return str.replace(
-      reg,
-      (matchStr: string, chars: string, index: number) => {
-        const isWrong = wrongWords.includes(matchStr);
-        return `<span style="${
-          isWrong ? wrongStyle : sensStyle
-        }">${matchStr}</span>`;
-      }
-    );
+    return str.replace(reg, (matchStr: string, chars: string, index: number) => {
+      const isWrong = wrongWords.includes(matchStr);
+      return `<span style="${isWrong ? wrongStyle : sensStyle}">${matchStr}</span>`;
+    });
   }
   return "";
 }

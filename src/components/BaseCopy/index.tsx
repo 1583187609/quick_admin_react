@@ -23,7 +23,7 @@ export default ({ className = "", line = 1, text = "", children = text, ...restP
     document.body.appendChild(input);
     input.select();
     const copyText = document.execCommand("copy");
-    if (copyText) showMessage("复制成功！", "success");
+    if (copyText) showMessage("复制成功！");
     document.body.removeChild(input);
   }
   return (

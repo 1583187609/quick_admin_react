@@ -1,19 +1,25 @@
 import { CSSProperties, MouseEventHandler } from "react";
-import logoImg from "@/assets/images/logo.svg";
-import { toCssVal } from "@/utils";
+import { Image } from "antd";
 import { useRouter } from "@/components/_hooks";
+import emptyImg from "@/assets/images/default/img.png";
+import { StrNum } from "@/vite-env";
 import s from "./index.module.less";
 
 type Props = {
   className?: string;
   style?: CSSProperties;
   onClick?: Function;
-  size?: number | string;
-  width?: number | string;
-  height?: number | string;
+  size?: StrNum;
+  width?: StrNum;
+  height?: StrNum;
   src?: string;
   to?: string; //要跳转的页面地址
   round?: boolean;
+  loadTips?: string;
+  errTips?: string;
+  errImgSrc?: string;
+  preview?: boolean;
+  [key: string]: any;
 };
 export default ({
   className = "",
@@ -24,7 +30,11 @@ export default ({
   height,
   src,
   to,
-  round = false,
+  round,
+  errImgSrc,
+  loadTips = "玩命加载中…",
+  errTips = "加载失败",
+  preview = !!src,
   ...restProps
 }: Props) => {
   const router = useRouter();
@@ -33,17 +43,18 @@ export default ({
   }
   return (
     <>
-      <img
-        onClick={handleClick}
-        className={`${className} ${s["base-img"]} ${round ? s.round : ""}`}
-        src={src ?? logoImg}
+      <Image
+        className={`${className} ${s["base-img"]} ${round ? s.round : ""} ${to ? s.to : ""} ${src ? "" : s.empty}`}
+        src={src ?? emptyImg}
+        width={size ?? width}
+        height={size ?? height}
         style={{
           cursor: to ? "pointer" : "inherit",
-          height: toCssVal(size ?? height),
-          width: toCssVal(size ?? width),
           ...style,
         }}
+        onClick={handleClick}
         alt="图片加载失败"
+        preview={preview}
         {...restProps}
       />
     </>
