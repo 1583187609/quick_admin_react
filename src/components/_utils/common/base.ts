@@ -7,7 +7,7 @@ import { merge } from "lodash";
 import config, { ConfigMergeStrategy } from "@/config";
 import { CommonObj, StrNum } from "@/vite-env";
 import { BtnName } from "@/components/BaseBtn";
-import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
+import { FormItem, FormFieldAttrs } from "@/components/BaseFormItem";
 import { propsJoinChar, emptyVals } from "./consts";
 
 /**
@@ -119,7 +119,7 @@ export function getChinaCharLength(str?: string): number {
  * @param fields 表单域
  * @param num 额外的空白宽度，默认2 // 2是因为：一个是间距宽度，一个是*宽度
  */
-export function getMaxLength(fields: FormField[] = [], num = 2): number {
+export function getMaxLength(fields: FormItem[] = [], num = 2): number {
   let max = 1;
   fields.forEach(item => {
     if (typeOf(item) !== "Object") return;

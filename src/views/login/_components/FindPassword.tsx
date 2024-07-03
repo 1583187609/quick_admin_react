@@ -1,7 +1,7 @@
-import { FormField } from "@/components/BaseFormItem";
+import { FormItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 
-const fields: FormField[] = [
+const fields: FormItem[] = [
   {
     name: "pheon",
     label: "电话",

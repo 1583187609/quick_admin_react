@@ -1,4 +1,4 @@
-import { FormField } from "@/components/BaseFormItem";
+import { FormItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { useEffect, useRef, useState } from "react";
 import { GetUserInfo, PostMockCommon } from "@/api-mock";
@@ -10,7 +10,7 @@ interface Props {
   disabled?: boolean;
   refreshList?: () => void;
 }
-function getFields({ isAdd = false, formRef }: CommonObj): FormField[] {
+function getFields({ isAdd = false, formRef }: CommonObj): FormItem[] {
   return [
     {
       name: "avatar",

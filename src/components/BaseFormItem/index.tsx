@@ -2,7 +2,7 @@
  * 表单字段组件
  */
 
-import { ReactNode, useMemo } from "react";
+import { useMemo } from "react";
 import {
   Cascader,
   Checkbox,
@@ -38,7 +38,6 @@ interface Props {
   className?: string;
   style?: CSSProperties;
   field: FormItemAttrs;
-  widthFull?: boolean;
   readOnly?: boolean;
   pureText?: any;
   labelWidth?: string;
@@ -75,12 +74,8 @@ function getColAttrs(col?: number | ColAttrs) {
   return col;
 }
 
-export default ({ className = "", style, field, widthFull = false, pureText, labelWidth, ...restProps }: Props) => {
+export default ({ className = "", style, field, pureText, labelWidth, ...restProps }: Props) => {
   const { getOpts, getCascaderOpts } = useDictMap();
-  // const optsMap: CommonObj = {
-  //   Cascader: (name: CascaderName) => getCascaderOpts(name),
-  //   Select: (name: DictName) => getOpts(name),
-  // };
   const { colAttrs, otherAttrs, getAttrs, ...newField }: FormItemAttrs = useMemo(() => {
     const { type = "Input", extra } = field;
     const tempField: FormItemAttrs = merge({ type }, defaultFieldAttrs[type], field);
@@ -91,18 +86,10 @@ export default ({ className = "", style, field, widthFull = false, pureText, lab
     const currValidField = valid ? defaultValidTypes[valid] : undefined;
     let { options, placeholder: phr = "" } = attrs;
     if (typeof options === "string")
-      // options = optsMap[type]?.(options);
       options = type === "Cascader" ? getCascaderOpts(options as CascaderName) : getOpts(options as DictName);
     phr = phr.includes("${label}") ? phr.replace("${label}", label as string) : phr;
     if (example) phr += `，例：${example}`;
-    tempField.attrs = merge(
-      // { style: merge({}, { width: widthFull ? "100%" : "none" }) },
-      {},
-      attrs,
-      currValidField?.attrs,
-      { placeholder: phr, options },
-      restProps
-    );
+    tempField.attrs = merge({}, attrs, currValidField?.attrs, { placeholder: phr, options }, restProps);
     tempField.rules = [
       ...(currValidField?.rules ?? []),
       ...(required ? [{ required, message: label + "不能为空" }] : []),

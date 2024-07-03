@@ -1,4 +1,4 @@
-import { FormField } from "@/components/BaseFormItem";
+import { FormItem } from "@/components/BaseFormItem";
 import { convertDateField, omitAttrs, printLog, showMessage } from "@/utils";
 import { CommonObj, FinallyNext } from "@/vite-env";
 import { BtnAttrs } from "@/components/form/_types";
@@ -9,12 +9,12 @@ export function getBtnProps(btn: string | BtnAttrs): BtnAttrs {
   return btn;
 }
 
-export function handleFinish(params: CommonObj, fields: FormField[] = [], props: CommonObj, other: CommonObj) {
+export function handleFinish(params: CommonObj, fields: FormItem[] = [], props: CommonObj, other: CommonObj) {
   const { readOnly, isOmit = true, log = true, onSubmit, fetch, submitButton = "提交" } = props;
   const text = getBtnProps(submitButton).children;
   const { setLoading, closePopup, fetchSuccess = fetchSucCb, fetchFail } = other;
   //请求成功之后的回调函数
-  function fetchSucCb(hint = props.submitText + "成功！", closeType?: ClosePopupType, cb?: () => void, isRefreshList = true) {
+  function fetchSucCb(hint = text + "成功！", closeType?: ClosePopupType, cb?: () => void, isRefreshList = true) {
     showMessage(hint);
     closePopup(closeType);
     cb?.();
@@ -47,7 +47,10 @@ export function handleFinish(params: CommonObj, fields: FormField[] = [], props:
 }
 
 // 处理表单提交时，校验未通过时的逻辑
-export function handleFinishFailed(err: CommonObj) {
-  const tips = err.errorFields?.[0]?.errors?.[0];
+export function handleFinishFailed(err: CommonObj, form: any) {
+  const { values, errorFields, outOfDate } = err;
+  const tips = errorFields?.[0]?.errors?.[0];
   showMessage(tips, "error");
+  const name = errorFields[0]?.name?.[0];
+  name && form.scrollToField(name);
 }

@@ -2,12 +2,12 @@
  * 分块表单 - SectionForm
  */
 
-import { useContext, useEffect, useImperativeHandle, forwardRef, useState } from "react";
+import { useContext, useEffect, useImperativeHandle, forwardRef, useState, ReactNode } from "react";
 import { Button, Form } from "antd";
 import { CSSProperties } from "react";
-import { FormField } from "@/components/BaseFormItem";
+import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
 import { CaretDownOutlined } from "@ant-design/icons";
-import { getMaxLength, convertDateField } from "@/utils";
+import { getMaxLength, convertDateField, emptyVals } from "@/utils";
 import { merge } from "lodash";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { SizeType } from "antd/es/config-provider/SizeContext";
@@ -19,10 +19,10 @@ import { BtnAttrs } from "../_types";
 import { defaultFormProps } from "@/components/form/_config";
 import s from "./index.module.less";
 
-export type FullType = "autoFull" | "allFull" | ""; //autoFull，撑满时，按钮才固定在底部，否则，跟随移动；allFull：按钮始终固定在底部
 export interface SectionFormItem {
   title: string;
-  fields: FormField[];
+  fields: FormItem[];
+  popover?: ReactNode;
 }
 interface Props {
   /**
@@ -43,36 +43,39 @@ interface Props {
   resetButton?: string | BtnAttrs;
   readOnly?: boolean;
   pureText?: boolean;
-  // formItemWidthFull?: boolean;
   fetch?: FetchType;
   fetchSuccess?: FinallyNext; //fetch请求成功之后的回调方法
   fetchFail?: FinallyNext; //fetch请求失败之后的回调方法
   onSubmit?: (data: CommonObj, next: () => void) => void;
   isOmit?: boolean; //是否剔除属性
-  // fullType?: FullType; //是否自动撑满，是否自动滚动
+  getUnFilledIndexs?: (inds: number[]) => void;
   [key: string]: any;
 }
 
+// 获取未填写完毕的分组的下标
+function getUnFilledPartInds(args: CommonObj, sections: SectionFormItem[], form) {
+  const inds: number[] = [];
+  function getUnFilled(fields: FormItemAttrs[]) {
+    if (!fields?.length) return false;
+    return fields.some((field: FormItemAttrs) => {
+      const { name, required } = field;
+      return required && emptyVals.includes(args[name]);
+    });
+  }
+  sections.forEach((sItem: SectionFormItem, sInd: number) => {
+    if (getUnFilled(sItem.fields.filter(it => !!it) as FormItemAttrs[])) inds.push(sInd);
+  });
+  form.scrollToField("search");
+  return inds;
+}
+
 export default forwardRef((props: Props, ref: any) => {
-  const {
-    className = "",
-    initialValues,
-    sections = [],
-    submitButton,
-    resetButton,
-    // onSubmit,
-    // formItemWidthFull,
-    // fullType = "allFull",
-    // isOmit = true,
-    // log = true,
-    ...restProps
-  } = props;
+  const { className = "", initialValues, sections = [], submitButton, resetButton, getUnFilledIndexs, ...restProps } = props;
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { closePopup } = useContext(PopupContext);
   const allFields = sections.map(it => it.fields).flat(1);
-  const newInitVals = convertDateField(allFields, initialValues, "set");
-  const formData: CommonObj = merge({}, newInitVals);
+  const initVals = convertDateField(allFields, initialValues, "set");
   const [folds, setFolds] = useState<boolean[]>([]);
   const {
     pureText,
@@ -84,13 +87,15 @@ export default forwardRef((props: Props, ref: any) => {
     fetchFail,
     onSubmit,
     ...formProps
-  } = merge({ initialValues: newInitVals }, defaultFormProps, restProps);
-  useImperativeHandle(ref, () => {
-    form;
-  });
+  } = merge({ initialValues: initVals }, defaultFormProps, restProps);
+  useImperativeHandle(ref, () => ({ form }), [form]);
+  useEffect(() => {}, []);
   useEffect(() => {
     setFolds(Array(sections.length).fill(false));
   }, [sections]);
+  useEffect(() => {
+    getUnFilledIndexs?.(getUnFilledPartInds(initVals, sections, form));
+  }, [initialValues, sections]);
   // 处理折叠逻辑
   function handleToggleFold(ind: number) {
     folds[ind] = !folds[ind];
@@ -99,9 +104,9 @@ export default forwardRef((props: Props, ref: any) => {
   return (
     <Form
       form={form}
-      className={`${className} ${s["section-form"]}  f-fs-s-c`} //${s[fullType]}
+      className={`${className} ${s["section-form"]}  f-fs-s-c`}
       onFinish={(args: CommonObj) => handleFinish(args, allFields, props, { setLoading, closePopup, fetchSuccess, fetchFail })}
-      onFinishFailed={handleFinishFailed}
+      onFinishFailed={err => handleFinishFailed(err, form)}
       {...formProps}
     >
       <div className={`${s.bodyer} all-hide-scroll`}>
@@ -120,14 +125,7 @@ export default forwardRef((props: Props, ref: any) => {
                 />
               </div>
               <div className={`${s.body}`} style={{ maxHeight: folds[sInd] ? "0" : "100vh" }}>
-                <FormFields
-                  fields={fields}
-                  pureText={pureText}
-                  formData={formData}
-                  readOnly={readOnly}
-                  // formItemWidthFull={formItemWidthFull}
-                  labelWidth={labelWidth}
-                />
+                <FormFields fields={fields} pureText={pureText} readOnly={readOnly} labelWidth={labelWidth} />
               </div>
             </div>
           );

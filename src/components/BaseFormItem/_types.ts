@@ -104,7 +104,7 @@ export interface FormItemAttrs {
   [key: string]: any; //其他antd Form.Item 的属性
 }
 
-export type FormField = BaseDataType | FormItemAttrs;
+export type FormItem = BaseDataType | FormItemAttrs;
 
 export interface PopoverAttrs {
   content?: ReactNode | (() => ReactNode);

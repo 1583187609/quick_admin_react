@@ -1,8 +1,8 @@
 import { TableCol } from "@/components/table/_types";
-import { FormField } from "@/components/BaseFormItem";
+import { FormItem } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
 
-export const fields: FormField[] = [
+export const fields: FormItem[] = [
   {
     name: "id",
     label: "用户ID",

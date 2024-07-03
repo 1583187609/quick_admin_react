@@ -5,7 +5,7 @@
 import { useContext, useEffect, useRef, useImperativeHandle, forwardRef, useState } from "react";
 import { Button, Form, message } from "antd";
 import { CSSProperties } from "react";
-import BaseFormItem, { FormField } from "@/components/BaseFormItem";
+import BaseFormItem, { FormItem } from "@/components/BaseFormItem";
 import { getMaxLength, convertDateField, omitAttrs, printLog } from "@/utils";
 import { merge } from "lodash";
 import { PopupContext } from "@/components/provider/PopupProvider";
@@ -19,25 +19,22 @@ import s from "./index.module.less";
 import { defaultFormProps } from "@/components/form/_config";
 import { useInitForm } from "@/components/form/_hooks";
 
-export type FullType = "autoFull" | "allFull" | ""; //autoFull，撑满时，按钮才固定在底部，否则，跟随移动；allFull：按钮始终固定在底部
 interface Props {
   className?: string;
   style?: CSSProperties;
   initialValues?: CommonObj;
   labelCol?: CommonObj;
   wrapperCol?: CommonObj;
-  fields?: FormField[];
+  fields?: FormItem[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
   disabled?: boolean;
   readOnly?: boolean;
   pureText?: boolean;
-  // formItemWidthFull?: boolean;
   size?: SizeType;
   fetch?: FetchType;
   onSubmit?: (data: CommonObj, next: () => void) => void;
   isOmit?: boolean; //是否剔除属性
-  // fullType?: FullType; //是否自动撑满，是否自动滚动
   [key: string]: any;
 }
 
@@ -49,23 +46,17 @@ export default forwardRef((props: Props, ref: any) => {
     resetButton,
     // fetch,
     // onSubmit,
-    // formItemWidthFull,
-    // fullType = "allFull",
     // initialValues,
     // isOmit = true,
     // log = true,
     // ...restProps
   } = props;
-  const { loading, form, formProps, pureText, formData, readOnly, labelWidth, handleFinish, handleFinishFailed } = useInitForm(
-    props,
-    ref
-  );
+  const { loading, form, formProps, pureText, readOnly, labelWidth, handleFinish, handleFinishFailed } = useInitForm(props, ref);
   // const [form] = Form.useForm();
   // const { closePopup } = useContext(PopupContext);
   // const [loading, setLoading] = useState(false);
   // const labelWidth = getMaxLength(fields) + "em";
   // const newInitVals = convertDateField(fields, initialValues, "set");
-  // const formData: CommonObj = merge({}, newInitVals);
   // const {
   //   pureText,
   //   readOnly = false,
@@ -81,20 +72,13 @@ export default forwardRef((props: Props, ref: any) => {
   return (
     <Form
       form={form}
-      className={`${className} ${s["base-form"]}  f-fs-s-c`} //${s[fullType]}
+      className={`${className} ${s["base-form"]}  f-fs-s-c`}
       onFinish={handleFinish}
       onFinishFailed={handleFinishFailed}
       {...formProps}
     >
       <div className={`${s.bodyer} all-hide-scroll`}>
-        <FormFields
-          fields={fields}
-          pureText={pureText}
-          formData={formData}
-          readOnly={readOnly}
-          // formItemWidthFull={formItemWidthFull}
-          labelWidth={labelWidth}
-        />
+        <FormFields fields={fields} pureText={pureText} readOnly={readOnly} labelWidth={labelWidth} />
       </div>
       {!pureText && (
         <FormFoot form={form} loading={loading} submitButton={submitButton} resetButton={resetButton} readOnly={readOnly} />

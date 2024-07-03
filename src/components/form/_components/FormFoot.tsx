@@ -1,11 +1,11 @@
-import { Button, message } from "antd";
-import { RedoOutlined, LoadingOutlined, CloudUploadOutlined } from "@ant-design/icons";
-import { CommonObj } from "@/vite-env";
+import { Button } from "antd";
+import { RedoOutlined, CloudUploadOutlined } from "@ant-design/icons";
 import { getBtnProps } from "../_utils";
 import { BtnAttrs } from "@/components/form/_types";
 import { showMessage } from "@/utils";
 
 interface Props {
+  className?: string;
   loading: boolean;
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
@@ -13,7 +13,7 @@ interface Props {
   form?: any;
 }
 
-export default ({ loading, submitButton = "提交", resetButton = "重置", readOnly, form }: Props) => {
+export default ({ className = "", loading, submitButton = "提交", resetButton = "重置", readOnly, form }: Props) => {
   const submitBtn = getBtnProps(submitButton);
   const resetBtn = getBtnProps(resetButton);
   //点击重置按钮
@@ -22,11 +22,11 @@ export default ({ loading, submitButton = "提交", resetButton = "重置", read
     form.resetFields();
   }
   return (
-    <div className={`pt-half pb-half f-c-c f-0`}>
+    <div className={`${className} pt-h pb-h f-c-c f-0`}>
       <Button icon={<CloudUploadOutlined />} loading={loading} type="primary" htmlType="submit" {...submitBtn.attrs}>
         {submitBtn.children}
       </Button>
-      <Button icon={<RedoOutlined />} htmlType="button" onClick={() => handleReset()} {...resetBtn.attrs}>
+      <Button icon={<RedoOutlined />} htmlType="button" onClick={() => handleReset()} disabled={loading} {...resetBtn.attrs}>
         {resetBtn.children}
       </Button>
     </div>

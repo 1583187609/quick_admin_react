@@ -8,15 +8,16 @@
  * xxl	屏幕 ≥ 1600px
  */
 
-import React, { useEffect, useMemo, useRef, useState, useImperativeHandle, forwardRef } from "react";
-import { Button, Form, message, Col } from "antd";
+import { useMemo, useState, useImperativeHandle, forwardRef } from "react";
+import { Button, Form, Col } from "antd";
 import { CSSProperties } from "react";
-import BaseFormItem, { FormField } from "@/components/BaseFormItem";
-import { RedoOutlined, LoadingOutlined, SearchOutlined, DownOutlined } from "@ant-design/icons";
-import { getMaxLength, typeOf, convertDateField, showMessage } from "@/utils";
+import BaseFormItem, { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import { RedoOutlined, SearchOutlined, DownOutlined } from "@ant-design/icons";
+import { getMaxLength, showMessage } from "@/utils";
 import { useEventListener } from "@/hooks";
 import { CommonObj } from "@/vite-env";
 import { defaultFormProps } from "@/components/form/_config";
+import { handleFinish, handleFinishFailed } from "@/components/form/_utils";
 import s from "./index.module.less";
 
 interface Props {
@@ -25,7 +26,7 @@ interface Props {
   initialValues?: CommonObj;
   labelCol?: CommonObj;
   wrapperCol?: CommonObj;
-  fields?: FormField[];
+  fields?: FormItem[];
   rowNum?: number; //筛选条件默认以几行展示
   extraParams?: CommonObj; //额外的请求参数
   onValuesChange?: (changedVals: CommonObj, allVals: CommonObj) => void;
@@ -65,92 +66,79 @@ function getColNum() {
   }
   return colNumMap[size];
 }
-export default forwardRef(
-  (
-    {
-      className = "",
-      rowNum = 2,
-      fields = [],
-      extraParams,
-      onValuesChange,
-      onSubmit = (data: CommonObj) => showMessage(`暂未处理 【查询】事件 - onSubmit`, "warning"),
-      onReset,
-      ...restProps
-    }: Props,
-    ref: any
-  ) => {
-    const [form] = Form.useForm();
-    const loadingRef = useRef(false);
-    const [colNum, setColNum] = useState(2);
-    const [isFold, setIsFold] = useState(true);
-    const labelWidth = getMaxLength(fields) + "em"; //label中最长字符的个数
-    const formProps = Object.assign({}, defaultFormProps, restProps);
-    const sliceEndInd = useMemo(() => {
-      return isFold ? (colNum > 1 ? colNum * rowNum - 1 : 1 * rowNum) : undefined;
-    }, [isFold, colNum, rowNum]);
-    useEventListener("resize", () => setColNum(getColNum()), [], true);
-    useImperativeHandle(ref, () => form);
-    function handleFinish(params: CommonObj) {
-      loadingRef.current = true;
-      const data = convertDateField(fields, params);
-      onSubmit(data, () => {
-        loadingRef.current = false;
-      });
-    }
-    function handleFinishFailed(err: any) {
-      const tips = err.errorFields?.[0]?.errors?.[0];
-      showMessage(tips, "error");
-    }
-    function handleReset() {
-      form.resetFields();
-      onReset?.();
-    }
-    return (
-      <>
-        {fields.length > 0 && (
-          <Form
-            form={form}
-            className={`${className} ${s["query-form"]} f-fs-s-c`}
-            onFinish={handleFinish}
-            onFinishFailed={handleFinishFailed}
-            onValuesChange={onValuesChange}
-            {...formProps}
-          >
-            <div
-              className={`${s.bodyer} f-fs-fs-w all-hide-scroll`}
-              style={{
-                maxHeight: isFold ? (colNum > 1 ? rowNum : rowNum + 1) * 40 + "px" : "50vh",
-              }}
-            >
-              {fields.slice(0, sliceEndInd).map((field, ind) => {
-                return (
-                  <Col {...colSpanAttrs} key={ind}>
-                    <BaseFormItem field={field} widthFull style={{ marginBottom: "8px" }} labelWidth={labelWidth} />
-                  </Col>
-                );
-              })}
-              <Col style={{ marginLeft: "auto" }} className="mb-8 f-fe-c" {...colSpanAttrs}>
-                <Button icon={loadingRef.current ? <LoadingOutlined /> : <SearchOutlined />} type="primary" htmlType="submit">
-                  查询
-                </Button>
-                <Button icon={<RedoOutlined />} onClick={() => handleReset()}>
-                  重置
-                </Button>
-                {fields.length > colNum * rowNum - 1 && (
-                  <Button
-                    icon={<DownOutlined className={`${isFold ? "" : "rotate-180"} ${s["icon-fold"]}`} />}
-                    onClick={() => setIsFold(!isFold)}
-                    style={{ padding: 0 }}
-                    type="link"
-                  >
-                    折叠
-                  </Button>
-                )}
-              </Col>
-            </div>
-          </Form>
-        )}
-      </>
-    );
+export default forwardRef((props: Props, ref: any) => {
+  const {
+    className = "",
+    rowNum = 2,
+    fields = [],
+    extraParams,
+    onValuesChange,
+    onSubmit = (data: CommonObj) => showMessage(`暂未处理 【查询】事件 - onSubmit`, "warning"),
+    onReset,
+    ...restProps
+  } = props;
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [colNum, setColNum] = useState(2);
+  const [isFold, setIsFold] = useState(true);
+  const labelWidth = getMaxLength(fields) + "em"; //label中最长字符的个数
+  const formProps = Object.assign({}, defaultFormProps, restProps);
+  const sliceEndInd = useMemo(() => {
+    return isFold ? (colNum > 1 ? colNum * rowNum - 1 : 1 * rowNum) : undefined;
+  }, [isFold, colNum, rowNum]);
+  useEventListener("resize", () => setColNum(getColNum()), [], true);
+  useImperativeHandle(ref, () => form);
+  function handleReset() {
+    form.resetFields();
+    onReset?.();
   }
-);
+  return (
+    <>
+      {fields.length > 0 && (
+        <Form
+          form={form}
+          className={`${className} ${s["query-form"]} f-fs-s-c`}
+          onFinish={(args: CommonObj) => handleFinish(args, fields, props, { setLoading, fetchSuccess: () => {} })}
+          onFinishFailed={err => handleFinishFailed(err, form)}
+          onValuesChange={onValuesChange}
+          {...formProps}
+        >
+          <div
+            className={`${s.bodyer} f-fs-fs-w all-hide-scroll`}
+            style={{
+              maxHeight: isFold ? (colNum > 1 ? rowNum : rowNum + 1) * 40 + "px" : "50vh",
+            }}
+          >
+            {fields.slice(0, sliceEndInd).map((field, ind) => {
+              if (!field) return null;
+              return (
+                <Col {...colSpanAttrs} key={ind}>
+                  <BaseFormItem field={field as FormItemAttrs} style={{ marginBottom: "8px" }} labelWidth={labelWidth} />
+                </Col>
+              );
+            })}
+            <Col style={{ marginLeft: "auto" }} className="mb-8 f-fe-c" {...colSpanAttrs}>
+              <Button loading={loading} icon={<SearchOutlined />} type="primary" htmlType="submit">
+                查询
+              </Button>
+              <Button icon={<RedoOutlined />} onClick={() => handleReset()} disabled={loading}>
+                重置
+              </Button>
+              {fields.length > colNum * rowNum - 1 && (
+                <Button
+                  icon={<DownOutlined className={`${isFold ? "" : "rotate-180"} ${s["icon-fold"]}`} />}
+                  onClick={() => setIsFold(!isFold)}
+                  style={{ padding: 0 }}
+                  type="link"
+                  disabled={loading}
+                >
+                  折叠
+                </Button>
+              )}
+            </Col>
+          </div>
+        </Form>
+      )}
+    </>
+  );
+});

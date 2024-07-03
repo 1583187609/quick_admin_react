@@ -1,5 +1,5 @@
 import { PopupContext } from "@/components/provider/PopupProvider";
-import { FormField } from "@/components/BaseFormItem";
+import { FormItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { Button } from "antd";
 import { useContext, useRef } from "react";
@@ -23,7 +23,7 @@ export default () => {
   const router = useRouter();
   const location = useLocation();
   const { openPopup } = useContext(PopupContext);
-  const fields: FormField[] = [
+  const fields: FormItem[] = [
     {
       name: "phone",
       label: "账号",

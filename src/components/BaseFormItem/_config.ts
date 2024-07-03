@@ -1,5 +1,20 @@
 import { CommonObj } from "@/vite-env";
 import { FieldAttrs, FormItemAttrs, FormItemType } from "./_types";
+import type { TimePickerProps, TimeRangePickerProps } from "antd";
+import dayjs from "dayjs";
+
+const datePresets: TimePickerProps["presets"] = [
+  { label: "昨天", value: dayjs().add(-1, "d") },
+  { label: "上周", value: dayjs().add(-7, "d") },
+  { label: "上月", value: dayjs().add(-1, "month") },
+];
+
+const dateRangePresets: TimeRangePickerProps["presets"] = [
+  { label: "近7天", value: [dayjs().add(-7, "d"), dayjs()] },
+  { label: "近14天", value: [dayjs().add(-14, "d"), dayjs()] },
+  { label: "近30天", value: [dayjs().add(-30, "d"), dayjs()] },
+  { label: "近90天", value: [dayjs().add(-90, "d"), dayjs()] },
+];
 
 //覆盖重写el-form-item 的默认属性值
 export const defaultFieldAttrs: {
@@ -38,6 +53,7 @@ export const defaultFieldAttrs: {
       format: "YYYY-MM-DD", //用于设置展示和传值的效果值，
       placeholder: ["开始日期", "结束日期"],
       allowClear: true,
+      presets: dateRangePresets,
     },
   },
   DatePicker: {
@@ -47,6 +63,7 @@ export const defaultFieldAttrs: {
       format: "YYYY-MM-DD", //用于设置展示和传值的效果值，
       placeholder: "请选择${label}",
       allowClear: true,
+      presets: datePresets,
     },
   },
   Switch: {

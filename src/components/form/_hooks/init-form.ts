@@ -23,7 +23,6 @@ export default (props: CommonObj, ref: any) => {
   const [loading, setLoading] = useState(false);
   const labelWidth = getMaxLength(fields) + "em";
   const newInitVals = convertDateField(fields, initialValues, "set");
-  const formData: CommonObj = merge({}, newInitVals);
   const {
     pureText,
     readOnly = false,
@@ -41,7 +40,6 @@ export default (props: CommonObj, ref: any) => {
     form,
     loading,
     labelWidth,
-    formData,
     formProps,
     pureText,
     readOnly,

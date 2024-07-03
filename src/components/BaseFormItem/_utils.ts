@@ -2,10 +2,10 @@ import { CSSProperties } from "react";
 import { regexp, typeOf, getTextFromOpts } from "@/utils";
 import { merge } from "lodash";
 import { defaultFieldAttrs } from "./_config";
-import { FormField } from "./_types";
+import { FormItem } from "./_types";
 
 //获取表单键值对的值
-export function getKeyVal(field: FormField, val: any) {
+export function getKeyVal(field: FormItem, val: any) {
   const { type = "Input", label, attrs = {} } = field;
   if (["Select", "Radio.Group"].includes(type)) {
     val = attrs?.options?.find((it: OptionItem) => it.value === val)?.label;

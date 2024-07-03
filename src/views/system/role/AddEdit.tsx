@@ -1,4 +1,4 @@
-import { FormField } from "@/components/BaseFormItem";
+import { FormItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { CommonObj } from "@/vite-env";
 
@@ -6,7 +6,7 @@ interface Props {
   id?: string;
   pureText?: boolean;
 }
-const fields: FormField[] = [
+const fields: FormItem[] = [
   {
     name: "role_name",
     label: "角色名称",

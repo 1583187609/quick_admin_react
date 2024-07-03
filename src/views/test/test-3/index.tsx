@@ -12,11 +12,11 @@ import { DownloadOutlined } from "@ant-design/icons";
 import { CommonObj, FinallyNext } from "@/vite-env";
 import { showMessage } from "@/utils";
 import { TableCol } from "@/components/table/_types";
-import { FormField } from "@/components/BaseFormItem";
+import { FormItem } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
 import InfoSteps from "@/views/_components/InfoSteps";
 
-export const fields: FormField[] = [
+export const fields: FormItem[] = [
   {
     name: "id",
     label: "用户ID",

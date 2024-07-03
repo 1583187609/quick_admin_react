@@ -1,5 +1,5 @@
 import BaseAvatar from "@/components/BaseAvatar";
-import { FormField } from "@/components/BaseFormItem";
+import { FormItem } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { getUserInfo } from "@/utils";
 import { CommonObj } from "@/vite-env";
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 interface Props {
   id: number;
 }
-const fields: FormField[] = [
+const fields: FormItem[] = [
   {
     name: "nickname",
     label: "昵称",

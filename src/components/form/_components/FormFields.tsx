@@ -1,18 +1,14 @@
-import BaseFormItem, { FormField, FormItemAttrs } from "@/components/BaseFormItem";
-import BaseEmpty from "@/components/BaseEmpty";
+import BaseFormItem, { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
 import { Row } from "antd";
-import { CommonObj } from "@/vite-env";
 
 export type AlignType = "top" | "middle" | "bottom" | "stretch";
 export type ScreenSize = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
 export type JustifyType = "start" | "end" | "center" | "space-around" | "space-between" | "space-evenly";
 
 interface Props {
-  fields?: FormField[];
+  fields?: FormItemAttrs[];
   pureText?: boolean;
   readOnly?: boolean;
-  // formItemWidthFull?: boolean;
-  formData?: CommonObj;
   labelWidth?: string;
   rowAttrs?: {
     align?: AlignType | { [key in ScreenSize]: AlignType };
@@ -21,34 +17,13 @@ interface Props {
     wrap?: boolean;
   };
 }
-export default ({
-  fields = [],
-  pureText = false,
-  formData = {},
-  readOnly = false,
-  // formItemWidthFull,
-  labelWidth,
-  rowAttrs,
-  ...restProps
-}: Props) => {
+export default ({ fields = [], rowAttrs, ...restProps }: Props) => {
   return (
     <Row {...rowAttrs}>
       {fields?.map((field, ind) => {
         if (!field) return null;
-        const newPureText = pureText ? formData[(field as FormItemAttrs).name as string] ?? "-" : undefined;
-        return (
-          <BaseFormItem
-            field={field}
-            readOnly={readOnly}
-            pureText={newPureText}
-            // widthFull={formItemWidthFull}
-            labelWidth={labelWidth}
-            key={ind}
-            {...restProps}
-          />
-        );
+        return <BaseFormItem field={field} key={ind} {...restProps} />;
       })}
-      {/* ?? <BaseEmpty /> */}
     </Row>
   );
 };
