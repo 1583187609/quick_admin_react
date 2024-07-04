@@ -52,9 +52,11 @@ interface Props {
   [key: string]: any;
 }
 
+let initFolds: boolean[] = [];
 export default forwardRef((props: Props, ref: any) => {
   const { className, loading, submitButton, resetButton, sections = [], pureText, readOnly, formAttrs } = useInitForm(props, ref);
-  const [folds, setFolds] = useState<boolean[]>(Array(sections.length).fill(false));
+  initFolds = Array(sections.length).fill(false);
+  const [folds, setFolds] = useState<boolean[]>(initFolds);
   // 处理折叠逻辑
   function handleToggleFold(ind: number) {
     folds[ind] = !folds[ind];
@@ -98,6 +100,7 @@ export default forwardRef((props: Props, ref: any) => {
           submitButton={submitButton}
           resetButton={resetButton}
           readOnly={readOnly}
+          onReset={() => setFolds(initFolds)}
         />
       )}
     </Form>
