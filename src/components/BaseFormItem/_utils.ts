@@ -7,13 +7,13 @@ import { FormItem } from "./_types";
 //获取表单键值对的值
 export function getKeyVal(field: FormItem, val: any) {
   const { type = "Input", label, attrs = {} } = field;
-  if (["Select", "Radio.Group"].includes(type)) {
+  if (["Select", "RadioGroup"].includes(type)) {
     val = attrs?.options?.find((it: OptionItem) => it.value === val)?.label;
   } else if (type.includes("Time") || type.includes("Date")) {
     const { format } = merge({}, defaultFieldAttrs[type]?.attrs, attrs);
     const isArr = typeOf(val) === "Array";
     val = isArr ? val.map((it: any) => it.format(format)).join(" ~ ") : val.format(format);
-  } else if (["Checkbox.Group"].includes(type)) {
+  } else if (["CheckboxGroup"].includes(type)) {
     val = attrs?.options
       ?.filter((it: OptionItem) => val.includes(it.value))
       ?.map((it: OptionItem) => it.label)

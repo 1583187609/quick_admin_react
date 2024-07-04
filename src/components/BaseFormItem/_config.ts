@@ -1,6 +1,7 @@
 import { CommonObj } from "@/vite-env";
 import { FieldAttrs, FormItemAttrs, FormItemType } from "./_types";
 import type { TimePickerProps, TimeRangePickerProps } from "antd";
+import { regexp } from "../_utils";
 import dayjs from "dayjs";
 
 const datePresets: TimePickerProps["presets"] = [
@@ -28,7 +29,7 @@ export const defaultFieldAttrs: {
 } = {
   Input: {
     attrs: {
-      placeholder: "请输入${label}",
+      placeholder: "请输入{label}",
       // maxLength: 30,
       allowClear: true,
       getAttrs(field: FormItemAttrs) {
@@ -41,12 +42,12 @@ export const defaultFieldAttrs: {
   Select: {
     attrs: {
       // style: { width: "100%" },
-      placeholder: "请选择${label}",
+      placeholder: "请选择{label}",
       allowClear: true,
       // options: [],
     },
   },
-  "DatePicker.RangePicker": {
+  DateRangePicker: {
     attrs: {
       // style: { width: "100%" },
       // mode: "date", //time, date, month, year, decade
@@ -61,7 +62,7 @@ export const defaultFieldAttrs: {
       // style: { width: "100%" },
       // mode: "date", //time, date, month, year, decade
       format: "YYYY-MM-DD", //用于设置展示和传值的效果值，
-      placeholder: "请选择${label}",
+      placeholder: "请选择{label}",
       allowClear: true,
       presets: datePresets,
     },
@@ -77,14 +78,14 @@ export const defaultFieldAttrs: {
     valuePropName: "checked", //必须设置，不然会触发警告
     attrs: {},
   },
-  "Radio.Group": {
+  RadioGroup: {
     attrs: {
       optionType: "button",
       buttonStyle: "solid",
       // options: [{ label: "单选项1" }],
     },
   },
-  "Checkbox.Group": {
+  CheckboxGroup: {
     attrs: {
       // options: [{ label: "多选项1" }],
     },
@@ -92,12 +93,12 @@ export const defaultFieldAttrs: {
   InputNumber: {
     attrs: {
       style: { width: "100%" },
-      placeholder: "${label}",
+      placeholder: "{label}",
     },
   },
-  "Input.TextArea": {
+  TextArea: {
     attrs: {
-      placeholder: "请输入${label}",
+      placeholder: "请输入{label}",
       maxLength: 100,
       allowClear: true,
       // showCount: true,
@@ -108,9 +109,9 @@ export const defaultFieldAttrs: {
       },
     },
   },
-  "Input.Password": {
+  Password: {
     attrs: {
-      placeholder: "请输入${label}",
+      placeholder: "请输入{label}",
       // maxLength: 30,
       allowClear: true,
       // iconRender: (visible: boolean) => {
@@ -126,7 +127,7 @@ export const defaultFieldAttrs: {
   },
   AutoComplete: {
     attrs: {
-      placeholder: "请输入${label}",
+      placeholder: "请输入{label}",
       // maxLength: 30,
       allowClear: true,
     },
@@ -134,14 +135,14 @@ export const defaultFieldAttrs: {
   Cascader: {
     attrs: {
       // style: { width: "100%" },
-      placeholder: "请选择${label}",
+      placeholder: "请选择{label}",
       allowClear: true,
       // options: [],
     },
   },
-  "Input.Search": {
+  Search: {
     attrs: {
-      placeholder: "请输入${label}",
+      placeholder: "请输入{label}",
       // maxLength: 30,
       allowClear: true,
       // showCount: true,
@@ -161,11 +162,11 @@ export const defaultFieldAttrs: {
     attrs: {
       // style: { width: "100%" },
       format: "HH:mm:ss",
-      placeholder: "请选择${label}",
+      placeholder: "请选择{label}",
       allowClear: true,
     },
   },
-  "TimePicker.RangePicker": {
+  TimeRangePicker: {
     attrs: {
       // style: { width: "100%" },
       format: "HH:mm:ss",
@@ -180,13 +181,13 @@ export const defaultFieldAttrs: {
     attrs: {},
   },
 };
-//默认的校验类型
+// 默认的校验类型
 export const defaultValidTypes: CommonObj = {
-  //手机号
+  // 手机号
   phone: {
     rules: [
       {
-        // pattern: regexp.phone,
+        pattern: regexp.phone,
         message: "请输入正确的11位电话号码",
       },
     ],
@@ -194,7 +195,7 @@ export const defaultValidTypes: CommonObj = {
       maxLength: 11,
     },
   },
-  //密码
+  // 密码
   password: {
     rules: [
       {
@@ -202,7 +203,7 @@ export const defaultValidTypes: CommonObj = {
         message: "密码长度不能小于6位",
       },
       {
-        // pattern: regexp.password,
+        pattern: regexp.password,
         message: "请输入正确的6~16位字母 + 数字组合密码",
       },
     ],
@@ -211,7 +212,7 @@ export const defaultValidTypes: CommonObj = {
       maxLength: 16,
     },
   },
-  //用户姓名
+  // 用户姓名
   userName: {
     rules: [
       {
@@ -223,17 +224,34 @@ export const defaultValidTypes: CommonObj = {
       maxLength: 5,
     },
   },
-  //年龄
+  // 身高
+  height: {
+    type: "InputNumber",
+    attrs: {
+      min: 0,
+      max: 200,
+      addonAfter: "cm",
+    },
+  },
+  // 年龄
   age: {
     type: "InputNumber",
     attrs: {
-      maxLength: 2,
       min: 0,
-      max: 99,
+      max: 100,
       addonAfter: "岁",
     },
   },
-  //人民币
+  // 体重
+  weight: {
+    type: "InputNumber",
+    attrs: {
+      min: 0,
+      max: 180,
+      addonAfter: "kg",
+    },
+  },
+  // 人民币
   rmb: {
     type: "InputNumber",
     attrs: {

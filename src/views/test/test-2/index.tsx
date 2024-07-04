@@ -23,7 +23,7 @@ const sections: SectionFormItem[] = [
         label: "性别",
         required: isRequired,
         type: "Select",
-        // type: "Radio.Group",
+        // type: "RadioGroup",
         // attrs: { options: [] },
         colAttrs: { span: 12 },
       },
@@ -72,7 +72,7 @@ const sections: SectionFormItem[] = [
   {
     title: "教育经历",
     fields: [
-      { name: "jdyx", label: "就读院校", type: "Input.Search" },
+      { name: "jdyx", label: "就读院校", type: "Search" },
       { name: "xzlx", label: "学制类型" },
       { name: "jdsj", label: "就读时间" },
     ],
@@ -84,7 +84,7 @@ const sections: SectionFormItem[] = [
         name: "gsmc",
         label: "公司名称",
         required: isRequired,
-        type: "Input.Search",
+        type: "Search",
       },
       {
         name: "sjfw",
@@ -94,7 +94,7 @@ const sections: SectionFormItem[] = [
       {
         name: "lzyy",
         label: "离职原因",
-        type: "Input.TextArea",
+        type: "TextArea",
       },
     ],
   },
@@ -107,8 +107,8 @@ const sections: SectionFormItem[] = [
     fields: [
       { name: "xqah", label: "兴趣爱好" },
       { name: "jlzs", label: "奖励证书" },
-      { name: "zwjs", label: "自我介绍", type: "Input.TextArea" },
-      { name: "bz", label: "备注", type: "Input.TextArea" },
+      { name: "zwjs", label: "自我介绍", type: "TextArea" },
+      { name: "bz", label: "备注", type: "TextArea" },
       { name: "fj", label: "附件" },
     ],
   },

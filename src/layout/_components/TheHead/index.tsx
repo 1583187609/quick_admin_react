@@ -103,7 +103,7 @@ export default ({ className = "" }: Props) => {
   }
   return (
     <div className={`${className} ${s.header} layout-the-head`}>
-      <div className="f-sb-c">
+      <div className="f-sb-c pr-h">
         <div className={`${s["toggle-btn"]} f-0`} onClick={() => toggleFold()}>
           {isFold ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </div>
@@ -117,9 +117,9 @@ export default ({ className = "" }: Props) => {
           items={getMenuNavs(newGroups)}
         /> */}
         <div className="f-0 ml-8 mr-8 f-fe-s">
-          <div className={`${s.nickname} f-sa-fe-c`}>
-            <div>{userInfo?._title ?? ""}</div>
-            <div>{userInfo?.type_text ?? ""}</div>
+          <div className={`${s.info} f-sa-fe-c`}>
+            <div className={`${s.name}`}>{userInfo?._title ?? ""}</div>
+            <div className={`${s.type}`}>{userInfo?.type_text ?? ""}</div>
           </div>
           <Popover
             placement="bottom"
@@ -165,7 +165,7 @@ export default ({ className = "" }: Props) => {
               </>
             }
           >
-            <BaseAvatar className="f-0 ml-8" size={40} />
+            <BaseAvatar className="f-0 ml-h" size={40} round />
           </Popover>
         </div>
       </div>

@@ -27,7 +27,7 @@ const fields: FormItem[] = [
   {
     name: "is_enable",
     label: "是否启用",
-    type: "Radio.Group",
+    type: "RadioGroup",
     attrs: {
       options: "EnableStatus",
     },
@@ -35,7 +35,7 @@ const fields: FormItem[] = [
   {
     name: "remark",
     label: "备注",
-    type: "Input.TextArea",
+    type: "TextArea",
     attrs: {
       maxLength: 50,
     },

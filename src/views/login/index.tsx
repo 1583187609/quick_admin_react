@@ -35,7 +35,7 @@ export default () => {
     {
       name: "psd",
       label: "密码",
-      type: "Input.Password",
+      type: "Password",
       required: true,
       otherAttrs: {
         valid: "password",

@@ -4,6 +4,7 @@ import { useRouter } from "@/components/_hooks";
 import emptyImg from "@/assets/images/default/img.png";
 import { StrNum } from "@/vite-env";
 import s from "./index.module.less";
+import { RouteProps } from "../_hooks/router";
 
 type Props = {
   className?: string;
@@ -13,7 +14,7 @@ type Props = {
   width?: StrNum;
   height?: StrNum;
   src?: string;
-  to?: string; //要跳转的页面地址
+  to?: string | RouteProps; //要跳转的页面地址
   round?: boolean;
   loadTips?: string;
   errTips?: string;

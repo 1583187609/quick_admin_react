@@ -30,7 +30,7 @@ const fields: FormItem[] = [
       options: "EnableStatus",
     },
   },
-  { name: "create_time", label: "创建时间", type: "DatePicker.RangePicker" },
+  { name: "create_time", label: "创建时间", type: "DateRangePicker" },
 ];
 
 const columns: TableCol[] = [

@@ -7,7 +7,7 @@ import { merge } from "lodash";
 import config, { ConfigMergeStrategy } from "@/config";
 import { CommonObj, StrNum } from "@/vite-env";
 import { BtnName } from "@/components/BaseBtn";
-import { FormItem, FormFieldAttrs } from "@/components/BaseFormItem";
+import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
 import { propsJoinChar, emptyVals } from "./consts";
 
 /**
@@ -112,30 +112,6 @@ export const calCssVal = (val: number | string | undefined, operator: string, nu
 export function getChinaCharLength(str?: string): number {
   if (!str) return 0;
   return str.replace(/[^\x00-\xff]/g, "**").length / 2;
-}
-
-/**
- * 获取label的最大字符长度
- * @param fields 表单域
- * @param num 额外的空白宽度，默认2 // 2是因为：一个是间距宽度，一个是*宽度
- */
-export function getMaxLength(fields: FormItem[] = [], num = 2): number {
-  let max = 1;
-  fields.forEach(item => {
-    if (typeOf(item) !== "Object") return;
-    const { label, children, extra } = item as FormFieldAttrs;
-    const popNum = extra?.popover ? 1 : 0;
-    if (label?.length + popNum > max) {
-      max = getChinaCharLength(label) + popNum; //全角符算1个，半角符算0.5个字符
-    }
-    if (children) {
-      const _max = getMaxLength(children, 0);
-      if (_max > max) {
-        max = _max;
-      }
-    }
-  });
-  return max + num;
 }
 
 /**

@@ -12,7 +12,7 @@ const fields: FormItem[] = [
   {
     name: "psd",
     label: "密码",
-    type: "Input.Password",
+    type: "Password",
     otherAttrs: {
       valid: "password",
     },

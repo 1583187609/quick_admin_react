@@ -1,15 +1,15 @@
 /**
- * 基础表单 - BaseForm
+ * 基础表单 - StepForm
  */
 
-import { useContext, useImperativeHandle, forwardRef, useState, useMemo, useRef, useEffect } from "react";
+import { useImperativeHandle, forwardRef, useState } from "react";
 import { Steps } from "antd";
 import { CSSProperties } from "react";
 import { FormItem } from "@/components/BaseFormItem";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { BtnAttrs } from "@/components/form/_types";
-import SectionForm, { SectionFormItem } from "../SectionForm";
+import SectionForm, { SectionFormItem, SectionFormItemAttrs } from "../SectionForm";
 import s from "./index.module.less";
 
 interface Props {
@@ -40,23 +40,40 @@ interface Props {
   [key: string]: any;
 }
 
-export default forwardRef(({ className = "", style, stepsAttrs, ...restProps }: Props, ref: any) => {
+const defaultStepAttrs: CommonObj = {
+  direction: "vertical",
+};
+export default forwardRef(({ className = "", stepsAttrs, ...restProps }: Props, ref: any) => {
   const [currStep, setCurrStep] = useState(0);
-  const steps =
-    restProps?.sections.map((item: SectionFormItem) => {
-      const { title, popover } = item;
-      return {
-        title,
-        description: popover,
-      };
-    }) ?? [];
+  const newStepAttrs = Object.assign({}, defaultStepAttrs, stepsAttrs);
+  const isVertical = newStepAttrs.direction === "vertical";
+  const steps = restProps?.sections?.map((item: SectionFormItem) => {
+    if (!item) return false;
+    const { title, popover } = item as SectionFormItemAttrs;
+    return { title, description: popover };
+  });
   function handleGetInds(inds: number[]) {
     setCurrStep(inds[0] ?? 0);
   }
-  return (
-    <div className={`${className} ${s["step-form"]} f-sb-s`} style={style}>
-      <Steps className={`${s.steps} mr-t f-0`} items={steps} direction="vertical" {...stepsAttrs} current={currStep} />
+  return isVertical ? (
+    <div className={`${className} ${s["step-form"]} f-sb-s`}>
+      <Steps
+        className={`${newStepAttrs.className ?? ""} ${s.steps} mr-t f-0`}
+        {...newStepAttrs}
+        items={steps}
+        current={currStep}
+      />
       <SectionForm className="f-1" getUnFilledIndexs={handleGetInds} {...restProps} />
     </div>
+  ) : (
+    <>
+      <Steps
+        className={`${newStepAttrs.className ?? ""} ${s.steps} ${isVertical ? "mr-t" : "mb-h"} f-0`}
+        {...newStepAttrs}
+        items={steps}
+        current={currStep}
+      />
+      <SectionForm className="f-1" getUnFilledIndexs={handleGetInds} {...restProps} />
+    </>
   );
 });

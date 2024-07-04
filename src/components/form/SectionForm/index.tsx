@@ -2,28 +2,28 @@
  * 分块表单 - SectionForm
  */
 
-import { useContext, useEffect, useImperativeHandle, forwardRef, useState, ReactNode } from "react";
-import { Button, Form } from "antd";
+import { forwardRef, useState, ReactNode } from "react";
+import { Button, Form, Popover } from "antd";
 import { CSSProperties } from "react";
 import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
 import { CaretDownOutlined } from "@ant-design/icons";
-import { getMaxLength, convertDateField, emptyVals } from "@/utils";
-import { merge } from "lodash";
-import { PopupContext } from "@/components/provider/PopupProvider";
+import { getMaxLength } from "@/utils";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import FormFields from "../_components/FormFields";
 import FormFoot from "../_components/FormFoot";
-import { handleFinish, handleFinishFailed } from "../_utils";
-import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
+import { BaseDataType, CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { BtnAttrs } from "../_types";
-import { defaultFormProps } from "@/components/form/_config";
+import { useInitForm } from "../_hooks";
+import { QuestionCircleFilled } from "@ant-design/icons";
 import s from "./index.module.less";
 
-export interface SectionFormItem {
+export interface SectionFormItemAttrs {
   title: string;
   fields: FormItem[];
   popover?: ReactNode;
 }
+
+export type SectionFormItem = BaseDataType | SectionFormItemAttrs;
 interface Props {
   /**
    * 以下是继承 antd 的属性
@@ -52,71 +52,31 @@ interface Props {
   [key: string]: any;
 }
 
-// 获取未填写完毕的分组的下标
-function getUnFilledPartInds(args: CommonObj, sections: SectionFormItem[], form) {
-  const inds: number[] = [];
-  function getUnFilled(fields: FormItemAttrs[]) {
-    if (!fields?.length) return false;
-    return fields.some((field: FormItemAttrs) => {
-      const { name, required } = field;
-      return required && emptyVals.includes(args[name]);
-    });
-  }
-  sections.forEach((sItem: SectionFormItem, sInd: number) => {
-    if (getUnFilled(sItem.fields.filter(it => !!it) as FormItemAttrs[])) inds.push(sInd);
-  });
-  form.scrollToField("search");
-  return inds;
-}
-
 export default forwardRef((props: Props, ref: any) => {
-  const { className = "", initialValues, sections = [], submitButton, resetButton, getUnFilledIndexs, ...restProps } = props;
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const { closePopup } = useContext(PopupContext);
-  const allFields = sections.map(it => it.fields).flat(1);
-  const initVals = convertDateField(allFields, initialValues, "set");
-  const [folds, setFolds] = useState<boolean[]>([]);
-  const {
-    pureText,
-    readOnly = false,
-    isOmit,
-    log,
-    fetch,
-    fetchSuccess,
-    fetchFail,
-    onSubmit,
-    ...formProps
-  } = merge({ initialValues: initVals }, defaultFormProps, restProps);
-  useImperativeHandle(ref, () => ({ form }), [form]);
-  useEffect(() => {}, []);
-  useEffect(() => {
-    setFolds(Array(sections.length).fill(false));
-  }, [sections]);
-  useEffect(() => {
-    getUnFilledIndexs?.(getUnFilledPartInds(initVals, sections, form));
-  }, [initialValues, sections]);
+  const { className, loading, submitButton, resetButton, sections = [], pureText, readOnly, formAttrs } = useInitForm(props, ref);
+  const [folds, setFolds] = useState<boolean[]>(Array(sections.length).fill(false));
   // 处理折叠逻辑
   function handleToggleFold(ind: number) {
     folds[ind] = !folds[ind];
     setFolds(folds.slice());
   }
   return (
-    <Form
-      form={form}
-      className={`${className} ${s["section-form"]}  f-fs-s-c`}
-      onFinish={(args: CommonObj) => handleFinish(args, allFields, props, { setLoading, closePopup, fetchSuccess, fetchFail })}
-      onFinishFailed={err => handleFinishFailed(err, form)}
-      {...formProps}
-    >
+    <Form className={`${className} ${s["section-form"]} f-fs-s-c`} {...formAttrs}>
       <div className={`${s.bodyer} all-hide-scroll`}>
-        {sections.map((sItem, sInd) => {
-          const { title, fields } = sItem;
-          const labelWidth = getMaxLength(fields) + "em";
+        {sections.map((sItem: SectionFormItemAttrs, sInd: number) => {
+          const { title, fields, popover } = sItem;
+          const labelWidth = getMaxLength(fields as FormItemAttrs[]) + "em";
           return (
             <div className={`${s.section}`} key={sInd}>
               <div className={`${s.head} f-sb-c`}>
-                <div className={`${s.title} f-fs-c`}>{title}</div>
+                <div className={`${s.title} f-fs-c`}>
+                  {title}
+                  {popover && (
+                    <Popover content={popover}>
+                      <QuestionCircleFilled className="ml-q color-info" />
+                    </Popover>
+                  )}
+                </div>
                 <Button
                   className={`${s["fold-btn"]}`}
                   type="link"
@@ -132,7 +92,13 @@ export default forwardRef((props: Props, ref: any) => {
         })}
       </div>
       {!pureText && (
-        <FormFoot form={form} loading={loading} submitButton={submitButton} resetButton={resetButton} readOnly={readOnly} />
+        <FormFoot
+          form={formAttrs.form}
+          loading={loading}
+          submitButton={submitButton}
+          resetButton={resetButton}
+          readOnly={readOnly}
+        />
       )}
     </Form>
   );

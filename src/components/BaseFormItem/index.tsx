@@ -48,23 +48,23 @@ const Field = ({ field, ...restProps }: { field: FormItemAttrs; [key: string]: a
   const { type, attrs, element } = field;
   attrs && Object.assign(attrs, restProps);
   if (type === "Input") return <Input {...attrs} />;
-  if (type === "Input.Password") return <Input.Password {...attrs} />;
-  if (type === "Input.TextArea") return <Input.TextArea {...attrs} />;
-  if (type === "Input.Search") return <Input.Search {...attrs} />;
+  if (type === "Password") return <Input.Password {...attrs} />;
+  if (type === "TextArea") return <Input.TextArea {...attrs} />;
+  if (type === "Search") return <Input.Search {...attrs} />;
   if (type === "InputNumber") return <InputNumber {...attrs} />;
   if (type === "AutoComplete") return <AutoComplete {...(attrs as StandFieldAttrs)} />;
   if (type === "Select") return <Select {...(attrs as StandFieldAttrs)} />;
-  if (type === "Radio.Group") return <Radio.Group {...(attrs as RadioGroupAttrs)} />;
+  if (type === "RadioGroup") return <Radio.Group {...(attrs as RadioGroupAttrs)} />;
   if (type === "Rate") return <Rate {...attrs} />;
   if (type === "TimePicker") return <TimePicker {...attrs} />;
-  if (type === "TimePicker.RangePicker") return <TimePicker.RangePicker {...(attrs as TimeRangePickerProps)} />;
+  if (type === "TimeRangePicker") return <TimePicker.RangePicker {...(attrs as TimeRangePickerProps)} />;
   if (type === "DatePicker") return <DatePicker {...attrs} />;
-  if (type === "DatePicker.RangePicker") return <DatePicker.RangePicker {...(attrs as DateRangePickerAttrs)} />;
+  if (type === "DateRangePicker") return <DatePicker.RangePicker {...(attrs as DateRangePickerAttrs)} />;
   if (type === "Slider") return <Slider {...attrs} />;
   if (type === "Cascader") return <Cascader {...(attrs as StandFieldAttrs)} />;
   if (type === "Switch") return <Switch {...attrs} />;
   if (type === "Checkbox") return <Checkbox {...attrs} />;
-  if (type === "Checkbox.Group") return <Checkbox.Group {...(attrs as CheckboxGroupAttrs)} />;
+  if (type === "CheckboxGroup") return <Checkbox.Group {...(attrs as CheckboxGroupAttrs)} />;
   if (type === "Custom") return element;
   return <div className="color-danger">不存在该类型：{type}</div>;
 };
@@ -87,12 +87,12 @@ export default ({ className = "", style, field, pureText, labelWidth, ...restPro
     let { options, placeholder: phr = "" } = attrs;
     if (typeof options === "string")
       options = type === "Cascader" ? getCascaderOpts(options as CascaderName) : getOpts(options as DictName);
-    phr = phr.includes("${label}") ? phr.replace("${label}", label as string) : phr;
+    phr = phr.includes("{label}") ? phr.replace("{label}", label as string) : phr;
     if (example) phr += `，例：${example}`;
     tempField.attrs = merge({}, attrs, currValidField?.attrs, { placeholder: phr, options }, restProps);
     tempField.rules = [
       ...(currValidField?.rules ?? []),
-      ...(required ? [{ required, message: label + "不能为空" }] : []),
+      ...(required ? [{ required, message: `${label}不能为空` }] : []),
       ...(rules || []),
     ];
     if (extra) tempField.extra = typeof extra === "string" ? <>注：{extra}</> : extra;

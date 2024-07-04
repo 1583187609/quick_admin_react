@@ -3,7 +3,7 @@
 /********************************************************************/
 
 import { typeOf } from "@/utils";
-import { FormFieldAttrs } from "@/components/BaseFormItem";
+import { FormItemAttrs } from "@/components/BaseFormItem";
 import { CommonObj, OptionItem, StrNum } from "@/vite-env";
 import { emptyVals, emptyTime } from "./consts";
 import dayjs from "dayjs";
@@ -131,7 +131,7 @@ export function getLastTimeStr(time: any) {
  * 处理平台默认值问题 Form echo data
  * @description 后端的数据库日期必须有一个默认值，回显的时候会显示这个默认值，因为数据量较多，改动较大，所以由前端统一处理
  */
-export function handleFormInitData(field: FormFieldAttrs, modelValue?: CommonObj) {
+export function handleFormInitData(field: FormItemAttrs, modelValue?: CommonObj) {
   if (!modelValue || emptyVals.includes(emptyTime)) return;
   const { type, prop } = field;
   const propType = typeOf(prop);

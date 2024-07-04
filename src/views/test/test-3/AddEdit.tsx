@@ -52,7 +52,7 @@ function getFields({ isAdd = false, formRef }: CommonObj): FormItem[] {
     {
       name: "gender",
       label: "性别",
-      type: "Radio.Group",
+      type: "RadioGroup",
       attrs: {
         options: "Gender",
       },

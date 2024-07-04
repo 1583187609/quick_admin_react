@@ -7,10 +7,10 @@
 // import type { MessageParams, TableColumnCtx } from "element-plus";
 import cssVars from "@/assets/styles/_css_var.module.less";
 import { message } from "antd";
-import { typeOf } from "@/utils";
+import { getChinaCharLength, typeOf } from "@/utils";
 import { PopoverAttrs } from "@/components/BaseFormItem";
 import { CommonObj, TostMessageType } from "@/vite-env";
-import type { FormItem } from "@/components/BaseFormItem";
+import type { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
 import { merge, omitBy } from "lodash";
 import dayjs from "dayjs";
 import { defaultFieldAttrs, FormItemType } from "@/components/BaseFormItem";
@@ -101,12 +101,11 @@ export function printLog(data: any, type: PrintLogType | ThemeColorType = "req",
  * @param {Function} fn 回调函数
  * @param {Boolean} immediate 是否立即执行
  * @param {Number} delay 延迟时间
- * @param {*} params 传入的参数
  * @example methods: {onSubmit: debounce((event, param) => {console.log("防抖测试");})}
  */
-export function debounce(fn: (e: any, params?: object) => void, immediate = true, delay = 1000, params?: object) {
+export function debounce(fn: (...args: any) => void, immediate = true, delay = 1000) {
   let timer: any = null;
-  return function (event: any) {
+  return function (...args: any) {
     if (timer) clearTimeout(timer);
     if (immediate) {
       const canExe = !timer;
@@ -114,11 +113,11 @@ export function debounce(fn: (e: any, params?: object) => void, immediate = true
         timer = null;
       }, delay);
       if (canExe) {
-        fn(event, params);
+        fn(...args);
       }
     } else {
       timer = setTimeout(() => {
-        fn(event, params);
+        fn(...args);
         timer = null;
       }, delay);
     }
@@ -131,106 +130,97 @@ export function debounce(fn: (e: any, params?: object) => void, immediate = true
  * @param delay 延迟执行时间
  * @returns 返回执行函数
  */
-export function debounceHandler(fn: Function, delay = 500) {
-  let timer: number | null = null;
-  return function (...args: any) {
-    const _this = this;
-    if (timer) clearTimeout(timer);
-    timer = window.setTimeout(() => {
-      fn.apply(_this, args);
-      timer = null;
-    }, delay);
-  };
-}
+// export function debounceHandler(fn: Function, delay = 500) {
+//   let timer: number | null = null;
+//   return function (...args: any) {
+//     const _this = this;
+//     if (timer) clearTimeout(timer);
+//     timer = window.setTimeout(() => {
+//       fn.apply(_this, ...args);
+//       timer = null;
+//     }, delay);
+//   };
+// }
 
 /**
  * 节流：指连续触发事件，但是在 n 秒内只执行一次函数
  * @param {Function} fn 回调函数
  * @param {Boolean} immediate 是否立即执行
  * @param {Number} delay 延迟时间
- * @param {*} params 传入的参数
  * @example methods: {onSubmit: throttle((event, param) => {console.log("节流测试");})}
  */
-export function throttle(fn: (e: any, params?: object) => void, immediate = true, delay = 1000, params?: object) {
+export function throttle(fn: (...args: any) => void, immediate = true, delay = 1000) {
   if (immediate) {
     let previous = 0;
-    return function (event: any) {
+    return (...args: any) => {
       const now = Date.now();
       if (now - previous > delay) {
-        fn(event, params);
+        fn(...args);
         previous = now;
       }
     };
-  } else {
-    let timer: any = null;
-    return function (event: any) {
-      if (!timer) {
-        timer = setTimeout(() => {
-          fn(event, params);
-          timer = null;
-        }, delay);
-      }
-    };
   }
+  let timer: any = null;
+  return (...args: any) => {
+    if (!timer) {
+      timer = setTimeout(() => {
+        fn(...args);
+        timer = null;
+      }, delay);
+    }
+  };
 }
 
 /**
  * 处理ElementPlus表格的汇总
  * @param exceptKeys 要排除掉的不进行汇总的列prop
  */
-export interface SummaryMethodProps<T = CommonObj> {
-  columns: TableColumnCtx<T>[];
-  data: T[];
-}
-export function handleTableSummary(param: SummaryMethodProps, exceptKeys?: string[]) {
-  const { columns, data } = param;
-  const sums: string[] = [];
-  columns.forEach((column, index) => {
-    if (index === 0) {
-      sums[index] = "合计";
-      return;
-    }
-    const values = data.map(item => Number(item[column.property]));
-    if (values.every(value => Number.isNaN(value))) {
-      sums[index] = "-"; //N/A
-    } else {
-      if (exceptKeys?.includes(column.property)) {
-        sums[index] = "-";
-      } else {
-        sums[index] = `${values.reduce((prev, curr) => {
-          const value = Number(curr);
-          if (!Number.isNaN(value)) {
-            return prev + curr;
-          } else {
-            return prev;
-          }
-        }, 0)}`;
-      }
-    }
-  });
-  return sums;
-}
+// export interface SummaryMethodProps<T = CommonObj> {
+//   columns: TableColumnCtx<T>[];
+//   data: T[];
+// }
+// export function handleTableSummary(param: SummaryMethodProps, exceptKeys?: string[]) {
+//   const { columns, data } = param;
+//   const sums: string[] = [];
+//   columns.forEach((column, index) => {
+//     if (index === 0) {
+//       sums[index] = "合计";
+//       return;
+//     }
+//     const values = data.map(item => Number(item[column.property]));
+//     if (values.every(value => Number.isNaN(value))) {
+//       sums[index] = "-"; //N/A
+//     } else {
+//       if (exceptKeys?.includes(column.property)) {
+//         sums[index] = "-";
+//       } else {
+//         sums[index] = `${values.reduce((prev, curr) => {
+//           const value = Number(curr);
+//           if (!Number.isNaN(value)) {
+//             return prev + curr;
+//           } else {
+//             return prev;
+//           }
+//         }, 0)}`;
+//       }
+//     }
+//   });
+//   return sums;
+// }
 
 /**
  * 获取屏幕大小的类型，对应着element-plus定义的屏幕类型
  * @return string 屏幕类型
  */
-export type ScreenSizeType = "xs" | "sm" | "md" | "lg" | "xl";
-export function getScreenSizeType(): ScreenSizeType {
-  let size = "";
-  const width = document.body.offsetWidth;
-  if (width < 768) {
-    size = "xs";
-  } else if (width >= 768 && width < 992) {
-    size = "sm";
-  } else if (width >= 992 && width < 1200) {
-    size = "md";
-  } else if (width >= 1200 && width < 1920) {
-    size = "lg";
-  } else if (width >= 1920) {
-    size = "xl";
-  }
-  return size as ScreenSizeType;
+export type ScreenSizeType = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
+export function getScreenSizeType(w = document.body.offsetWidth): ScreenSizeType {
+  if (w < 576) return "xs";
+  if (w >= 576 && w < 768) return "sm";
+  if (w >= 768 && w < 992) return "md";
+  if (w >= 992 && w < 1200) return "lg";
+  if (w >= 992 && w < 1600) return "xl";
+  if (w >= 1600) return "xxl";
+  return "xxl";
 }
 
 /**
@@ -254,10 +244,13 @@ export function getPopoverAttrs(popover?: string | PopoverAttrs): PopoverAttrs |
  * 过滤筛选日期字段
  * @param fields 字段数组
  */
-function getDateFields(fields: FormItem[]) {
-  return fields.filter(({ type }: FormItem) => {
-    return type?.includes("Date") || type?.includes("Time");
-  });
+function getDateFields(fields: FormItem[]): FormItemAttrs[] {
+  return fields.filter((field: FormItem) => {
+    if (!field) return false;
+    const { type } = field as FormItemAttrs;
+    if (!type) return false;
+    return type.includes("Date") || type.includes("Time");
+  }) as FormItemAttrs[];
 }
 
 /**
@@ -265,7 +258,7 @@ function getDateFields(fields: FormItem[]) {
  * @param dateFields Array 日期字段数组
  * @param key 对象属性名
  */
-function getDateFormat(dateFields: FormItem[], key: string) {
+function getDateFormat(dateFields: FormItemAttrs[], key: string) {
   const { type, attrs } = dateFields.find(it => it.name === key) || {};
   const newAttrs = merge({}, defaultFieldAttrs[type as FormItemType]?.attrs, attrs);
   return newAttrs.format || "YYYY-MM-DD";
@@ -288,12 +281,34 @@ export function convertDateField(fields: FormItem[], params: CommonObj = {}, typ
     const isArr = typeOf(val) === "Array";
     let date: any = isArr ? val.map((it: string) => dayjs(it, format)) : dayjs(val, format);
     if (type === "get") {
-      // if (["attendDate", "attendTime"].includes(key)) console.log(date, "date-format----------------");
       date = isArr ? date.map((it: any) => it.format(format)) : date.format(format);
-      // if (["attendDate", "attendTime"].includes(key)) console.log(format, key, date, "format----------------");
     }
     params[key] = date;
   }
-  // console.log(params, "params------------");
   return params;
+}
+
+/**
+ * 获取label的最大字符长度
+ * @param fields 表单域
+ * @param num 额外的空白宽度，默认2 // 2是因为：一个是间距宽度，一个是*宽度
+ */
+export function getMaxLength(fields: FormItemAttrs[] = [], num = 2): number {
+  let max = 1;
+  fields.forEach(item => {
+    const { label, children, otherAttrs } = item as FormItemAttrs;
+    const popNum = otherAttrs?.popover ? 1 : 0;
+    if (typeof label === "string") {
+      if (label?.length + popNum > max) {
+        max = getChinaCharLength(label) + popNum; //全角符算1个，半角符算0.5个字符
+      }
+    } else {
+      console.error(`暂未处理类型为${typeOf(label)}的label`);
+    }
+    if (children) {
+      const _max = getMaxLength(children, 0);
+      if (_max > max) max = _max;
+    }
+  });
+  return max + num;
 }

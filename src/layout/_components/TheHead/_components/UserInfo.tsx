@@ -26,7 +26,7 @@ const fields: FormItem[] = [
   {
     name: "gender",
     label: "性别",
-    type: "Radio.Group",
+    type: "RadioGroup",
     attrs: {
       options: "Gender",
     },
@@ -76,7 +76,7 @@ const fields: FormItem[] = [
   {
     name: "signature",
     label: "签名",
-    type: "Input.TextArea",
+    type: "TextArea",
     attrs: {
       maxLength: 50,
     },

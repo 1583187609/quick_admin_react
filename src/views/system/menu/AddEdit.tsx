@@ -57,7 +57,7 @@ function getFields({ activeKey = "1" }: CommonObj): any[] {
     activeKey === "2" && {
       name: "is_cache",
       label: "是否缓存",
-      type: "Radio.Group",
+      type: "RadioGroup",
       attrs: {
         options: "YesNoStatus",
       },
@@ -66,7 +66,7 @@ function getFields({ activeKey = "1" }: CommonObj): any[] {
     {
       name: "is_frame",
       label: "是否为外链",
-      type: "Radio.Group",
+      type: "RadioGroup",
       attrs: {
         options: "YesNoStatus",
       },
@@ -74,7 +74,7 @@ function getFields({ activeKey = "1" }: CommonObj): any[] {
     activeKey !== "3" && {
       name: "is_show",
       label: "是否显示",
-      type: "Radio.Group",
+      type: "RadioGroup",
       attrs: {
         options: "YesNoStatus",
       },
@@ -83,7 +83,7 @@ function getFields({ activeKey = "1" }: CommonObj): any[] {
     {
       name: "is_enable",
       label: "是否启用",
-      type: "Radio.Group",
+      type: "RadioGroup",
       attrs: {
         options: "YesNoStatus",
       },
@@ -91,7 +91,7 @@ function getFields({ activeKey = "1" }: CommonObj): any[] {
     {
       name: "remark",
       label: "备注",
-      type: "Input.TextArea",
+      type: "TextArea",
       attrs: {
         maxLength: 50,
       },

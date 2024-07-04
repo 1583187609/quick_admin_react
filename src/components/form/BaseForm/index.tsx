@@ -2,20 +2,17 @@
  * 基础表单 - BaseForm
  */
 
-import { useContext, useImperativeHandle, forwardRef, useState } from "react";
+import { forwardRef } from "react";
 import { Form } from "antd";
 import { CSSProperties } from "react";
 import { FormItem } from "@/components/BaseFormItem";
-import { getMaxLength, convertDateField } from "@/utils";
-import { merge, debounce } from "lodash";
-import { PopupContext } from "@/components/provider/PopupProvider";
+import { getMaxLength } from "@/utils";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import FormFields from "@/components/form/_components/FormFields";
 import FormFoot from "@/components/form/_components/FormFoot";
-import { handleFinish, handleFinishFailed } from "@/components/form/_utils";
 import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { BtnAttrs } from "@/components/form/_types";
-import { defaultFormProps } from "@/components/form/_config";
+import { useInitForm } from "../_hooks";
 import s from "./index.module.less";
 
 interface Props {
@@ -46,46 +43,21 @@ interface Props {
 }
 
 export default forwardRef((props: Props, ref: any) => {
-  const { className = "", initialValues, fields = [], submitButton, resetButton, ...restProps } = props;
-  const [form] = Form.useForm();
-  const { closePopup } = useContext(PopupContext);
-  const [loading, setLoading] = useState(false);
+  const { className, loading, submitButton, resetButton, fields, pureText, readOnly, formAttrs } = useInitForm(props, ref);
   const labelWidth = getMaxLength(fields) + "em";
-  const initVals = convertDateField(fields, initialValues, "set");
-  const {
-    pureText,
-    readOnly = false,
-    isOmit,
-    log,
-    fetch,
-    fetchSuccess,
-    fetchFail,
-    onSubmit,
-    ...formProps
-  } = merge({ initialValues: initVals }, defaultFormProps, restProps);
-  useImperativeHandle(ref, () => ({ form }), [form]);
-  // debounce((e: any) => handleClick(name, customClick), 1000, {leading: true})
-  // const handleSubmit = debounce((args: CommonObj) =>
-  //   handleFinish(args, fields, props, { setLoading, closePopup, fetchSuccess, fetchFail })
-  // );
-  // const handleSubmit = debounce(
-  //   (args: CommonObj) => handleFinish(args, fields, props, { setLoading, closePopup, fetchSuccess, fetchFail }),
-  //   1000,
-  //   { leading: true }
-  // );
   return (
-    <Form
-      form={form}
-      className={`${className} ${s["base-form"]}  f-fs-s-c`}
-      onFinish={(args: CommonObj) => handleFinish(args, fields, props, { setLoading, closePopup, fetchSuccess, fetchFail })}
-      onFinishFailed={err => handleFinishFailed(err, form)}
-      {...formProps}
-    >
+    <Form className={`${className} ${s["base-form"]}  f-fs-s-c`} {...formAttrs}>
       <div className={`${s.bodyer} all-hide-scroll`}>
         <FormFields fields={fields} pureText={pureText} readOnly={readOnly} labelWidth={labelWidth} />
       </div>
       {!pureText && (
-        <FormFoot form={form} loading={loading} submitButton={submitButton} resetButton={resetButton} readOnly={readOnly} />
+        <FormFoot
+          form={formAttrs.form}
+          loading={loading}
+          submitButton={submitButton}
+          resetButton={resetButton}
+          readOnly={readOnly}
+        />
       )}
     </Form>
   );

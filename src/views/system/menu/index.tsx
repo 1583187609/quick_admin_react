@@ -43,7 +43,7 @@ export const fields: FormItem[] = [
       options: "YesNoStatus",
     },
   },
-  { name: "create_time", label: "创建时间", type: "DatePicker.RangePicker" },
+  { name: "create_time", label: "创建时间", type: "DateRangePicker" },
 ];
 export const columns: TableCol[] = [
   { dataIndex: "name", title: "菜单名称", width: 150 },
