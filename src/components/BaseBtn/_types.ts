@@ -1,22 +1,25 @@
+import { CommonObj } from "@/vite-env";
 import { ButtonSize } from "antd/es/button";
 import { ButtonType } from "antd/lib/button";
+import { btnsMap } from "./btns";
 
 //常用的基础按钮类型
-export type CommonBtnName =
-  | "add"
-  | "delete"
-  | "import"
-  | "export"
-  | "edit"
-  | "view"
-  | "batch"
-  | "forbid"
-  | "enable"
-  | "repeal"
-  | "download"
-  | "upload"
-  | "submit"
-  | "reset";
+export type CommonBtnName = keyof typeof btnsMap;
+// export type CommonBtnName =
+//   | "add"
+//   | "delete"
+//   | "import"
+//   | "export"
+//   | "edit"
+//   | "view"
+//   | "batch"
+//   | "forbid"
+//   | "enable"
+//   | "repeal"
+//   | "download"
+//   | "upload"
+//   | "submit"
+//   | "reset";
 export type BtnName = CommonBtnName | string; //常用基础按钮或其他自定义按钮
 export interface PopconfirmAttrs {
   title: string;

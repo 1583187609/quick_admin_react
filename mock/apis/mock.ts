@@ -53,8 +53,10 @@ export default toViteMockApi({
       ["age", { type: "range", range: age }],
       ["name", { type: "blur", byKeys: ["name"], keyword: name }],
     ]);
-    queryList = queryList.map((item, ind: number) => {
-      return deleteAttrs(item, delAttrs);
+    queryList = queryList.map((item: CommonObj) => {
+      item = deleteAttrs(item, delAttrs);
+      item.userData = JSON.parse(JSON.stringify(item));
+      return item;
     });
     if (exports) {
       const { fields, ids } = exports;

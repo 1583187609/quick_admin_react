@@ -24,7 +24,7 @@ export interface TableColAttrs {
    * 下面是antd提供的属性
    */
   key?: string;
-  dataIndex?: string;
+  dataIndex?: string | [string, string];
   title: string;
   width?: number;
   align?: string;

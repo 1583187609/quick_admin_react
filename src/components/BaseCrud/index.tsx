@@ -3,7 +3,7 @@
  */
 
 import React, { useContext, useEffect, useRef, useState, useImperativeHandle, forwardRef, CSSProperties } from "react";
-import { FormItem } from "@/components/BaseFormItem";
+import { FormItem, FormItemAttrs, FormItemType } from "@/components/BaseFormItem";
 import QueryForm from "./_components/QueryForm";
 import QueryTable from "./_components/QueryTable";
 import ExtraBtns from "./_components/ExtraBtns";
@@ -69,11 +69,11 @@ export default forwardRef(
       onOperateBtn,
       extraParams,
       exportMax = 20000,
-      sort = false,
-      index = false,
-      selection = false,
-      reqMap = defaultReqMap,
-      resMap = defaultResMap,
+      sort,
+      index,
+      selection,
+      reqMap = {},
+      resMap = {},
       log = true,
       children,
       filterByAuth = (auth: number[]) => auth.includes(getUserInfo().type),
@@ -88,12 +88,14 @@ export default forwardRef(
     const [seledKeys, setSeledKeys] = useState<React.Key[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [rows, setRows] = useState<CommonObj[]>([]);
+    Object.assign(reqMap, defaultReqMap);
+    Object.assign(resMap, defaultResMap);
     //初始化分页信息
     const initPage = {
       [`${reqMap.curr_page}`]: 1,
       [`${reqMap.page_size}`]: 20,
     };
-    const [newCols, setNewCols] = useState<TableColAttrs[]>(columns.filter(it => !!it) as TableColAttrs[]); // 浅克隆
+    const [newCols, setNewCols] = useState<TableColAttrs[]>(columns.slice() as TableColAttrs[]); // 浅克隆
     const newExtraBtns = extraBtns.map(item => {
       const btn: BtnItem = getBtnObj(item);
       if (noPopconfirmBtns.includes(btn.name)) {
@@ -104,7 +106,8 @@ export default forwardRef(
       }
       return btn;
     });
-    allColumns = columns.filter(it => !!it) as TableColAttrs[];
+    // allColumns = columns.filter(it => !!it) as TableColAttrs[];
+    allColumns = columns.slice() as TableColAttrs[];
     useImperativeHandle(
       ref,
       () => {
@@ -174,27 +177,25 @@ export default forwardRef(
       });
     }
     //处理表单中的值变化时
-    function handleValuesChange(changedVals: CommonObj, allVals: CommonObj) {
+    function handleValuesChange(vals: CommonObj, allVals: CommonObj) {
       //因为 lodash 的 merge 不会用 undefined 覆盖其他值，故做此处理
-      for (let key in changedVals) {
-        if (changedVals[key] === undefined) changedVals[key] = "";
+      for (let key in vals) {
+        if (vals[key] === undefined) vals[key] = "";
       }
-      merge(params.current, changedVals, initPage);
+      merge(params.current, vals, initPage);
       if (changeFetch) {
-        const [key] = Object.entries(changedVals)[0];
-        /**
-         * name可能undefined，此时是自定义组件，type为 Custom；
-         * type 可能为undefined，此时 type 为Input
-         */
-        const type = fields.find(it => it.name === key)?.type;
-        if (["Select"].includes(type as string)) {
+        const [key] = Object.entries(vals)[0];
+        const target = fields.find(it => {
+          if (!it) return false;
+          return (it as FormItemAttrs).name === key;
+        });
+        if (!target) return;
+        const { type } = target as FormItemAttrs;
+        if (["Select"].includes(type as FormItemType)) {
           getList();
         }
       }
     }
-    // function handleFieldsChange(changedVals: any, allVals: any) {
-    //   console.log(changedVals, allVals, "handleFieldsChange-------");
-    // }
     //点击提交（查询）按钮
     function handleSubmit(data: CommonObj, next: FinallyNext) {
       getList(data, next);
@@ -227,15 +228,14 @@ export default forwardRef(
     return (
       <div className={`${className} ${s["base-crud"]} auto-scroll-table f-1 f-fs-s-c`}>
         <QueryForm
-          ref={formRef}
           className="f-0"
           fields={fields}
           extraParams={extraParams}
           onValuesChange={handleValuesChange}
-          // onFieldsChange={handleFieldsChange}
           onSubmit={handleSubmit}
           onReset={() => initFetch()}
           {...formAttrs}
+          ref={formRef}
         />
         {!!children && <div className={`${s.children} f-0 mt-16`}>{children}</div>}
         <ExtraBtns

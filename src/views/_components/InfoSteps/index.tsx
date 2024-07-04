@@ -46,17 +46,17 @@ export default ({ className = "", data = {}, children, ...restProps }: Props) =>
       <div className={`${s[resData.info?.class]} ${s["step-item"]} f-fs-c`}>
         <div className={`${s.num} f-0`}>1</div>
         <div className={`${s.text} f-0`}>{resData.info?.text || "-"}</div>
-        <BaseIcon className={s.icon} size="20px" name="CircleCheckFilled" />
+        <BaseIcon className={s.icon} size="20px" name="CheckCircleOutlined" />
       </div>
       <div className={`${resData.hasRealName ? s.success : ""} ${s["step-item"]} f-fs-c`}>
         <div className={`${s.num} f-0`}>2</div>
         {resData.hasRealName ? <div className={`${s.text} f-0`}>已实名</div> : <div className={`${s.text} f-0`}>未实名</div>}
-        <BaseIcon className={s.icon} size="20px" name="CircleCheckFilled" />
+        <BaseIcon className={s.icon} size="20px" name="CheckCircleOutlined" />
       </div>
       <div className={`${resData.hasAuth ? s.success : ""} ${s["step-item"]} f-fs-c`}>
         <div className={`${s.num} f-0`}>3</div>
         {resData.hasAuth ? <div className={`${s.text} f-0`}>已认证</div> : <div className={`${s.text} f-0`}>未认证</div>}
-        <BaseIcon className={s.icon} size="20px" name="CircleCheckFilled" />
+        <BaseIcon className={s.icon} size="20px" name="CheckCircleOutlined" />
       </div>
     </div>
   );

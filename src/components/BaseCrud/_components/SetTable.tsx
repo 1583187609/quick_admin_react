@@ -29,11 +29,12 @@ interface Props {
 
 function getCols({ onShowChange, onExportChange, onSortChange }: CommonObj): TableColAttrs[] {
   return [
-    { name: "colText", title: "列名称" },
-    // { name: "colName", title: "属性名" },
+    { dataIndex: "colText", title: "列名称", width: 200 },
+    { dataIndex: "colName", title: "属性名", width: 120 },
     {
-      name: "isShow",
+      dataIndex: "isShow",
       title: "是否显示",
+      width: 80,
       render(text: string, row: CommonObj, ind: number) {
         return (
           <Switch
@@ -46,8 +47,9 @@ function getCols({ onShowChange, onExportChange, onSortChange }: CommonObj): Tab
       },
     },
     {
-      name: "isExport",
+      dataIndex: "isExport",
       title: "是否导出",
+      width: 80,
       render(text: string, row: CommonObj, ind: number) {
         return (
           <Switch
@@ -61,8 +63,9 @@ function getCols({ onShowChange, onExportChange, onSortChange }: CommonObj): Tab
       },
     },
     {
-      name: "isOrder",
+      dataIndex: "isOrder",
       title: "排序",
+      width: 80,
       render(text: string, row: CommonObj, ind: number) {
         return (
           <Switch
@@ -92,18 +95,17 @@ export default ({
   const { closePopup } = useContext(PopupContext);
   const [tableKey, setTableKey] = useState(Date.now());
   //表格列字段
-  const colFields = useMemo(() => {
-    return allColumns.map(item => {
-      const { title, name } = item;
-      return {
-        colName: name as string,
-        colText: title,
-        isShow: !!columns.find(it => it.name === name),
-        isExport: true,
-        isOrder: false,
-      };
-    });
-  }, [allColumns, columns]);
+  const colFields = allColumns.map(item => {
+    const { title, dataIndex } = item;
+    return {
+      colName: dataIndex as string,
+      colText: title,
+      isShow: !!columns.find(it => it.dataIndex === dataIndex),
+      isExport: true,
+      isOrder: false,
+    };
+  });
+  console.log(colFields, "colFields----------------");
   function handleSave() {
     // const storeColFields = storage.getItem("colFields") || {};
     // storeColFields[pathname] = colFields;

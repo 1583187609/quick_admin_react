@@ -1,10 +1,11 @@
-import { CSSProperties, MouseEventHandler } from "react";
+import { CSSProperties, MouseEventHandler, useState } from "react";
 import { Image } from "antd";
 import { useRouter } from "@/components/_hooks";
 import emptyImg from "@/assets/images/default/img.png";
+import errImg from "@/assets/images/default/err.png";
 import { StrNum } from "@/vite-env";
-import s from "./index.module.less";
 import { RouteProps } from "../_hooks/router";
+import s from "./index.module.less";
 
 type Props = {
   className?: string;
@@ -22,11 +23,12 @@ type Props = {
   preview?: boolean;
   [key: string]: any;
 };
+
 export default ({
   className = "",
   style,
   onClick,
-  size,
+  size = 120,
   width,
   height,
   src,
@@ -36,6 +38,7 @@ export default ({
   loadTips = "玩命加载中…",
   errTips = "加载失败",
   preview = !!src,
+  fallback = errImg,
   ...restProps
 }: Props) => {
   const router = useRouter();
@@ -49,13 +52,14 @@ export default ({
         src={src ?? emptyImg}
         width={size ?? width}
         height={size ?? height}
-        style={{
-          cursor: to ? "pointer" : "inherit",
-          ...style,
-        }}
+        style={{ cursor: to ? "pointer" : "inherit", ...style }}
         onClick={handleClick}
         alt="图片加载失败"
+        fallback={fallback}
         preview={preview}
+        // onError={err => {
+        //   console.log(err, "err---------");
+        // }}
         {...restProps}
       />
     </>

@@ -23,10 +23,11 @@ const avatarMap: Record<1 | 2, any> = {
   1: avatarManImg,
   2: avatarWomanImg,
 };
-export default ({ className = "", style, size, height, width, src, gender, preview = !!src, ...restProps }: Props) => {
+export default ({ className = "", style, size = 40, height, width, src, gender, preview = !!src, ...restProps }: Props) => {
   return (
     <BaseImg
       className={`${className} ${s["base-avatar"]}`}
+      size={size}
       height={size ?? height}
       width={size ?? width}
       src={src || avatarMap[gender as 1 | 2] || avatarImg}

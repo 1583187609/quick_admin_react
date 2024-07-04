@@ -44,7 +44,7 @@ export default ({ className = "", data = {}, simple, children, ...restProps }: P
     <div className={`${className} ${s["user-info"]} f-sb-s`} {...restProps}>
       {simple ? (
         <>
-          <BaseAvatar className={`${s.avatar} ${s.simple} f-0 mr-8`} src={data.avatar} gender={data.gender} />
+          <BaseAvatar size={120} className={`${s.avatar} ${s.simple} f-0 mr-8`} src={data.avatar} gender={data.gender} />
           <div className="f-1 f-sb-s-c">
             <b onClick={toUserDetail} className={`${s.nickname} line-1`}>
               {data.nickname || "-"}
@@ -72,7 +72,7 @@ export default ({ className = "", data = {}, simple, children, ...restProps }: P
                 </BaseTag>
               </Popover>
             )}
-            <BaseAvatar className={s.avatar} src={data.avatar} gender={data.gender} />
+            <BaseAvatar size={120} className={s.avatar} src={data.avatar} gender={data.gender} />
             {data.schoolStatus === 0 && (
               <Popover content={getText("EducationType", data.schoolCertificateLevel) || "-"}>
                 <BaseTag className={`${s.education} ${s.tag}`} name="AuthCase" value="2">

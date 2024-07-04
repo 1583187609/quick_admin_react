@@ -2,13 +2,12 @@
  * 系统内置基础按钮
  */
 
-import { Button, message, Popconfirm } from "antd";
+import { Button, Popconfirm } from "antd";
 import { ButtonSize } from "antd/es/button";
 import { ButtonType } from "antd/lib/button";
-import { useMemo, CSSProperties } from "react";
-
-import { BaseBtnType, BtnItem, BtnName, BtnMap, PopconfirmAttrs, BtnFn } from "./_types";
-import { getPopconfirmAttrs, getBtnObj } from "./_utils";
+import { CSSProperties } from "react";
+import { BaseBtnType, BtnItem, BtnName, PopconfirmAttrs } from "./_types";
+import { getBtnObj } from "./_utils";
 import { useRouter } from "@/hooks";
 import { showMessage } from "../_utils";
 

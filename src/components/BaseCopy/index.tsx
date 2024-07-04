@@ -14,10 +14,12 @@ interface Props {
   style?: CSSProperties;
   line?: StrNum;
   text?: StrNum;
+  char?: string; //空位符
   [key: string]: any;
 }
-export default ({ className = "", line = 1, text = "", children = text, ...restProps }: Props) => {
+export default ({ className = "", line = 1, text = "", children = text, char = "-", ...restProps }: Props) => {
   function handleClick() {
+    if (!children) return;
     const input = document.createElement("input");
     input.setAttribute("value", text as string);
     document.body.appendChild(input);
@@ -27,11 +29,15 @@ export default ({ className = "", line = 1, text = "", children = text, ...restP
     document.body.removeChild(input);
   }
   return (
-    <div onClick={handleClick} className={`${className} ${s["base-copy"]} ${Number(line) > 0 ? "f-fs-c" : ""}`} {...restProps}>
-      <span className={`line-${line}`}>{children}</span>
+    <div
+      onClick={handleClick}
+      className={`${className} ${s["base-copy"]} ${Number(line) > 0 ? "f-fs-c" : ""} ${children ? s["has-val"] : ""}`}
+      {...restProps}
+    >
+      <span className={`line-${line}`}>{children || char}</span>
       {children && (
         <Tooltip title="点击复制">
-          <BaseIcon className={`${s.icon} f-0 ml-4`} name="DocumentCopy" />
+          <BaseIcon className={`${s.icon} f-0 ml-4`} name="CopyOutlined" />
         </Tooltip>
       )}
     </div>

@@ -78,6 +78,7 @@ export const columns: TableCol[] = [
     width: 120,
   },
   {
+    dataIndex: "avatar",
     type: "BaseImg",
     title: "图片[BaseImg]",
   },
@@ -85,6 +86,11 @@ export const columns: TableCol[] = [
     type: "BaseText",
     dataIndex: "produce",
     title: "自我介绍[BaseText]",
+  },
+  {
+    type: "BaseCopy",
+    dataIndex: "avatar",
+    title: "文本复制[BaseCopy]",
   },
   {
     dataIndex: "phone",

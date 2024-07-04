@@ -1,12 +1,12 @@
 /**
  * 文件说明-模板文件
  */
-import React, { useMemo, useRef, useImperativeHandle, forwardRef, useContext, CSSProperties } from "react";
+import React, { useRef, useImperativeHandle, forwardRef, useContext, CSSProperties } from "react";
 import { Table } from "antd";
-import OperateBtns from "../OperateBtns";
+import OperateBtns, { DefaultBaseBtnAttrs, btnGapMap, defaultBaseBtnAttrs } from "../OperateBtns";
 import { BtnName, BaseBtnType, BtnItem, getBtnObj } from "@/components/BaseBtn";
 import { btnsMap } from "@/components/BaseBtn";
-import { emptyVals, showMessage } from "@/utils";
+import { emptyVals, getChinaCharLength, showMessage } from "@/utils";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import { TableCol, TableColAttrs, RowKeyType, StandardTableColAttrs, SpecialColKeys } from "@/components/table/_types";
 import { defaultColumnAttrs, defaultTableAttrs, defaultPagination } from "@/components/table/_config";
@@ -34,7 +34,7 @@ interface Props {
   bordered?: boolean;
   columns?: TableCol[];
   dataSource?: CommonObj[];
-  rowKey?: RowKeyType;
+  rowKey?: string;
   loading?: boolean;
   pagination?: PaginationAttrs;
   /**
@@ -45,6 +45,7 @@ interface Props {
   selection?: boolean;
   total?: number;
   operateBtns?: BaseBtnType[];
+  operateBtnsAttrs?: DefaultBaseBtnAttrs;
   filterBtnsByAuth: (btns: BtnItem[]) => BtnItem[];
   onPageChange?: (currPage: number, pageSize: number) => void;
   onPageSizeChange?: (currPage: number, pageSize: number) => void;
@@ -55,6 +56,9 @@ interface Props {
   onSelectionSelectAll?: (selected: boolean, seledRows: CommonObj[], changeRows: CommonObj[]) => void;
   [key: string]: any;
 }
+
+const cellPadding = 8;
+let opeColWidth = 0; // 操作栏的宽度
 
 export default forwardRef(
   (
@@ -70,6 +74,7 @@ export default forwardRef(
       selection = false,
       total = 0,
       operateBtns = [],
+      operateBtnsAttrs,
       filterBtnsByAuth,
       onPageChange,
       onPageSizeChange,
@@ -87,39 +92,44 @@ export default forwardRef(
     const { closePopup } = useContext(PopupContext);
     const tableAttrs = Object.assign({}, defaultTableAttrs, restProps);
     const colKeys: string[] = [];
-    const newCols = useMemo(() => {
+    const opeBtnsAttrs = Object.assign({}, operateBtnsAttrs, defaultBaseBtnAttrs);
+    const rowsBtns: BtnItem[][] = dataSource.map((row: CommonObj, ind: number) => getOperateBtnsOfRow(row, ind));
+    const newCols = getNewCols(opeColWidth);
+    function getNewCols(width: number) {
       let cols = columns.filter(it => !!it) as TableColAttrs[];
       cols = cols.map((item: TableColAttrs) => {
-        const { title, type, ...rest } = item;
-        colKeys.push(rest.dataIndex ?? specialColMap[type].dataIndex);
-        return Object.assign({ width: title.includes("时间") ? 160 : 100 }, defaultColumnAttrs, {
-          ...(type ? specialColMap[type as SpecialColKeys] ?? {} : {}),
-          title,
-          ...rest,
-        });
+        const { type, ...restCol } = item;
+        const specialCol = type ? specialColMap[type as SpecialColKeys] ?? undefined : undefined;
+        const hasRender = !!(item.render || specialCol?.render);
+        colKeys.push(restCol.dataIndex ?? (specialCol?.dataIndex as string));
+        return Object.assign(
+          { width: item.title.includes("时间") ? 160 : 100 },
+          defaultColumnAttrs,
+          specialCol,
+          restCol,
+          hasRender ? undefined : { render: (text: any) => (emptyVals.includes(text) ? "-" : text) }
+        );
       });
       if (index) cols.unshift(specialColMap.index);
       if (sort) cols.unshift(specialColMap.sort);
       if (operateBtns?.length) {
-        const col = Object.assign({ width: getOperateColWidth(operateBtns) }, specialColMap.operate, {
+        const col = Object.assign({ width }, specialColMap.operate, {
           render: (text: any, row: CommonObj, ind: number) => (
-            <OperateBtns
-              onClick={(name: BtnName) => handleOperateBtn(name, row, ind)}
-              btns={getOperateBtnsOfRow({ ...row, ind })}
-            />
+            <OperateBtns onClick={(name: BtnName) => handleOperateBtn(name, row, ind)} btns={rowsBtns[ind]} />
           ),
         });
         cols.push(col as TableColAttrs);
       }
       return cols;
-    }, [columns, index, sort]);
+    }
     const newRows = dataSource.map((item: CommonObj, ind: number) => {
-      colKeys.forEach((key: string) => {
-        const val = item[key];
-        // if (key === "wltl") console.log(val, "val---------------");
-        // const isWlt = typeof val === "undefined";
-        if (emptyVals.includes(val)) item[key] = "-";
-      });
+      // colKeys.forEach((key: string) => {
+      //   const val = item[key];
+      //   // if (key === "wltl") console.log(val, "val---------------");
+      //   // const isWlt = typeof val === "undefined";
+      //   // if (emptyVals.includes(val)) item[key] = "-";
+      //   if (emptyVals.includes(val)) item[key] = "";
+      // });
       if (!item[rowKey]) item[rowKey] = ind;
       return item;
     });
@@ -137,46 +147,65 @@ export default forwardRef(
         },
       };
     }
-    useImperativeHandle(
-      ref,
-      () => {
-        return { tableRef };
-      },
-      [tableRef]
-    );
-    //处理点击操作栏的按钮
+    useImperativeHandle(ref, () => ({ tableRef }), [tableRef]);
+    // 处理点击操作栏的按钮
     function handleOperateBtn(name: BtnName, row: CommonObj, ind: number) {
       const { text } = btnsMap[name] ?? {};
-      if (onOperateBtn) {
-        onOperateBtn(
-          name,
-          { ...row, $index: ind },
-          (msg: string = `${text}成功!`, closeType?: ClosePopupType, cb?: () => void, isRefresh?: boolean) => {
-            showMessage(msg);
-            closePopup(closeType);
-            cb?.();
-          }
-        );
-      } else {
-        showMessage(`暂未处理【${text}】按钮 - ${name}`, "error");
-      }
+      if (!onOperateBtn) return showMessage(`暂未处理【${text}】按钮 - ${name}`, "error");
+      onOperateBtn(
+        name,
+        { ...row, $index: ind },
+        (msg: string = `${text}成功!`, closeType?: ClosePopupType, cb?: () => void, isRefresh?: boolean) => {
+          showMessage(msg);
+          closePopup(closeType);
+          cb?.();
+        }
+      );
     }
-    //获取操作栏的宽度
-    function getOperateColWidth(operateBtns: BaseBtnType[]) {
-      const widths = [100, 180, 250];
-      const ind = (operateBtns.length > 3 ? 3 : operateBtns.length) - 1;
-      return widths[ind];
-    }
-    function getOperateBtnsOfRow(row: CommonObj) {
+    // 获取每一行的分组按钮
+    function getOperateBtnsOfRow(row: CommonObj, ind: number) {
       const tempBtns = operateBtns.map((btn: BaseBtnType) => getBtnObj(btn, undefined, row));
-      return filterBtnsByAuth(tempBtns);
+      const filterBtns = filterBtnsByAuth(tempBtns);
+      const width = getOperateColWidth(filterBtns);
+      if (ind < dataSource.length - 1) {
+        if (opeColWidth < width) opeColWidth = width;
+      } else {
+        if (opeColWidth < 30) opeColWidth = getOperateColWidth(); //如果操作栏没有按钮，则按照最小宽度展示操作栏，例如新增按钮
+      }
+      return filterBtns;
+    }
+    // 获取操作栏的宽度
+    function getOperateColWidth(btns?: BtnItem[]) {
+      const { maxNum, size } = opeBtnsAttrs;
+      const { fontSize, btnPadding, btnMargin, iconMarginRight } = btnGapMap[size as string];
+      //最小宽度
+      if (!btns) return 3 * fontSize + 1 * btnPadding * 2 + cellPadding * 2;
+      let em = 0; //按钮文字字符数量
+      let width = 0;
+      if (btns.length > maxNum) {
+        btns = btns.slice(0, maxNum - 1).concat([{ text: "更多" } as BtnItem]);
+      }
+      // if (vertical) {
+      //   btns.forEach((item: BtnItem) => {
+      //     em = getChinaCharLength(item.text) + 1; //文字加图标 (全角符算1个，半角符算0.5个字符)
+      //     const currWidth = em * fontSize + btnPadding * 2 + cellPadding * 2; //字符的宽度 + 按钮左右padding值 + 各个按钮之间的margin值 + 单元格的左右padding值
+      //     if (currWidth > width)  width = currWidth;
+      //   });
+      // } else {
+      btns.forEach((item: BtnItem) => {
+        em += getChinaCharLength(item.text) + 1; //文字加图标 (全角符算1个，半角符算0.5个字符)
+      });
+      width = em * fontSize + btns.length * btnPadding * 2 + (btns.length - 1) * btnMargin + cellPadding * 2; //字符的宽度 + 按钮左右padding值 + 各个按钮之间的margin值 + 单元格的左右padding值
+      // }
+      return width;
     }
     return (
       <Table
         className={`${className} ${s["query-table"]}`}
-        rowKey={rowKey}
+        rowKey={rowKey as RowKeyType}
         rowSelection={rowSelection}
         columns={newCols as StandardTableColAttrs[]}
+        scroll={{ x: 1, y: 1 }} //加上这个属性，表格头便能够被固定了
         pagination={{
           ...Object.assign({}, defaultPagination, pagination),
           total,

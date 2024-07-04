@@ -3,6 +3,7 @@ import { merge } from "lodash";
 import { btnsMap } from "./btns";
 import { BaseBtnType, BtnItem, BtnName, BtnFn } from "./_types";
 import { CommonObj } from "@/vite-env";
+// import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 /**
  * 获取popconfirm的属性对象
@@ -13,7 +14,15 @@ export function getPopconfirmAttrs(popconfirm: string | boolean | CommonObj, tex
   if (!popconfirm) return;
   //如果自定义popconfirm属性时忘记了加title属性，则自动加上，这个在antd中是必传的，如果为空，也会导致样式有点错乱
   if (typeOf(popconfirm) === "Object") return Object.assign({ title: "温馨提示" }, popconfirm);
-  return { title: "温馨提示", description: `确认是否${text}？` };
+  return {
+    title: "温馨提示",
+    description: `确认是否${text}？`,
+    // icon: <ExclamationCircleOutlined className="color-danger" />,
+    okButtonProps: {
+      danger: true,
+    },
+    cancelButtonProps: {},
+  };
 }
 
 /**
@@ -24,7 +33,7 @@ export function getBtnObj(btn: BaseBtnType, btnItem?: BtnItem, row?: CommonObj):
   const type = typeOf(btn);
   let btnObj: BtnItem = { name: "" };
   if (type === "String") {
-    //icon 经过 JSON.parse(JSON.stringify())之后，重新渲染时会报错，故做此处理
+    // icon 经过 JSON.parse(JSON.stringify())之后，重新渲染时会报错，故做此处理
     const { icon } = btnsMap[btn as BtnName];
     btnObj = JSON.parse(JSON.stringify(btnsMap[btn as BtnName]));
     btnObj.icon = icon;
@@ -38,7 +47,7 @@ export function getBtnObj(btn: BaseBtnType, btnItem?: BtnItem, row?: CommonObj):
     btnObj.popconfirm = getPopconfirmAttrs(popconfirm, text as string);
   }
   merge(btnObj, btnItem);
-  //当type为link时，需要删除ghost属性，不然会触发警告
+  // 当type为link时，需要删除ghost属性，不然会触发警告
   if (btnObj!.attrs?.type === "link") {
     delete btnObj!.attrs!.ghost;
   }

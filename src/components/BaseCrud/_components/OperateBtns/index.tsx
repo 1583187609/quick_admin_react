@@ -7,7 +7,10 @@ import BaseBtn, { BtnName, BtnItem } from "@/components/BaseBtn";
 import { DownOutlined } from "@ant-design/icons";
 import { CSSProperties, useState } from "react";
 import { CommonObj } from "@/vite-env";
+import { defaultGroupBtnsMaxNum } from "@/utils";
+import { ButtonSize, ButtonType } from "antd/es/button";
 import s from "./index.module.less";
+
 interface Props {
   className?: string;
   style?: CSSProperties;
@@ -17,23 +20,57 @@ interface Props {
   [key: string]: any;
 }
 
-const defaultBaseBtnAttrs: CommonObj = {
+export interface DefaultBaseBtnAttrs {
+  maxNum: number;
+  size: ButtonSize;
+  type: ButtonType;
+}
+
+export const defaultBaseBtnAttrs: DefaultBaseBtnAttrs = {
+  maxNum: defaultGroupBtnsMaxNum,
   size: "small",
   type: "link",
 };
 
-export default ({ className = "", btns = [], maxNum = 3, onClick, ...restProps }: Props) => {
+export const btnGapMap: CommonObj = {
+  small: {
+    btnPadding: 12,
+    btnMargin: 8,
+    fontSize: 14,
+  },
+  middle: {
+    btnPadding: 12,
+    btnMargin: 12,
+    fontSize: 12,
+  },
+  large: {
+    btnPadding: 12,
+    btnMargin: 12,
+    fontSize: 12,
+  },
+};
+
+export default ({
+  className = "",
+  btns = [],
+  maxNum = defaultBaseBtnAttrs.maxNum,
+  size = defaultBaseBtnAttrs.size,
+  type = defaultBaseBtnAttrs.type,
+  onClick,
+  ...restProps
+}: Props) => {
   const [show, setShow] = useState(false);
   const isOver = btns.length > maxNum;
+  const btnAttrs = { size, type };
   return (
     <div className={`${className} ${s["operate-btns"]}`} {...restProps}>
       {btns.slice(0, isOver ? maxNum - 1 : maxNum).map((btn, ind: number) => {
-        return <BaseBtn attrs={defaultBaseBtnAttrs} className={s.btn} btn={btn} onClick={onClick} key={ind} />;
+        return <BaseBtn attrs={btnAttrs} className={s.btn} btn={btn} onClick={onClick} key={ind} />;
       })}
       {isOver && (
         <Dropdown
           open={show}
-          onOpenChange={(visiable: boolean) => setShow(visiable)}
+          onOpenChange={(visible: boolean) => setShow(visible)}
           trigger={["click"]}
           menu={{
             selectable: true,
@@ -42,12 +79,12 @@ export default ({ className = "", btns = [], maxNum = 3, onClick, ...restProps }
                 key: ind,
                 label: (
                   <BaseBtn
-                    attrs={defaultBaseBtnAttrs}
+                    attrs={btnAttrs}
                     className={s.btn}
                     btn={btn}
                     onClick={(name: BtnName) => {
-                      onClick?.(name);
                       setShow(false);
+                      onClick?.(name);
                     }}
                   />
                 ),
@@ -55,7 +92,7 @@ export default ({ className = "", btns = [], maxNum = 3, onClick, ...restProps }
             }),
           }}
         >
-          <Button icon={<DownOutlined />} {...Object.assign({}, defaultBaseBtnAttrs, { type: "text" })}>
+          <Button icon={<DownOutlined />} {...btnAttrs} type="text">
             更多
           </Button>
         </Dropdown>

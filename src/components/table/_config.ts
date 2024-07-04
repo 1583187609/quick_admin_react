@@ -6,8 +6,7 @@ export const defaultTableAttrs: CommonObj = {
   bordered: true,
   tableLayout: "fixed",
   size: "middle",
-  // scroll:{ x: "max-content", y: 1 },
-  scroll: { x: 1, y: 1 },
+  // scroll: { x: 1, y: 1 }, // scroll:{ x: "max-content", y: 1 },
 };
 // 默认的表格列属性
 export const defaultColumnAttrs: CommonObj = {

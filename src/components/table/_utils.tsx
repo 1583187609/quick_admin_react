@@ -8,6 +8,7 @@ import BaseText from "@/components/BaseText";
 import BaseTag from "@/components/BaseTag";
 import { Switch } from "antd";
 import { showMessage } from "../_utils";
+import BaseCopy from "../BaseCopy";
 
 export const specialColMap: { [key in SpecialColKeys | InnerColName | OutterColName]: TableColAttrs } = {
   //序号列
@@ -16,9 +17,7 @@ export const specialColMap: { [key in SpecialColKeys | InnerColName | OutterColN
     title: "序号",
     width: 60,
     fixed: "left",
-    render(text: any, row: CommonObj, ind: number) {
-      return ind + 1;
-    },
+    render: (text: any, row: CommonObj, ind: number) => ind + 1,
   },
   //排序列
   sort: {
@@ -26,9 +25,7 @@ export const specialColMap: { [key in SpecialColKeys | InnerColName | OutterColN
     title: "排序",
     width: 60,
     fixed: "left",
-    render(text: any, row: CommonObj, ind: number) {
-      return <MenuOutlined style={{ touchAction: "none", cursor: "move" }} />;
-    },
+    render: (text: any) => <MenuOutlined style={{ touchAction: "none", cursor: "move" }} />,
   },
   //操作列
   operate: {
@@ -47,63 +44,56 @@ export const specialColMap: { [key in SpecialColKeys | InnerColName | OutterColN
     dataIndex: ["createdName", "createdAt"],
     title: "创建时间",
     width: 160,
+    // render: () => "",
   },
   //修改列
   update: {
     dataIndex: ["updatedName", "updatedAt"],
     title: "修改时间",
     width: 160,
+    // render: () => "",
   },
   //switch开关
   switch: {
     dataIndex: "status",
     title: "启用状态",
     width: 80,
-    render: (text: any, row: CommonObj, ind: number) => (
+    render: (value: any) => (
       <Switch
         checkedChildren="启用"
         unCheckedChildren="禁用"
-        checked={row.status === 1}
+        checked={value === 1}
         onChange={(checked: boolean) => showMessage("暂未联调", "info")}
       />
     ),
-    // attrs: {
-    //   activeValue: 1,
-    //   inactiveValue: 0,
-    //   activeText: "启用",
-    //   inactiveText: "禁用",
-    //   inlinePrompt: true,
-    //   // onChange() {
-    //   //   ElMessage.warning("暂未处理【启用/禁用】事件");
-    //   // },
-    // },
   },
   //是否启用状态
   BaseTag: {
     dataIndex: "status",
     title: "状态",
     width: 90,
-    render: (text: any, row: CommonObj, ind: number) => <BaseTag name="EnableStatus" value={row.status} />,
+    render: (value: any) => <BaseTag name="EnableStatus" value={value} />,
   },
   //图片
   BaseImg: {
     dataIndex: "imgUrl",
     title: "图片",
     width: 136,
-    render: (text: any, row: CommonObj, ind: number) => <BaseImg size={120} src={row.imgUrl} />,
+    render: (value: any) => <BaseImg size={120} src={value} />,
   },
   //文本省略显示，点击查看更多
   BaseText: {
     dataIndex: "content",
     title: "内容",
     width: 250,
-    render: (text: any, row: CommonObj, ind: number) => <BaseText size={120}>{row.produce}</BaseText>,
+    render: (value: any) => <BaseText size={120}>{value}</BaseText>,
   },
   // 文本复制
   BaseCopy: {
     dataIndex: "desc",
     title: "简介",
     width: 200,
+    render: (text, row, index) => <BaseCopy text={text} />,
   },
   //用户信息
   UserInfo: {
@@ -111,12 +101,6 @@ export const specialColMap: { [key in SpecialColKeys | InnerColName | OutterColN
     title: "用户信息",
     fixed: "left",
     width: 440, // 222,
-    render(text: any, row: CommonObj, ind: number) {
-      return (
-        <UserInfo
-        // data={row}
-        />
-      );
-    },
+    render: (value: any) => <UserInfo data={value} />,
   },
 };

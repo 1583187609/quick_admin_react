@@ -2,10 +2,8 @@ import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
-  FileDoneOutlined,
   EyeOutlined,
   UndoOutlined,
-  DownloadOutlined,
   CloudDownloadOutlined,
   VerticalAlignTopOutlined,
   VerticalAlignBottomOutlined,
@@ -15,16 +13,9 @@ import {
   CloudUploadOutlined,
   RedoOutlined,
 } from "@ant-design/icons";
-import {
-  BaseBtnType,
-  BtnItem,
-  BtnName,
-  BtnMap,
-  PopconfirmAttrs,
-  BtnFn,
-} from "./_types";
+import { CommonObj } from "@/vite-env";
 
-export const btnsMap: BtnMap = {
+export const btnsMap: CommonObj = {
   add: {
     name: "add",
     text: "新增",
