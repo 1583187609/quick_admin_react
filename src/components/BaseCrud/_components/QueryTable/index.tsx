@@ -1,18 +1,19 @@
 /**
  * 文件说明-模板文件
  */
-import React, { useRef, useImperativeHandle, forwardRef, useContext, CSSProperties } from "react";
+import React, { useRef, useImperativeHandle, forwardRef, useContext, CSSProperties, ReactNode } from "react";
 import { Table } from "antd";
 import OperateBtns, { DefaultBaseBtnAttrs, btnGapMap, defaultBaseBtnAttrs } from "../OperateBtns";
 import { BtnName, BaseBtnType, BtnItem, getBtnObj } from "@/components/BaseBtn";
 import { btnsMap } from "@/components/BaseBtn";
-import { emptyVals, getChinaCharLength, showMessage } from "@/utils";
+import { emptyVals, getChinaCharLength, isDev, showMessage } from "@/utils";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import { TableCol, TableColAttrs, RowKeyType, StandardTableColAttrs, SpecialColKeys } from "@/components/table/_types";
 import { defaultColumnAttrs, defaultTableAttrs, defaultPagination } from "@/components/table/_config";
 import { specialColMap } from "@/components/table/_utils";
 import { CommonObj, FinallyNext } from "@/vite-env";
 import s from "./index.module.less";
+import BaseQuestionPopover from "@/components/BaseQuestionPopover";
 
 export interface PaginationAttrs {
   defaultPageSize?: number;
@@ -60,6 +61,14 @@ interface Props {
 const cellPadding = 8;
 let opeColWidth = 0; // 操作栏的宽度
 
+// 该列是否已联调
+const getIsHandle = (prop: string, rows: CommonObj[]) => {
+  if (!isDev) return true; // 只允许开发环境下，存在未联调的状态，然后进行表格头部标红处理
+  if (!rows?.length || prop.startsWith("$")) return true;
+  const row = rows[0];
+  if (!prop.includes(",")) return row[prop] !== undefined;
+  return prop.split(",").some((key: string) => row[key] !== undefined);
+};
 export default forwardRef(
   (
     {
@@ -88,6 +97,7 @@ export default forwardRef(
     ref: any
   ) => {
     let rowSelection: undefined | CommonObj;
+    const dateKeysArr: [string, string][] = [];
     const tableRef = useRef(null);
     const { closePopup } = useContext(PopupContext);
     const tableAttrs = Object.assign({}, defaultTableAttrs, restProps);
@@ -98,17 +108,36 @@ export default forwardRef(
     function getNewCols(width: number) {
       let cols = columns.filter(it => !!it) as TableColAttrs[];
       cols = cols.map((item: TableColAttrs) => {
-        const { type, ...restCol } = item;
+        const { type, title, otherAttrs, ...restCol } = item;
+        let newTitle: ReactNode = title;
         const specialCol = type ? specialColMap[type as SpecialColKeys] ?? undefined : undefined;
         const hasRender = !!(item.render || specialCol?.render);
-        colKeys.push(restCol.dataIndex ?? (specialCol?.dataIndex as string));
-        return Object.assign(
-          { width: item.title.includes("时间") ? 160 : 100 },
+        let dataKey = restCol.dataIndex ?? (specialCol?.dataIndex as string);
+        if (Array.isArray(dataKey)) {
+          dateKeysArr.push(dataKey);
+          dataKey = dataKey.join(",");
+        }
+        colKeys.push(dataKey as string);
+        const col = Object.assign(
+          typeof title === "string" ? { width: title.includes("时间") ? 160 : 100 } : {},
           defaultColumnAttrs,
           specialCol,
           restCol,
+          { dataIndex: dataKey },
           hasRender ? undefined : { render: (text: any) => (emptyVals.includes(text) ? "-" : text) }
         );
+        const isHandle = getIsHandle(dataKey, dataSource);
+        if (otherAttrs?.popover) {
+          newTitle = (
+            <>
+              {title}
+              <BaseQuestionPopover type={isHandle ? undefined : "danger"} content={otherAttrs.popover} />
+            </>
+          );
+        }
+        if (!isHandle) newTitle = <div className="color-danger">{newTitle}</div>;
+        col.title = newTitle;
+        return col;
       });
       if (index) cols.unshift(specialColMap.index);
       if (sort) cols.unshift(specialColMap.sort);
@@ -123,14 +152,12 @@ export default forwardRef(
       return cols;
     }
     const newRows = dataSource.map((item: CommonObj, ind: number) => {
-      // colKeys.forEach((key: string) => {
-      //   const val = item[key];
-      //   // if (key === "wltl") console.log(val, "val---------------");
-      //   // const isWlt = typeof val === "undefined";
-      //   // if (emptyVals.includes(val)) item[key] = "-";
-      //   if (emptyVals.includes(val)) item[key] = "";
-      // });
       if (!item[rowKey]) item[rowKey] = ind;
+      dateKeysArr.forEach((arr: [string, string]) => {
+        item[arr.join(",")] = [item[arr[0]], item[arr[1]]];
+        delete item[arr[0]];
+        delete item[arr[1]];
+      });
       return item;
     });
     if (selection) {

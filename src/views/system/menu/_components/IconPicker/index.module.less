@@ -2,13 +2,15 @@
   height: 60vh;
   min-height: 300px;
   min-width: 500px;
-  max-width: 1200px;
+  max-width: 1300px;
   width: 80vw;
   overflow: auto;
   .item {
+    color: @color-text-light;
     cursor: pointer;
     flex-basis: 110px;
-    margin: @gap-half @gap-qtr;
+    margin: @gap-half;
+    border-radius: @radius-main;
     &:hover {
       color: #000;
       transform: scale(1.2);

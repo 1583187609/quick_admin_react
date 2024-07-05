@@ -11,9 +11,10 @@ import SectionForm, { SectionFormItem, SectionFormItemAttrs } from "@/components
 import StepForm from "@/components/form/StepForm";
 import { CommonObj } from "@/vite-env";
 import { useState } from "react";
+import Setting from "./_components/Setting";
 
 export const getFields = (args: CommonObj): FormItem[] => {
-  const { hasChildren } = args;
+  const { hasChildren, showDate, isAgree, childSubFieldsShowTypes } = args;
   return [
     {
       name: "name",
@@ -182,80 +183,149 @@ export const getFields = (args: CommonObj): FormItem[] => {
       },
     },
     {
-      name: "attendDate",
-      label: "参加活动的日期",
-      type: "DatePicker",
-      required: true,
-    },
-    {
-      name: "attendTime",
-      label: "参加活动的时间",
-      type: "TimePicker",
-    },
-    {
-      name: "signUpDateRange",
-      label: "报名日期",
-      type: "DateRangePicker",
-    },
-    {
-      name: "signUpTimeRange",
-      label: "报名时间",
-      type: "TimeRangePicker",
-    },
-    {
-      name: "hasChildren",
-      label: "是否带有小孩",
+      name: "showDate",
+      label: "是否显示日期",
       type: "Switch",
-      extra: "切换开关后，下面几项会显示或隐藏",
+      extra: "切换开关后，下面几个日期时间项会以同级字段形式整体显示或隐藏",
     },
-    ...((hasChildren
+    ...(showDate
       ? [
           {
-            name: "childHeight",
-            label: "身高",
-            type: "InputNumber",
-            colAttrs: 8,
-            otherAttrs: {
-              valid: "height",
-            },
+            name: "attendDate",
+            label: "参加活动的日期",
+            type: "DatePicker",
+            required: true,
           },
           {
-            name: "childAge",
-            label: "年龄",
-            type: "InputNumber",
-            otherAttrs: {
-              valid: "age",
-            },
-            colAttrs: 8,
+            name: "attendTime",
+            label: "参加活动的时间",
+            type: "TimePicker",
           },
           {
-            name: "childWeight",
-            label: "体重",
-            type: "InputNumber",
-            otherAttrs: {
-              valid: "weight",
-            },
-            colAttrs: 8,
+            name: "signUpDateRange",
+            label: "报名日期",
+            type: "DateRangePicker",
+          },
+          {
+            name: "signUpTimeRange",
+            label: "报名时间",
+            type: "TimeRangePicker",
           },
         ]
-      : []) as FormItem[]),
+      : []),
+    {
+      name: "hasChildren",
+      label: "是否带有儿童",
+      type: "Switch",
+      extra: "切换开关后，下面几个儿童信息项会以 children 形式整体显示或隐藏",
+    },
+    hasChildren && {
+      name: "childSubFieldsShowTypes",
+      label: "子项的展示风格",
+      type: "RadioGroup",
+      extra: "切换选项，观察下面几个儿童信息项会以何种样式进行呈现",
+      attrs: {
+        options: [
+          { label: "紧凑型", value: "compact" },
+          { label: "行撑满", value: "expand" },
+          { label: "自定义", value: "custom" },
+          { label: "加减行", value: "addDel" },
+        ],
+      },
+    },
+    hasChildren && {
+      name: "childrenInfo",
+      label: "儿童信息",
+      childrenStyle: childSubFieldsShowTypes,
+      children: [
+        {
+          name: "childName",
+          label: "姓名",
+          required: true,
+          ...(childSubFieldsShowTypes === "custom"
+            ? {
+                style: {
+                  display: "inline-block",
+                  width: "calc(50% - 8px)",
+                },
+                className: "mr-16",
+              }
+            : {}),
+        },
+        {
+          name: "childHeight",
+          label: "身高",
+          type: "InputNumber",
+          required: true,
+          otherAttrs: {
+            valid: "height",
+          },
+          ...(childSubFieldsShowTypes === "custom"
+            ? {
+                style: {
+                  display: "inline-block",
+                  width: "calc(50% - 8px)",
+                },
+              }
+            : {}),
+        },
+        {
+          name: "childAge",
+          label: "年龄",
+          type: "InputNumber",
+          required: true,
+          otherAttrs: {
+            valid: "age",
+          },
+          ...(childSubFieldsShowTypes === "custom"
+            ? {
+                style: {
+                  display: "inline-block",
+                  width: "calc(50% - 8px)",
+                },
+                className: "mr-16",
+              }
+            : {}),
+        },
+        {
+          name: "childWeight",
+          label: "体重",
+          type: "InputNumber",
+          required: true,
+          otherAttrs: {
+            valid: "weight",
+          },
+          ...(childSubFieldsShowTypes === "custom"
+            ? {
+                style: {
+                  display: "inline-block",
+                  width: "calc(50% - 8px)",
+                },
+              }
+            : {}),
+        },
+      ],
+    },
     {
       name: "isAgree",
       label: "阅读并同意协议",
       type: "Checkbox",
+    },
+    isAgree && {
+      name: "custom",
+      label: "自定义项",
+      // type: "Custom", // 有 element 时，可以省略不写
+      extra: "声明type为Custom，同时写上element属性",
+      element: <div className="color-primary">这是一个自定义项</div>,
+      otherAttrs: {
+        popover: "勾选【阅读并同意协议之后】，此字段才会显示，否则隐藏",
+      },
     },
     {
       name: "note",
       label: "备注",
       type: "TextArea",
       attrs: { maxLength: 200 },
-    },
-    {
-      name: "custom",
-      label: "自定义项",
-      type: "Custom",
-      extra: "声明type为Custom，同时写上element属性",
-      element: <div className="color-primary">这是一个自定义项</div>,
     },
     {
       name: "error",
@@ -282,7 +352,9 @@ export const initVals = {
   signUpDateRange: ["2023-06-01", "2023-06-30"],
   signUpTimeRange: ["09:00:00", "18:00:00"],
   signUpFee: 199.0,
+  showDate: true,
   hasChildren: true,
+  childSubFieldsShowTypes: "compact",
   isAgree: true,
   note: "暂无备注内容暂无备注内容暂无备注内容暂无备注内容暂无备注内容暂无备注内容暂无备注内容暂无备注内容。",
 };
@@ -294,31 +366,39 @@ const isVertical = stepAttrs.direction !== "horizontal";
 export default () => {
   const [params, setParams] = useState<CommonObj>(initVals);
   const fields = getFields(params);
+  const { showDate, hasChildren } = params;
+  const addressEndInd = showDate ? 19 : 15;
+  const childInfoEndInd = hasChildren ? addressEndInd + 3 : addressEndInd + 1;
   const sections: SectionFormItem[] = [
     {
+      name: "baseInfo",
       title: "基本信息",
       popover: "这是第一部分内容【 基本信息 】的介绍",
       fields: fields.slice(0, 8),
     },
     {
+      name: "signUpInfo",
       title: "报名信息",
       popover: "这是第二部分内容【 报名信息 】的介绍",
-      fields: fields.slice(8, 13),
+      fields: fields.slice(8, 14),
     },
     {
+      name: "addressInfo",
       title: "地址信息",
       popover: "这是第三部分内容【 地址信息 】的介绍",
-      fields: fields.slice(13, 18),
+      fields: fields.slice(14, addressEndInd),
     },
     {
+      name: "childInfo",
       title: "儿童信息",
       popover: "这是第四部分内容【 儿童信息 】的介绍",
-      fields: fields.slice(18, params.hasChildren ? 22 : 19),
+      fields: fields.slice(addressEndInd, childInfoEndInd),
     },
     {
+      name: "otherInfo",
       title: "其他信息",
       popover: "这是第五部分内容【 其他信息 】的介绍",
-      fields: fields.slice(params.hasChildren ? 22 : 19),
+      fields: fields.slice(childInfoEndInd),
     },
   ];
   const items = [
@@ -366,5 +446,5 @@ export default () => {
       ),
     },
   ];
-  return <Tabs items={items} defaultActiveKey="3" />;
+  return <Tabs items={items} defaultActiveKey="2" tabBarExtraContent={<Setting />} />;
 };

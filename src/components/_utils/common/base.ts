@@ -279,7 +279,7 @@ export function getIsUpdated(e_1: any, e_2: any) {
  * @param name 触发的按钮名称
  */
 export function handleBtnNext(map: CommonObj, name: BtnName) {
-  map[name] ? map[name]() : showMessage(`点击了${name}按钮`);
+  map[name] ? map[name]() : showMessage(`点击了${name}按钮`, "info");
 }
 
 /**

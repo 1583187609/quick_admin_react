@@ -12,7 +12,7 @@ import { TableCol } from "@/components/table/_types";
 import { useContext } from "react";
 import AddEdit from "./AddEdit";
 import { CommonObj, FinallyNext } from "@/vite-env";
-import { showMessage } from "@/utils";
+import { handleBtnNext, showMessage } from "@/utils";
 
 export const fields: FormItem[] = [
   {
@@ -80,12 +80,14 @@ export default () => {
   }
   function handleOperateBtn(name: BtnName, row: CommonObj, next: FinallyNext) {
     const { id } = row;
-    const map: CommonObj = {
-      edit: () => openPopup("编辑", <AddEdit />),
-      delete: () => handleDelete([id], next),
-      forbid: () => handleForbid([id], next),
-    };
-    map[name] ? map[name]() : showMessage(`点击了${name}按钮`, "info");
+    handleBtnNext(
+      {
+        edit: () => openPopup("编辑", <AddEdit />),
+        delete: () => handleDelete([id], next),
+        forbid: () => handleForbid([id], next),
+      },
+      name
+    );
   }
   function handleDelete(ids: string[], next: FinallyNext) {
     PostMockCommon({ ids }).then((res: CommonObj) => next());

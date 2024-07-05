@@ -3,9 +3,13 @@ import IconPicker from "./_components/IconPicker";
 import { Tabs } from "antd";
 import { useState } from "react";
 import { CommonObj } from "@/vite-env";
+import { IconNames } from "@/components/BaseIcon";
 
 interface Props {}
 function getFields({ activeKey = "1" }: CommonObj): any[] {
+  function handleChange(name: IconNames | "") {
+    console.log(name, "name-----------");
+  }
   return [
     {
       name: "menu_name",
@@ -37,7 +41,7 @@ function getFields({ activeKey = "1" }: CommonObj): any[] {
             name: "icon",
             label: "菜单图标",
             type: "Custom",
-            element: <IconPicker />,
+            element: <IconPicker onChange={handleChange} />,
           },
         ]
       : []),
@@ -112,14 +116,11 @@ const tabs = [
 ];
 export default ({}: Props) => {
   const [activeKey, setActiveKey] = useState("1");
-  function handleClickTabItem(key: string) {
-    setActiveKey(key);
-  }
   return (
     <>
       <Tabs
         activeKey={activeKey}
-        onTabClick={handleClickTabItem}
+        onTabClick={(key: string) => setActiveKey(key)}
         items={tabs.map((tab: CommonObj) => {
           return {
             label: tab.label,

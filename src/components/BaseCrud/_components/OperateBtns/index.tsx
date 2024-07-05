@@ -35,18 +35,18 @@ export const defaultBaseBtnAttrs: DefaultBaseBtnAttrs = {
 export const btnGapMap: CommonObj = {
   small: {
     btnPadding: 12,
-    btnMargin: 8,
+    btnMargin: 10,
     fontSize: 14,
   },
   middle: {
     btnPadding: 12,
-    btnMargin: 12,
-    fontSize: 12,
+    btnMargin: 10,
+    fontSize: 14,
   },
   large: {
     btnPadding: 12,
-    btnMargin: 12,
-    fontSize: 12,
+    btnMargin: 10,
+    fontSize: 14,
   },
 };
 

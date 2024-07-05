@@ -2,7 +2,7 @@
  * 基础表单 - BaseForm
  */
 
-import { forwardRef } from "react";
+import { ReactNode, forwardRef } from "react";
 import { Form } from "antd";
 import { CSSProperties } from "react";
 import { FormItem } from "@/components/BaseFormItem";
@@ -39,18 +39,22 @@ interface Props {
   fetchFail?: FinallyNext; //fetch请求失败之后的回调方法
   onSubmit?: (data: CommonObj, next: () => void) => void;
   isOmit?: boolean; // 表单提交时，是否剔除空的属性
+  footer?: ReactNode;
   [key: string]: any;
 }
 
 export default forwardRef((props: Props, ref: any) => {
-  const { className, loading, submitButton, resetButton, fields, pureText, readOnly, formAttrs } = useInitForm(props, ref);
+  const { className, loading, submitButton, resetButton, fields, pureText, readOnly, footer, formAttrs } = useInitForm(
+    props,
+    ref
+  );
   const labelWidth = getMaxLength(fields) + "em";
   return (
     <Form className={`${className} ${s["base-form"]}  f-fs-s-c`} {...formAttrs}>
       <div className={`${s.bodyer} all-hide-scroll`}>
         <FormFields fields={fields} pureText={pureText} readOnly={readOnly} labelWidth={labelWidth} />
       </div>
-      {!pureText && (
+      {!pureText && footer === true ? (
         <FormFoot
           form={formAttrs.form}
           loading={loading}
@@ -58,6 +62,8 @@ export default forwardRef((props: Props, ref: any) => {
           resetButton={resetButton}
           readOnly={readOnly}
         />
+      ) : (
+        footer
       )}
     </Form>
   );

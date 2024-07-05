@@ -2,6 +2,7 @@ import { BaseDataType, CommonObj, GetPartial } from "@/vite-env";
 import { GetRowKey } from "antd/es/table/interface";
 import { specialColMap } from "./_utils";
 import { ColumnGroupType, ColumnType } from "antd/es/table";
+import { ReactNode } from "react";
 
 export type SpecialColKeys = "index" | "sort" | "operate";
 export type SpecialColName = keyof typeof specialColMap;
@@ -30,6 +31,9 @@ export interface TableColAttrs {
   align?: string;
   fixed?: "left" | "right" | boolean;
   render?: (text: any, row: CommonObj, index: number) => any;
+  otherAttrs?: {
+    popover?: ReactNode; // 用于头部的popover气泡展示
+  };
   [key: string]: any;
 }
 

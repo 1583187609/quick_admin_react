@@ -92,7 +92,7 @@ export const defaultFieldAttrs: {
   },
   InputNumber: {
     attrs: {
-      style: { width: "100%" },
+      // style: { width: "100%" },
       placeholder: "{label}",
     },
   },

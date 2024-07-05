@@ -10,30 +10,34 @@ import React, { useContext } from "react";
 import AddEdit from "./_components/AddEdit";
 import { fields, columns } from "./fields";
 import { CommonObj, FinallyNext } from "@/vite-env";
-import { showMessage } from "@/utils";
+import { handleBtnNext, showMessage } from "@/utils";
 
 export default () => {
   const { openPopup } = useContext(PopupContext);
   //处理额外按钮
   function onExtraBtn(name: BtnName, { params, ids, fields }: ExportBtnParams, next: FinallyNext) {
-    const nameMap: CommonObj = {
-      add: () => openPopup("新增", <AddEdit refreshList={next} />),
-      delete: () => handleDelete(ids, next),
-      export: () => handleExport({ ...params, exports: { ids, fields } }, next),
-    };
-    nameMap[name] ? nameMap[name]() : showMessage(`点击了${name}按钮`, "info");
+    handleBtnNext(
+      {
+        add: () => openPopup("新增", <AddEdit refreshList={next} />),
+        delete: () => handleDelete(ids, next),
+        export: () => handleExport({ ...params, exports: { ids, fields } }, next),
+      },
+      name
+    );
   }
   //点击操作按钮
   function onOperateBtn(name: BtnName, row: CommonObj, next: FinallyNext) {
     const { id } = row;
-    const nameMap: CommonObj = {
-      edit: () => openPopup("编辑", <AddEdit data={row} refreshList={next} />),
-      view: () => openPopup("查看", <AddEdit data={row} />),
-      delete: () => handleDelete([id], next),
-      forbid: () => handleForbid(id, next),
-      enable: () => handleEnable(id, next),
-    };
-    nameMap[name] ? nameMap[name]() : showMessage(`点击了${name}按钮`, "info");
+    handleBtnNext(
+      {
+        edit: () => openPopup("编辑", <AddEdit data={row} refreshList={next} />),
+        view: () => openPopup("查看", <AddEdit data={row} />),
+        delete: () => handleDelete([id], next),
+        forbid: () => handleForbid(id, next),
+        enable: () => handleEnable(id, next),
+      },
+      name
+    );
   }
   //删除
   function handleDelete(ids: React.Key[], next: FinallyNext) {

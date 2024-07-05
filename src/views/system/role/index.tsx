@@ -11,7 +11,7 @@ import { TableCol } from "@/components/table/_types";
 import { useContext } from "react";
 import AddEdit from "./AddEdit";
 import { CommonObj, FinallyNext } from "@/vite-env";
-import { showMessage } from "@/utils";
+import { handleBtnNext, showMessage } from "@/utils";
 
 const fields: FormItem[] = [
   {
@@ -45,22 +45,26 @@ export default () => {
   const { openPopup } = useContext(PopupContext);
   function handleExtraBtn(name: BtnName, info: CommonObj, next: FinallyNext) {
     const { ids } = info;
-    const map: CommonObj = {
-      add: () => openPopup("新增", <AddEdit />),
-      delete: () => handleDelete(ids, next),
-    };
-    map[name] ? map[name]() : showMessage(`点击了${name}按钮`, "info");
+    handleBtnNext(
+      {
+        add: () => openPopup("新增", <AddEdit />),
+        delete: () => handleDelete(ids, next),
+      },
+      name
+    );
   }
   function handleOperateBtn(name: BtnName, row: CommonObj, next: FinallyNext) {
     const { id } = row;
-    const map: CommonObj = {
-      edit: () => openPopup("编辑", <AddEdit id={id} />),
-      delete: () => handleDelete([id], next),
-      view: () => openPopup("查看", <AddEdit pureText />),
-      forbid: () => handleToggleStatus(name, id, next),
-      enable: () => handleToggleStatus(name, id, next),
-    };
-    map[name] ? map[name]() : showMessage(`点击了${name}按钮`, "info");
+    handleBtnNext(
+      {
+        edit: () => openPopup("编辑", <AddEdit id={id} />),
+        delete: () => handleDelete([id], next),
+        view: () => openPopup("查看", <AddEdit pureText />),
+        forbid: () => handleToggleStatus(name, id, next),
+        enable: () => handleToggleStatus(name, id, next),
+      },
+      name
+    );
   }
   function handleDelete(ids: string[], next: FinallyNext) {
     next();

@@ -10,6 +10,7 @@ import { CascaderName, DictName } from "@/dict";
 
 export type ValidType = keyof typeof defaultValidTypes;
 export type FormItemType =
+  | "Children"
   | "Input"
   | "AutoComplete"
   | "InputNumber"
@@ -101,6 +102,7 @@ export interface FormItemAttrs {
     valid?: ValidType; // 校验类型及控件本身必要的其他属性，例：password, phone
   };
   colAttrs?: number | ColAttrs;
+  children?: FormItem[];
   [key: string]: any; //其他antd Form.Item 的属性
 }
 
@@ -110,3 +112,5 @@ export interface PopoverAttrs {
   content?: ReactNode | (() => ReactNode);
   title?: ReactNode | (() => ReactNode);
 }
+
+export type ChildrenStyle = "custom" | "expand" | "compact" | "addDel"; //自定义方式，行撑满，紧凑型, 加减行

@@ -7,7 +7,7 @@ import BaseImg from "@/components/BaseImg";
 import BaseText from "@/components/BaseText";
 import BaseTag from "@/components/BaseTag";
 import { Switch } from "antd";
-import { showMessage } from "../_utils";
+import { emptyVals, showMessage } from "../_utils";
 import BaseCopy from "../BaseCopy";
 
 export const specialColMap: { [key in SpecialColKeys | InnerColName | OutterColName]: TableColAttrs } = {
@@ -41,17 +41,39 @@ export const specialColMap: { [key in SpecialColKeys | InnerColName | OutterColN
   remark: { dataIndex: "remark", title: "备注", width: 140 },
   //创建列
   create: {
-    dataIndex: ["createdName", "createdAt"],
+    dataIndex: ["create_name", "create_time"],
     title: "创建时间",
     width: 160,
-    // render: () => "",
+    render: (text: string | [string, string]) => {
+      if (Array.isArray(text)) {
+        const [name, time] = text;
+        return (
+          <>
+            <div>{emptyVals.includes(name) ? "-" : name}</div>
+            <div>{emptyVals.includes(time) ? "-" : time}</div>
+          </>
+        );
+      }
+      return emptyVals.includes(text) ? "-" : text;
+    },
   },
   //修改列
   update: {
-    dataIndex: ["updatedName", "updatedAt"],
+    dataIndex: ["update_name", "update_time"],
     title: "修改时间",
     width: 160,
-    // render: () => "",
+    render: (text: string | [string, string]) => {
+      if (Array.isArray(text)) {
+        const [name, time] = text;
+        return (
+          <>
+            <div>{emptyVals.includes(name) ? "-" : name}</div>
+            <div>{emptyVals.includes(time) ? "-" : time}</div>
+          </>
+        );
+      }
+      return emptyVals.includes(text) ? "-" : text;
+    },
   },
   //switch开关
   switch: {

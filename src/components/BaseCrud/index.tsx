@@ -3,7 +3,7 @@
  */
 
 import React, { useContext, useEffect, useRef, useState, useImperativeHandle, forwardRef, CSSProperties } from "react";
-import { FormItem, FormItemAttrs, FormItemType } from "@/components/BaseFormItem";
+import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
 import QueryForm from "./_components/QueryForm";
 import QueryTable from "./_components/QueryTable";
 import ExtraBtns from "./_components/ExtraBtns";
@@ -39,7 +39,7 @@ interface Props {
   selection?: boolean;
   exportMax?: number; //单次最大导出数量
   fetch?: FetchType; //请求方法
-  isOmit?: boolean | any[]; //发送请求时，是否过滤掉undefined的字段
+  isOmit?: boolean; //发送请求时，是否过滤掉 undefined,null,"" 的字段
   log?: boolean; //是否打印请求数据
   immediateFetch?: boolean; //是否立即请求
   changeFetch?: boolean; //是否onChang之后就发送请求（仅限于Select类组件，不含Input类组件）
@@ -90,24 +90,19 @@ export default forwardRef(
     const [rows, setRows] = useState<CommonObj[]>([]);
     Object.assign(reqMap, defaultReqMap);
     Object.assign(resMap, defaultResMap);
-    //初始化分页信息
+    // 初始化分页信息
     const initPage = {
       [`${reqMap.curr_page}`]: 1,
       [`${reqMap.page_size}`]: 20,
     };
-    const [newCols, setNewCols] = useState<TableColAttrs[]>(columns.slice() as TableColAttrs[]); // 浅克隆
+    allColumns = columns.filter(col => !!col) as TableColAttrs[]; // 浅克隆
+    const [newCols, setNewCols] = useState<TableColAttrs[]>(allColumns);
     const newExtraBtns = extraBtns.map(item => {
       const btn: BtnItem = getBtnObj(item);
-      if (noPopconfirmBtns.includes(btn.name)) {
-        btn.popconfirm = false;
-      }
-      if (batchBtns.includes(btn.name)) {
-        btn!.attrs!.disabled = !seledKeys.length;
-      }
+      if (noPopconfirmBtns.includes(btn.name)) btn.popconfirm = false;
+      if (batchBtns.includes(btn.name)) btn!.attrs!.disabled = !seledKeys.length;
       return btn;
     });
-    // allColumns = columns.filter(it => !!it) as TableColAttrs[];
-    allColumns = columns.slice() as TableColAttrs[];
     useImperativeHandle(
       ref,
       () => {
@@ -184,16 +179,18 @@ export default forwardRef(
       }
       merge(params.current, vals, initPage);
       if (changeFetch) {
-        const [key] = Object.entries(vals)[0];
+        const [key] = Object.entries(changedVals)[0];
+        /**
+         * name可能undefined，此时是自定义组件，type为 Custom；
+         * type 可能为undefined，此时 type 为Input
+         */
         const target = fields.find(it => {
           if (!it) return false;
           return (it as FormItemAttrs).name === key;
         });
         if (!target) return;
         const { type } = target as FormItemAttrs;
-        if (["Select"].includes(type as FormItemType)) {
-          getList();
-        }
+        if (["Select"].includes(type as string)) getList();
       }
     }
     //点击提交（查询）按钮
@@ -233,7 +230,7 @@ export default forwardRef(
           extraParams={extraParams}
           onValuesChange={handleValuesChange}
           onSubmit={handleSubmit}
-          onReset={() => initFetch()}
+          onReset={initFetch}
           {...formAttrs}
           ref={formRef}
         />

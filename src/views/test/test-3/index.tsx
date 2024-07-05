@@ -10,7 +10,7 @@ import React, { useContext, useRef } from "react";
 import AddEdit from "./AddEdit";
 import { DownloadOutlined } from "@ant-design/icons";
 import { CommonObj, FinallyNext } from "@/vite-env";
-import { showMessage } from "@/utils";
+import { handleBtnNext, showMessage } from "@/utils";
 import { TableCol } from "@/components/table/_types";
 import { FormItem } from "@/components/BaseFormItem";
 import BaseRange from "@/components/BaseRange";
@@ -95,9 +95,7 @@ export const columns: TableCol[] = [
   {
     dataIndex: "phone",
     title: "formatter列",
-    render(text: any, row: CommonObj, ind: number) {
-      return "formatter列";
-    },
+    render: (text: any, row: CommonObj, ind: number) => `formatter列${ind}`,
   },
   {
     type: "BaseTag",
@@ -111,12 +109,20 @@ export const columns: TableCol[] = [
   {
     type: "create",
     dataIndex: "create_time",
+    // dataIndex: ["create_name", "create_time"],
     title: "创建时间[create]",
+    otherAttrs: {
+      popover: "传入字符串类型的dataIndex",
+    },
   },
   {
     type: "update",
-    dataIndex: "update_time",
+    // dataIndex: "update_time",
+    // dataIndex: ["update_name", "update_time"],
     title: "修改时间[update]",
+    otherAttrs: {
+      popover: "不传或传入数组类型的dataIndex",
+    },
   },
   {
     type: "switch",
@@ -129,6 +135,9 @@ export const columns: TableCol[] = [
   {
     dataIndex: "wltl",
     title: "未联调列",
+    otherAttrs: {
+      popover: "未联调列，表格头部会被标红",
+    },
   },
 ];
 
@@ -137,36 +146,36 @@ export default () => {
   const crudRef = useRef<any>(null);
   //处理额外按钮
   function onExtraBtn(name: BtnName, { params, ids, fields }: ExportBtnParams, next: FinallyNext) {
-    const nameMap: CommonObj = {
-      add: () => openPopup("新增", <AddEdit refreshList={next} />),
-      delete: () => handleDelete(ids, next),
-      export: () => handleExport({ ...params, exports: { ids, fields } }, next),
-    };
-    nameMap[name] ? nameMap[name]() : showMessage(`点击了${name}按钮`, "info");
+    handleBtnNext(
+      {
+        add: () => openPopup("新增", <AddEdit refreshList={next} />),
+        delete: () => handleDelete(ids, next),
+        export: () => handleExport({ ...params, exports: { ids, fields } }, next),
+      },
+      name
+    );
   }
   //点击操作按钮
   function onOperateBtn(name: BtnName, row: CommonObj, next: FinallyNext) {
     const { id } = row;
-    const nameMap: CommonObj = {
-      edit: () => openPopup("编辑", <AddEdit id={id} refreshList={next} />),
-      view: () => openPopup("查看", <AddEdit id={id} disabled />),
-      delete: () => handleDelete([id], next),
-      forbid: () => handleForbid(id, next),
-      enable: () => handleEnable(id, next),
-    };
-    nameMap[name] ? nameMap[name]() : showMessage(`点击了${name}按钮`, "info");
+    handleBtnNext(
+      {
+        edit: () => openPopup("编辑", <AddEdit id={id} refreshList={next} />),
+        view: () => openPopup("查看", <AddEdit id={id} disabled />),
+        delete: () => handleDelete([id], next),
+        forbid: () => handleForbid(id, next),
+        enable: () => handleEnable(id, next),
+      },
+      name
+    );
   }
   //删除
   function handleDelete(ids: React.Key[], next: FinallyNext) {
-    DeleteUserList(ids).then((res: CommonObj) => {
-      next();
-    });
+    DeleteUserList(ids).then((res: CommonObj) => next());
   }
   //导出
   function handleExport(params: CommonObj, next: FinallyNext) {
-    PostMockCommonExport(params).then((res: CommonObj) => {
-      next();
-    });
+    PostMockCommonExport(params).then((res: CommonObj) => next());
   }
   //启用
   function handleEnable(id: string, next: FinallyNext) {

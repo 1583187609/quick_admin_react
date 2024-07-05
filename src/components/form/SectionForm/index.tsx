@@ -3,7 +3,7 @@
  */
 
 import { forwardRef, useState, ReactNode } from "react";
-import { Button, Form, Popover } from "antd";
+import { Button, Form } from "antd";
 import { CSSProperties } from "react";
 import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
 import { CaretDownOutlined } from "@ant-design/icons";
@@ -14,10 +14,11 @@ import FormFoot from "../_components/FormFoot";
 import { BaseDataType, CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { BtnAttrs } from "../_types";
 import { useInitForm } from "../_hooks";
-import { QuestionCircleFilled } from "@ant-design/icons";
+import BaseQuestionPopover from "@/components/BaseQuestionPopover";
 import s from "./index.module.less";
 
 export interface SectionFormItemAttrs {
+  name?: string;
   title: string;
   fields: FormItem[];
   popover?: ReactNode;
@@ -54,7 +55,17 @@ interface Props {
 
 let initFolds: boolean[] = [];
 export default forwardRef((props: Props, ref: any) => {
-  const { className, loading, submitButton, resetButton, sections = [], pureText, readOnly, formAttrs } = useInitForm(props, ref);
+  const {
+    className,
+    loading,
+    submitButton,
+    resetButton,
+    sections = [],
+    pureText,
+    readOnly,
+    footer,
+    formAttrs,
+  } = useInitForm(props, ref);
   initFolds = Array(sections.length).fill(false);
   const [folds, setFolds] = useState<boolean[]>(initFolds);
   // 处理折叠逻辑
@@ -73,11 +84,7 @@ export default forwardRef((props: Props, ref: any) => {
               <div className={`${s.head} f-sb-c`}>
                 <div className={`${s.title} f-fs-c`}>
                   {title}
-                  {popover && (
-                    <Popover content={popover}>
-                      <QuestionCircleFilled className="ml-q color-info" />
-                    </Popover>
-                  )}
+                  {popover && <BaseQuestionPopover content={popover} />}
                 </div>
                 <Button
                   className={`${s["fold-btn"]}`}
@@ -93,7 +100,7 @@ export default forwardRef((props: Props, ref: any) => {
           );
         })}
       </div>
-      {!pureText && (
+      {!pureText && footer === true ? (
         <FormFoot
           form={formAttrs.form}
           loading={loading}
@@ -102,6 +109,8 @@ export default forwardRef((props: Props, ref: any) => {
           readOnly={readOnly}
           onReset={() => setFolds(initFolds)}
         />
+      ) : (
+        footer
       )}
     </Form>
   );

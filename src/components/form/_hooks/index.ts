@@ -62,6 +62,7 @@ export const useInitForm = (props: CommonObj, ref: any): UseInitFormReturns => {
     pureText = false,
     readOnly = false,
     extraParams,
+    footer = true,
     ...restProps
   } = Object.assign({}, defaultFormProps, props);
   const [form] = Form.useForm();
@@ -153,6 +154,7 @@ export const useInitForm = (props: CommonObj, ref: any): UseInitFormReturns => {
     loading,
     pureText,
     readOnly,
+    footer,
     submitButton,
     resetButton,
     ...(isSectionForm ? { sections: newSections } : { fields: newFields }),

@@ -18,10 +18,11 @@ interface Props {
   [key: string]: any;
 }
 export default ({ className = "", line = 1, text = "", children = text, char = "-", ...restProps }: Props) => {
-  function handleClick() {
+  function handleClick(e: Event) {
+    e.stopPropagation();
     if (!children) return;
     const input = document.createElement("input");
-    input.setAttribute("value", text as string);
+    input.setAttribute("value", children as string);
     document.body.appendChild(input);
     input.select();
     const copyText = document.execCommand("copy");
