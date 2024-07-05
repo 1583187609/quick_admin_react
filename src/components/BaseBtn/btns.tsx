@@ -10,6 +10,8 @@ import {
   FileTextOutlined,
   StopOutlined,
   CheckCircleOutlined,
+  CheckOutlined,
+  CloseOutlined,
   CloudUploadOutlined,
   RedoOutlined,
 } from "@ant-design/icons";
@@ -19,11 +21,11 @@ export const btnsMap: CommonObj = {
   add: {
     name: "add",
     text: "新增",
-    icon: <PlusOutlined />,
     order: 0,
     auth: [],
     attrs: {
       type: "primary",
+      icon: <PlusOutlined />,
       ghost: false,
     },
   },
@@ -32,9 +34,9 @@ export const btnsMap: CommonObj = {
     text: "删除",
     order: 1,
     auth: [0, 1, 2],
-    icon: <DeleteOutlined />,
     attrs: {
       type: "primary",
+      icon: <DeleteOutlined />,
       danger: true,
     },
     popconfirm: true,
@@ -44,9 +46,9 @@ export const btnsMap: CommonObj = {
     text: "编辑",
     order: 2,
     auth: [0, 1, 2],
-    icon: <EditOutlined />,
     attrs: {
       type: "primary",
+      icon: <EditOutlined />,
       ghost: true,
     },
   },
@@ -55,9 +57,9 @@ export const btnsMap: CommonObj = {
     text: "查看",
     order: 3,
     auth: [],
-    icon: <EyeOutlined />,
     attrs: {
       type: "primary",
+      icon: <EyeOutlined />,
       ghost: true,
     },
   },
@@ -66,9 +68,9 @@ export const btnsMap: CommonObj = {
     text: "上传",
     order: 4,
     auth: [0, 1, 2],
-    icon: <CloudUploadOutlined />,
     attrs: {
       type: "primary",
+      icon: <CloudUploadOutlined />,
     },
   },
   download: {
@@ -76,30 +78,30 @@ export const btnsMap: CommonObj = {
     text: "下载",
     order: 5,
     auth: [],
-    icon: <CloudDownloadOutlined />,
     attrs: {
       type: "primary",
+      icon: <CloudDownloadOutlined />,
       ghost: true,
     },
   },
   import: {
     name: "import",
     text: "导入",
-    icon: <VerticalAlignTopOutlined />,
     order: 10,
     auth: [0, 1, 2],
     attrs: {
       type: "primary",
+      icon: <VerticalAlignTopOutlined />,
     },
   },
   export: {
     name: "export",
     text: "导出",
-    icon: <VerticalAlignBottomOutlined />,
     order: 11,
     auth: [],
     attrs: {
       type: "primary",
+      icon: <VerticalAlignBottomOutlined />,
       ghost: true,
     },
   },
@@ -108,9 +110,9 @@ export const btnsMap: CommonObj = {
     text: "启用",
     order: 12,
     auth: [0, 1, 2],
-    icon: <CheckCircleOutlined />,
     attrs: {
       type: "primary",
+      icon: <CheckCircleOutlined />,
     },
     popconfirm: true,
   },
@@ -119,9 +121,9 @@ export const btnsMap: CommonObj = {
     text: "禁用",
     order: 13,
     auth: [0, 1, 2],
-    icon: <StopOutlined />,
     attrs: {
       type: "primary",
+      icon: <StopOutlined />,
       ghost: true,
     },
     popconfirm: true,
@@ -131,9 +133,9 @@ export const btnsMap: CommonObj = {
     text: "撤销",
     order: 20,
     auth: [0, 1, 2],
-    icon: <UndoOutlined />,
     attrs: {
       type: "primary",
+      icon: <UndoOutlined />,
       ghost: true,
       danger: true,
     },
@@ -143,9 +145,9 @@ export const btnsMap: CommonObj = {
     text: "日志",
     order: 21,
     auth: [],
-    icon: <FileTextOutlined />,
     attrs: {
       type: "primary",
+      icon: <FileTextOutlined />,
       ghost: true,
     },
   },
@@ -154,9 +156,9 @@ export const btnsMap: CommonObj = {
     text: "提交",
     order: 30,
     auth: [],
-    icon: <CloudUploadOutlined />,
     attrs: {
       type: "primary",
+      icon: <CloudUploadOutlined />,
       // ghost: true,
     },
   },
@@ -165,10 +167,40 @@ export const btnsMap: CommonObj = {
     text: "重置",
     order: 31,
     auth: [],
-    icon: <RedoOutlined />,
     attrs: {
       type: "primary",
+      icon: <RedoOutlined />,
       ghost: true,
+    },
+  },
+  pass: {
+    name: "pass",
+    text: "通过",
+    order: 31,
+    auth: [],
+    attrs: {
+      type: "primary",
+      icon: <CheckOutlined />,
+    },
+  },
+  reject: {
+    name: "reject",
+    text: "驳回",
+    order: 31,
+    auth: [],
+    attrs: {
+      type: "primary",
+      icon: <CloseOutlined />,
+      danger: true,
+      ghost: true,
+    },
+  },
+  empty: {
+    name: "empty",
+    text: "empty",
+    auth: [],
+    attrs: {
+      danger: true,
     },
   },
 };

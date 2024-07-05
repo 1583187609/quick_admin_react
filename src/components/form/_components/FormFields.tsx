@@ -1,4 +1,4 @@
-import BaseFormItem, { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import BaseFormItem, { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { Row } from "antd";
 import { Gutter } from "antd/es/grid/row";
 
@@ -7,7 +7,7 @@ export type ScreenSize = "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
 export type JustifyType = "start" | "end" | "center" | "space-around" | "space-between" | "space-evenly";
 
 interface Props {
-  fields?: FormItem[];
+  fields?: FormField[];
   pureText?: boolean;
   readOnly?: boolean;
   labelWidth?: string;
@@ -23,7 +23,7 @@ export default ({ fields = [], rowAttrs, ...restProps }: Props) => {
     <Row {...rowAttrs}>
       {fields?.map((field, ind) => {
         if (!field) return null;
-        return <BaseFormItem field={field as FormItemAttrs} key={ind} {...restProps} />;
+        return <BaseFormItem field={field as FormFieldAttrs} key={ind} {...restProps} />;
       })}
     </Row>
   );

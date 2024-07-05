@@ -5,7 +5,7 @@
 import { forwardRef, useState, ReactNode } from "react";
 import { Button, Form } from "antd";
 import { CSSProperties } from "react";
-import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { CaretDownOutlined } from "@ant-design/icons";
 import { getMaxLength } from "@/utils";
 import { SizeType } from "antd/es/config-provider/SizeContext";
@@ -20,7 +20,7 @@ import s from "./index.module.less";
 export interface SectionFormItemAttrs {
   name?: string;
   title: string;
-  fields: FormItem[];
+  fields: FormField[];
   popover?: ReactNode;
 }
 
@@ -78,7 +78,7 @@ export default forwardRef((props: Props, ref: any) => {
       <div className={`${s.bodyer} all-hide-scroll`}>
         {sections.map((sItem: SectionFormItemAttrs, sInd: number) => {
           const { title, fields, popover } = sItem;
-          const labelWidth = getMaxLength(fields as FormItemAttrs[]) + "em";
+          const labelWidth = getMaxLength(fields as FormFieldAttrs[]) + "em";
           return (
             <div className={`${s.section}`} key={sInd}>
               <div className={`${s.head} f-sb-c`}>

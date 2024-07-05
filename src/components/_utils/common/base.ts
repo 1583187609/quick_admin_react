@@ -7,7 +7,7 @@ import { merge } from "lodash";
 import config, { ConfigMergeStrategy } from "@/config";
 import { CommonObj, StrNum } from "@/vite-env";
 import { BtnName } from "@/components/BaseBtn";
-import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { propsJoinChar, emptyVals } from "./consts";
 
 /**

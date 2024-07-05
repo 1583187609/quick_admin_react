@@ -5,7 +5,7 @@
 import { useContext, useImperativeHandle, forwardRef, useState, useCallback } from "react";
 import { Form } from "antd";
 import { CSSProperties } from "react";
-import { FormItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import { getMaxLength, convertDateField, debounce } from "@/utils";
 import { merge } from "lodash";
 import { PopupContext } from "@/components/provider/PopupProvider";
@@ -31,7 +31,7 @@ interface Props {
   /**
    * 以下是自定义的属性
    */
-  fields?: FormItem[];
+  fields?: FormField[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
   readOnly?: boolean;

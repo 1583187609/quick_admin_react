@@ -1,5 +1,5 @@
 import { CommonObj } from "@/vite-env";
-import { Form, InputNumber, message } from "antd";
+import { Form, InputNumber } from "antd";
 import { merge } from "lodash";
 import { showMessage } from "./_utils";
 
@@ -22,8 +22,14 @@ const defaultAttrs = {
   min: 0,
   style: { width: "100%" },
 };
-export default ({ id = "", names, attrs }: Props) => {
-  const newAttrs = merge({}, defaultAttrs, attrs);
+
+const formItemStyle = {
+  className: "f-1 mb-0",
+  style: { display: "inline-block", width: "calc(50% - 11px)" },
+};
+
+export default ({ id = "", names, attrs, ...restProps }: Props) => {
+  const newAttrs = Object.assign({}, defaultAttrs, attrs);
   let [minName, maxName] = names || [
     [id, 0],
     [id, 1],
@@ -47,16 +53,16 @@ export default ({ id = "", names, attrs }: Props) => {
     }),
   ];
   return (
-    <div className="f-fs-fs">
-      <Form.Item name={minName} className="f-1 mb-0" rules={rules}>
+    <Form.Item noStyle {...restProps}>
+      <Form.Item name={minName} {...formItemStyle} rules={rules}>
         <InputNumber placeholder="最小值" {...newAttrs} />
       </Form.Item>
       <span className="f-0 ml-8 mr-8" style={{ lineHeight: "30px" }}>
         -
       </span>
-      <Form.Item name={maxName} className="f-1 mb-0" rules={rules}>
+      <Form.Item name={maxName} {...formItemStyle} rules={rules}>
         <InputNumber placeholder="最大值" {...newAttrs} />
       </Form.Item>
-    </div>
+    </Form.Item>
   );
 };

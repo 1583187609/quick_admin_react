@@ -1,11 +1,11 @@
 import { typeOf, getTextFromOpts } from "@/utils";
 import { merge } from "lodash";
 import { defaultFieldAttrs } from "./_config";
-import { ColAttrs, FormItemAttrs } from "./_types";
+import { ColAttrs, FormFieldAttrs } from "./_types";
 import { OptionItem } from "@/vite-env";
 
 //获取表单键值对的值
-export function getKeyVal(field: FormItemAttrs, val: any) {
+export function getKeyVal(field: FormFieldAttrs, val: any) {
   const { type = "Input", label, attrs = {} } = field;
   const options = attrs.options as OptionItem[];
   if (["Select", "RadioGroup"].includes(type)) {

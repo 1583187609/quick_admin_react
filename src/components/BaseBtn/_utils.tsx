@@ -3,6 +3,7 @@ import { merge } from "lodash";
 import { btnsMap } from "./btns";
 import { BaseBtnType, BtnItem, BtnName, BtnFn } from "./_types";
 import { CommonObj } from "@/vite-env";
+import BaseIcon, { IconNames } from "../BaseIcon";
 // import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 /**
@@ -30,16 +31,23 @@ export function getPopconfirmAttrs(popconfirm: string | boolean | CommonObj, tex
  * @param btn string | object | function 按钮名或按钮对象或方法函数
  */
 export function getBtnObj(btn: BaseBtnType, btnItem?: BtnItem, row?: CommonObj): BtnItem {
-  const type = typeOf(btn);
+  const t = typeOf(btn);
   let btnObj: BtnItem = { name: "" };
-  if (type === "String") {
+  if (t === "String") {
     // icon 经过 JSON.parse(JSON.stringify())之后，重新渲染时会报错，故做此处理
-    const { icon } = btnsMap[btn as BtnName];
-    btnObj = JSON.parse(JSON.stringify(btnsMap[btn as BtnName]));
-    btnObj.icon = icon;
-  } else if (type === "Object") {
+    const currBtn = btnsMap[btn as BtnName];
+    if (currBtn) {
+      const { icon } = currBtn.attrs ?? {};
+      btnObj = JSON.parse(JSON.stringify(currBtn));
+      if (icon && btnObj?.attrs) {
+        btnObj.attrs.icon = icon;
+      }
+    } else {
+      btnObj = Object.assign({}, btnsMap.empty, { text: btn });
+    }
+  } else if (t === "Object") {
     btnObj = merge({}, btnsMap[(btn as BtnItem).name as BtnName], btn as BtnItem);
-  } else if (type === "Function") {
+  } else if (t === "Function") {
     btnObj = getBtnObj((btn as BtnFn)(row), undefined, row);
   }
   if (btnObj.popconfirm) {
@@ -47,9 +55,13 @@ export function getBtnObj(btn: BaseBtnType, btnItem?: BtnItem, row?: CommonObj):
     btnObj.popconfirm = getPopconfirmAttrs(popconfirm, text as string);
   }
   merge(btnObj, btnItem);
+  const { type, icon } = btnObj!.attrs!;
   // 当type为link时，需要删除ghost属性，不然会触发警告
-  if (btnObj!.attrs?.type === "link") {
+  if (type === "link") {
     delete btnObj!.attrs!.ghost;
+  }
+  if (typeof icon === "string") {
+    btnObj!.attrs!.icon = <BaseIcon name={icon as IconNames} />;
   }
   return btnObj;
 }

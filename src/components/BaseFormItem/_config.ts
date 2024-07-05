@@ -1,5 +1,5 @@
 import { CommonObj } from "@/vite-env";
-import { FieldAttrs, FormItemAttrs, FormItemType } from "./_types";
+import { FieldAttrs, FormFieldAttrs, FormItemType } from "./_types";
 import type { TimePickerProps, TimeRangePickerProps } from "antd";
 import { regexp } from "../_utils";
 import dayjs from "dayjs";
@@ -22,7 +22,7 @@ export const defaultFieldAttrs: {
   [key in FormItemType]: {
     valuePropName?: string;
     attrs?: {
-      getAttrs?: (field: FormItemAttrs) => FieldAttrs | undefined;
+      getAttrs?: (field: FormFieldAttrs) => FieldAttrs | undefined;
       [key: string]: any;
     };
   };
@@ -32,7 +32,7 @@ export const defaultFieldAttrs: {
       placeholder: "请输入{label}",
       // maxLength: 30,
       allowClear: true,
-      getAttrs(field: FormItemAttrs) {
+      getAttrs(field: FormFieldAttrs) {
         const { attrs } = field;
         if (attrs) attrs.showCount = !!attrs.maxLength;
         return attrs;
@@ -102,7 +102,7 @@ export const defaultFieldAttrs: {
       maxLength: 100,
       allowClear: true,
       // showCount: true,
-      getAttrs(field: FormItemAttrs) {
+      getAttrs(field: FormFieldAttrs) {
         const { attrs } = field;
         if (attrs) attrs.showCount = !!attrs.maxLength;
         return attrs;
@@ -118,7 +118,7 @@ export const defaultFieldAttrs: {
       //   return visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />;
       // },
       // showCount: true,
-      getAttrs(field: FormItemAttrs) {
+      getAttrs(field: FormFieldAttrs) {
         const { attrs } = field;
         if (attrs) attrs.showCount = !!attrs.maxLength;
         return attrs;
@@ -146,7 +146,7 @@ export const defaultFieldAttrs: {
       // maxLength: 30,
       allowClear: true,
       // showCount: true,
-      getAttrs(field: FormItemAttrs) {
+      getAttrs(field: FormFieldAttrs) {
         const { attrs } = field;
         if (attrs) attrs.showCount = !!attrs.maxLength;
         return attrs;

@@ -5,7 +5,7 @@
 import { useImperativeHandle, forwardRef, useState } from "react";
 import { Steps } from "antd";
 import { CSSProperties } from "react";
-import { FormItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { BtnAttrs } from "@/components/form/_types";
@@ -26,7 +26,7 @@ interface Props {
   /**
    * 以下是自定义的属性
    */
-  fields?: FormItem[];
+  fields?: FormField[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
   readOnly?: boolean;

@@ -11,7 +11,7 @@
 import { useMemo, useState, useImperativeHandle, forwardRef } from "react";
 import { Button, Form, Col } from "antd";
 import { CSSProperties } from "react";
-import BaseFormItem, { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import BaseFormItem, { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { RedoOutlined, SearchOutlined, DownOutlined } from "@ant-design/icons";
 import { getMaxLength, showMessage } from "@/utils";
 import { useEventListener } from "@/hooks";
@@ -25,7 +25,7 @@ interface Props {
   initialValues?: CommonObj;
   labelCol?: CommonObj;
   wrapperCol?: CommonObj;
-  fields?: FormItem[];
+  fields?: FormField[];
   rowNum?: number; //筛选条件默认以几行展示
   extraParams?: CommonObj; //额外的请求参数
   onValuesChange?: (changedVals: CommonObj, allVals: CommonObj) => void;
@@ -112,7 +112,7 @@ export default forwardRef((props: Props, ref: any) => {
               if (!field) return null;
               return (
                 <Col {...colSpanAttrs} key={ind}>
-                  <BaseFormItem field={field as FormItemAttrs} style={{ marginBottom: "8px" }} labelWidth={labelWidth} />
+                  <BaseFormItem field={field as FormFieldAttrs} style={{ marginBottom: "8px" }} labelWidth={labelWidth} />
                 </Col>
               );
             })}

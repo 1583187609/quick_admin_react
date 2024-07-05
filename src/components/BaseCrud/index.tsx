@@ -3,7 +3,7 @@
  */
 
 import React, { useContext, useEffect, useRef, useState, useImperativeHandle, forwardRef, CSSProperties } from "react";
-import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import QueryForm from "./_components/QueryForm";
 import QueryTable from "./_components/QueryTable";
 import ExtraBtns from "./_components/ExtraBtns";
@@ -27,7 +27,7 @@ interface Props {
   style?: CSSProperties;
   formAttrs?: FormAttrs;
   tableAttrs?: TableAttrs;
-  fields?: FormItem[];
+  fields?: FormField[];
   columns?: TableCol[];
   extraBtns?: BaseBtnType[];
   operateBtns?: BaseBtnType[];
@@ -186,10 +186,10 @@ export default forwardRef(
          */
         const target = fields.find(it => {
           if (!it) return false;
-          return (it as FormItemAttrs).name === key;
+          return (it as FormFieldAttrs).name === key;
         });
         if (!target) return;
-        const { type } = target as FormItemAttrs;
+        const { type } = target as FormFieldAttrs;
         if (["Select"].includes(type as string)) getList();
       }
     }
@@ -236,7 +236,7 @@ export default forwardRef(
         />
         {!!children && <div className={`${s.children} f-0 mt-16`}>{children}</div>}
         <ExtraBtns
-          className="f-0 mt-16"
+          className="f-0 mt-o"
           onClick={(name: BtnName) => handleExtraBtn(name)}
           allColumns={allColumns}
           columns={newCols}
@@ -248,7 +248,6 @@ export default forwardRef(
         />
         <QueryTable
           ref={tableRef}
-          className="mt-8"
           columns={newCols}
           dataSource={rows}
           total={totalRef.current}

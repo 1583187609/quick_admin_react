@@ -29,8 +29,8 @@ import {
   CheckboxGroupAttrs,
   ChildrenStyle,
   DateRangePickerAttrs,
-  FormItem,
-  FormItemAttrs,
+  FormField,
+  FormFieldAttrs,
   RadioGroupAttrs,
   StandFieldAttrs,
 } from "./_types";
@@ -41,6 +41,7 @@ import { useDictMap } from "@/hooks";
 import { deleteAttrs } from "../_utils";
 import AddDelList from "./_components/AddDelList";
 import BaseQuestionPopover from "../BaseQuestionPopover";
+import BaseNumberRange from "../BaseNumberRange";
 
 export * from "./_types";
 export * from "./_config";
@@ -48,7 +49,7 @@ export * from "./_config";
 interface Props {
   className?: string;
   style?: CSSProperties;
-  field: FormItemAttrs;
+  field: FormFieldAttrs;
   readOnly?: boolean;
   pureText?: any;
   labelWidth?: string;
@@ -58,7 +59,7 @@ interface Props {
 }
 
 interface FieldProps {
-  field: FormItemAttrs;
+  field: FormFieldAttrs;
   childrenStyle?: ChildrenStyle;
   [key: string]: any;
 }
@@ -83,11 +84,12 @@ const Field = ({ field, childrenStyle = "custom", ...restProps }: FieldProps) =>
   if (type === "Switch") return <Switch {...attrs} />;
   if (type === "Checkbox") return <Checkbox {...attrs} />;
   if (type === "CheckboxGroup") return <Checkbox.Group {...(attrs as CheckboxGroupAttrs)} />;
+  if (type === "BaseNumberRange") return <BaseNumberRange {...attrs} />;
   if (type === "Custom") return element;
   if (type === "Children") {
-    const formItems = children?.map((field: FormItem, ind: number) => {
+    const formItems = children?.map((field: FormField, ind: number) => {
       if (!field) return null;
-      return <BaseFormItem field={field as FormItemAttrs} isChild key={ind} />;
+      return <BaseFormItem field={field as FormFieldAttrs} isChild key={ind} />;
     });
     if (childrenStyle === "compact") return <Space.Compact>{formItems}</Space.Compact>;
     if (childrenStyle === "addDel") return <AddDelList formItems={formItems} />;
@@ -96,21 +98,21 @@ const Field = ({ field, childrenStyle = "custom", ...restProps }: FieldProps) =>
   return <div className="color-danger">不存在该类型：{type}</div>;
 };
 
-const getSomeRequired = (children: FormItem[]) => {
+const getSomeRequired = (children: FormField[]) => {
   return !!children?.some(it => {
     if (!it) return false;
-    return (it as FormItemAttrs).required;
+    return (it as FormFieldAttrs).required;
   });
 };
 
 function BaseFormItem({ className = "", style, field, pureText, labelWidth, isChild, showChildLabel, ...restProps }: Props) {
   const { getOpts, getCascaderOpts } = useDictMap();
-  const { colAttrs, otherAttrs, getAttrs, childrenStyle, ...newField }: FormItemAttrs = useMemo(() => {
+  const { colAttrs, otherAttrs, getAttrs, childrenStyle, ...newField }: FormFieldAttrs = useMemo(() => {
     const { extra, element, children } = field;
     let { type = "Input" } = field;
     if (element) type = "Custom";
     else if (children) type = "Children";
-    const tempField: FormItemAttrs = merge({ type }, defaultFieldAttrs[type], field);
+    const tempField: FormFieldAttrs = merge({}, defaultFieldAttrs[type], field, { type });
     const { getAttrs } = tempField?.attrs ?? {};
     getAttrs && merge(tempField, { attrs: getAttrs(tempField) }, field);
     const { label = "", attrs = {}, required = children ? getSomeRequired(children) : false, rules, otherAttrs = {} } = tempField;

@@ -2,7 +2,7 @@
  * 文件说明-模板文件
  */
 
-import { FormItemAttrs } from "@/components/BaseFormItem";
+import { FormFieldAttrs } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { CSSProperties } from "react";
 
@@ -11,7 +11,7 @@ interface Props {
   style?: CSSProperties;
   [key: string]: any;
 }
-const fields: FormItemAttrs[] = [
+const fields: FormFieldAttrs[] = [
   {
     name: "useSectionName",
     // label: "使用SectionName",

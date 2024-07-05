@@ -5,7 +5,7 @@
 import { useContext, useEffect, useImperativeHandle, forwardRef, useState, ReactNode, useCallback } from "react";
 import { Button, Form } from "antd";
 import { CSSProperties } from "react";
-import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { CaretDownOutlined } from "@ant-design/icons";
 import { getMaxLength, convertDateField, emptyVals, debounce } from "@/utils";
 import { merge } from "lodash";
@@ -21,7 +21,7 @@ import s from "./index.module.less";
 
 export interface SectionFormItem {
   title: string;
-  fields: FormItem[];
+  fields: FormField[];
   popover?: ReactNode;
 }
 interface Props {
@@ -57,15 +57,15 @@ function getUnFilledPartInds(sections: SectionFormItem[], form: any) {
   console.log("执行了---------------getUnFilledInds");
   const inds: number[] = [];
   const args = form.getFieldsValue(true);
-  function getUnFilled(fields: FormItemAttrs[]) {
+  function getUnFilled(fields: FormFieldAttrs[]) {
     if (!fields?.length) return false;
-    return fields.some((field: FormItemAttrs) => {
+    return fields.some((field: FormFieldAttrs) => {
       const { name, required } = field;
       return required && emptyVals.includes(args[name]);
     });
   }
   sections.forEach((sItem: SectionFormItem, sInd: number) => {
-    if (getUnFilled(sItem.fields.filter(it => !!it) as FormItemAttrs[])) inds.push(sInd);
+    if (getUnFilled(sItem.fields.filter(it => !!it) as FormFieldAttrs[])) inds.push(sInd);
     const maxInd = sections.length - 1;
     if (sInd === maxInd && !inds.length) inds.push(maxInd);
   });

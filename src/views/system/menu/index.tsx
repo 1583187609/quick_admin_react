@@ -6,7 +6,7 @@ import { GetAuthMenuList, PostMockCommon } from "@/api-mock";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { BtnName } from "@/components/BaseBtn";
 import BaseCrud from "@/components/BaseCrud";
-import { FormItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import BaseIcon, { IconNames } from "@/components/BaseIcon";
 import { TableCol } from "@/components/table/_types";
 import { useContext } from "react";
@@ -14,7 +14,7 @@ import AddEdit from "./AddEdit";
 import { CommonObj, FinallyNext } from "@/vite-env";
 import { handleBtnNext, showMessage } from "@/utils";
 
-export const fields: FormItem[] = [
+export const fields: FormField[] = [
   {
     name: "name",
     label: "菜单名称",

@@ -29,6 +29,7 @@ export type FormItemType =
   | "Checkbox"
   | "CheckboxGroup"
   | "Slider"
+  | "BaseNumberRange"
   | "Custom";
 export type ValidateTriggerType = "onBlur" | "onChange";
 export interface FieldAttrs {
@@ -86,7 +87,7 @@ export interface ColAttrs {
 export interface RuleItem {
   [key: string]: any;
 }
-export interface FormItemAttrs {
+export interface FormFieldAttrs {
   type?: FormItemType; // 表单字段控件类型
   name: string; // 同 antd 的属性
   label: ReactNode; // 同 antd 的属性
@@ -102,11 +103,11 @@ export interface FormItemAttrs {
     valid?: ValidType; // 校验类型及控件本身必要的其他属性，例：password, phone
   };
   colAttrs?: number | ColAttrs;
-  children?: FormItem[];
+  children?: FormField[];
   [key: string]: any; //其他antd Form.Item 的属性
 }
 
-export type FormItem = BaseDataType | FormItemAttrs;
+export type FormField = BaseDataType | FormFieldAttrs;
 
 export interface PopoverAttrs {
   content?: ReactNode | (() => ReactNode);

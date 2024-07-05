@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useImperativeHandle, useState } fro
 import { CommonObj } from "@/vite-env";
 import { convertDateField, debounce, emptyVals, omitAttrs, printLog, showMessage } from "@/utils";
 import { SectionFormItem, SectionFormItemAttrs } from "../SectionForm";
-import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import { defaultFormProps } from "../_config";
 import { getBtnProps } from "../_utils";
@@ -12,16 +12,16 @@ import { BtnAttrs } from "../_types";
 // 获取未填写完毕的分组的下标
 const getUnFilledInds = (sections: SectionFormItem[], args: CommonObj) => {
   const inds: number[] = [];
-  const getUnFilled = (fields: FormItemAttrs[]) => {
+  const getUnFilled = (fields: FormFieldAttrs[]) => {
     if (!fields?.length) return false;
-    return fields.some((field: FormItemAttrs) => {
+    return fields.some((field: FormFieldAttrs) => {
       const { name, required } = field;
       return required && emptyVals.includes(args[name]);
     });
   };
   sections.forEach((sItem: SectionFormItem, sInd: number) => {
     if (!sItem) return;
-    if (getUnFilled((sItem as SectionFormItemAttrs).fields.filter(it => !!it) as FormItemAttrs[])) inds.push(sInd);
+    if (getUnFilled((sItem as SectionFormItemAttrs).fields.filter(it => !!it) as FormFieldAttrs[])) inds.push(sInd);
     const maxInd = sections.length - 1;
     if (sInd === maxInd && !inds.length) inds.push(maxInd);
   });
@@ -38,7 +38,7 @@ export interface UseInitFormReturns {
   readOnly: boolean;
   submitButton: string | BtnAttrs;
   resetButton: string | BtnAttrs;
-  fields?: FormItemAttrs[];
+  fields?: FormFieldAttrs[];
   sections?: SectionFormItemAttrs[];
   formAttrs: CommonObj;
   [key: string]: any;
@@ -72,12 +72,12 @@ export const useInitForm = (props: CommonObj, ref: any): UseInitFormReturns => {
   const newSections: SectionFormItemAttrs[] = sections?.filter((sItem: SectionFormItem) => {
     if (!sItem) return false;
     const { fields } = sItem as SectionFormItemAttrs;
-    (sItem as SectionFormItemAttrs).fields = fields.filter((fItem: FormItem) => !!fItem) as FormItemAttrs[];
+    (sItem as SectionFormItemAttrs).fields = fields.filter((fItem: FormField) => !!fItem) as FormFieldAttrs[];
     return true;
   });
-  const newFields: FormItemAttrs[] = isSectionForm
+  const newFields: FormFieldAttrs[] = isSectionForm
     ? newSections.map((it: SectionFormItemAttrs) => it.fields).flat(1)
-    : fields.filter((it: FormItem) => !!it);
+    : fields.filter((it: FormField) => !!it);
   const initVals = convertDateField(newFields, initialValues, "set");
 
   useImperativeHandle(ref, () => ({ form }), [form]);

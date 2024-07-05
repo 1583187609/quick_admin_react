@@ -6,14 +6,14 @@ import { GetAuthRoleList } from "@/api-mock";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { BtnName } from "@/components/BaseBtn";
 import BaseCrud from "@/components/BaseCrud";
-import { FormItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import { TableCol } from "@/components/table/_types";
 import { useContext } from "react";
 import AddEdit from "./AddEdit";
 import { CommonObj, FinallyNext } from "@/vite-env";
 import { handleBtnNext, showMessage } from "@/utils";
 
-const fields: FormItem[] = [
+const fields: FormField[] = [
   {
     name: "role_text",
     label: "角色类型",

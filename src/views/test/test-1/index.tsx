@@ -2,7 +2,7 @@
  * 测试1
  */
 
-import { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { Tabs, Select } from "antd";
 import { UserOutlined, UnlockOutlined } from "@ant-design/icons";
 import { PostMockCommon } from "@/api-mock";
@@ -13,7 +13,7 @@ import { CommonObj } from "@/vite-env";
 import { useState } from "react";
 import Setting from "./_components/Setting";
 
-export const getFields = (args: CommonObj): FormItem[] => {
+export const getFields = (args: CommonObj): FormField[] => {
   const { hasChildren, showDate, isAgree, childSubFieldsShowTypes } = args;
   return [
     {
@@ -332,7 +332,7 @@ export const getFields = (args: CommonObj): FormItem[] => {
       label: "error项",
       type: "Inputt",
       extra: "当type类型拼写错误(不存在)时，就会出现此错误提示",
-    } as FormItem,
+    } as FormField,
   ];
 };
 export const initVals = {

@@ -5,7 +5,7 @@
 import { ReactNode, forwardRef } from "react";
 import { Form } from "antd";
 import { CSSProperties } from "react";
-import { FormItem } from "@/components/BaseFormItem";
+import { FormField } from "@/components/BaseFormItem";
 import { getMaxLength } from "@/utils";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import FormFields from "@/components/form/_components/FormFields";
@@ -29,7 +29,7 @@ interface Props {
   /**
    * 以下是自定义的属性
    */
-  fields?: FormItem[];
+  fields?: FormField[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
   readOnly?: boolean;

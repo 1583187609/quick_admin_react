@@ -1,8 +1,7 @@
 import { TableCol } from "@/components/table/_types";
-import { FormItem } from "@/components/BaseFormItem";
-import BaseRange from "@/components/BaseRange";
+import { FormField } from "@/components/BaseFormItem";
 
-export const fields: FormItem[] = [
+export const fields: FormField[] = [
   {
     name: "id",
     label: "用户ID",
@@ -22,8 +21,12 @@ export const fields: FormItem[] = [
   {
     name: "age",
     label: "年龄",
-    type: "Custom",
-    element: <BaseRange attrs={{ min: 1, max: 100, maxLength: 3 }} />,
+    type: "BaseNumberRange",
+    attrs: {
+      min: 1,
+      max: 100,
+      maxLength: 3,
+    },
   },
   {
     name: "type",

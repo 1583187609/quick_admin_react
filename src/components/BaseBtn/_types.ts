@@ -3,24 +3,9 @@ import { ButtonSize } from "antd/es/button";
 import { ButtonType } from "antd/lib/button";
 import { btnsMap } from "./btns";
 
-//常用的基础按钮类型
-export type CommonBtnName = keyof typeof btnsMap;
-// export type CommonBtnName =
-//   | "add"
-//   | "delete"
-//   | "import"
-//   | "export"
-//   | "edit"
-//   | "view"
-//   | "batch"
-//   | "forbid"
-//   | "enable"
-//   | "repeal"
-//   | "download"
-//   | "upload"
-//   | "submit"
-//   | "reset";
-export type BtnName = CommonBtnName | string; //常用基础按钮或其他自定义按钮
+// 常用的基础按钮类型
+export type BtnAllNames = keyof typeof btnsMap;
+export type BtnName = BtnAllNames | string; //常用基础按钮或其他自定义按钮
 export interface PopconfirmAttrs {
   title: string;
   description?: string;
@@ -38,6 +23,7 @@ export interface BtnItem {
   to?: string; //点击按钮时要跳转的页面地址
   attrs?: BtnAttrs; //按钮属性
   popconfirm?: boolean | PopconfirmAttrs;
+  customRules?: boolean; // 为true时，可移除按钮的默认规则，实现自定义规则
 }
 export interface BtnAttrs {
   icon?: any;

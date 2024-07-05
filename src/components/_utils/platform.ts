@@ -10,7 +10,7 @@ import { message } from "antd";
 import { getChinaCharLength, typeOf } from "@/utils";
 import { PopoverAttrs } from "@/components/BaseFormItem";
 import { CommonObj, TostMessageType } from "@/vite-env";
-import type { FormItem, FormItemAttrs } from "@/components/BaseFormItem";
+import type { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { merge, omitBy } from "lodash";
 import dayjs from "dayjs";
 import { defaultFieldAttrs, FormItemType } from "@/components/BaseFormItem";
@@ -244,13 +244,13 @@ export function getPopoverAttrs(popover?: string | PopoverAttrs): PopoverAttrs |
  * 过滤筛选日期字段
  * @param fields 字段数组
  */
-function getDateFields(fields: FormItem[]): FormItemAttrs[] {
-  return fields.filter((field: FormItem) => {
+function getDateFields(fields: FormField[]): FormFieldAttrs[] {
+  return fields.filter((field: FormField) => {
     if (!field) return false;
-    const { type } = field as FormItemAttrs;
+    const { type } = field as FormFieldAttrs;
     if (!type) return false;
     return type.includes("Date") || type.includes("Time");
-  }) as FormItemAttrs[];
+  }) as FormFieldAttrs[];
 }
 
 /**
@@ -258,7 +258,7 @@ function getDateFields(fields: FormItem[]): FormItemAttrs[] {
  * @param dateFields Array 日期字段数组
  * @param key 对象属性名
  */
-function getDateFormat(dateFields: FormItemAttrs[], key: string) {
+function getDateFormat(dateFields: FormFieldAttrs[], key: string) {
   const { type, attrs } = dateFields.find(it => it.name === key) || {};
   const newAttrs = merge({}, defaultFieldAttrs[type as FormItemType]?.attrs, attrs);
   return newAttrs.format || "YYYY-MM-DD";
@@ -271,7 +271,7 @@ function getDateFormat(dateFields: FormItemAttrs[], key: string) {
  * @param type 日期转换类型, set 设置值， get 获取值
  */
 export type ConvertDateFieldType = "set" | "get";
-export function convertDateField(fields: FormItem[], params: CommonObj = {}, type: ConvertDateFieldType = "get") {
+export function convertDateField(fields: FormField[], params: CommonObj = {}, type: ConvertDateFieldType = "get") {
   const dateFields = getDateFields(fields);
   const dateNames = dateFields.map(it => it.name);
   for (let key in params) {
@@ -293,10 +293,10 @@ export function convertDateField(fields: FormItem[], params: CommonObj = {}, typ
  * @param fields 表单域
  * @param num 额外的空白宽度，默认2 // 2是因为：一个是间距宽度，一个是*宽度
  */
-export function getMaxLength(fields: FormItemAttrs[] = [], num = 2): number {
+export function getMaxLength(fields: FormFieldAttrs[] = [], num = 2): number {
   let max = 1;
   fields.forEach(item => {
-    const { label, children, otherAttrs } = item as FormItemAttrs;
+    const { label, children, otherAttrs } = item as FormFieldAttrs;
     const popNum = otherAttrs?.popover ? 1 : 0;
     if (typeof label === "string") {
       if (label?.length + popNum > max) {

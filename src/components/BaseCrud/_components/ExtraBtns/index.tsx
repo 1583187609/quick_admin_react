@@ -16,7 +16,7 @@ import {
 import { Button, Tooltip, Dropdown } from "antd";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import SetPrint from "../SetPrint";
-import SetTable, { SetTableRowItem } from "../SetTable";
+import SetTable from "../SetTable";
 import { TableColAttrs } from "@/components/table/_types";
 
 export type ToolsType = "print" | "colSet";
@@ -141,32 +141,37 @@ export default ({
     console.log(name, isShow, "handleSortChange-------");
   }
   return (
-    <div className={`${className} f-sb-c`} {...restProps}>
-      {btns.map((btn, ind) => {
-        return <BaseBtn onClick={onClick} btn={btn} key={ind} />;
-      })}
-      {batchBtn && (
-        <Dropdown trigger={["hover"]} menu={{ items: batchBtns, selectable: true }}>
-          <Button icon={<FileDoneOutlined />} type="primary" disabled={!total}>
-            批量操作{seledNum ? ` (${seledNum})` : ""}
-          </Button>
-        </Dropdown>
-      )}
-      {tools.map((name, ind) => {
-        const tool = toolsMap[name];
-        return (
-          <Tooltip title={tool.title} key={ind}>
-            <Button
-              onClick={() => handleToolBtns(name)}
-              type="primary"
-              shape="circle"
-              icon={tool.icon}
-              style={ind === 0 ? { marginLeft: "auto" } : undefined}
-              ghost
-            />
-          </Tooltip>
-        );
-      })}
+    <div className={`${className} f-sb-fe`} {...restProps}>
+      <div className="f-1 f-fs-fs-w">
+        {btns.map((btn, ind) => {
+          return <BaseBtn className="mb-h" onClick={onClick} btn={btn} key={ind} />;
+        })}
+        {batchBtn && (
+          <Dropdown trigger={["hover"]} menu={{ items: batchBtns, selectable: true }}>
+            <Button icon={<FileDoneOutlined />} className="mb-h" type="primary" disabled={!total}>
+              批量操作{seledNum ? ` (${seledNum})` : ""}
+            </Button>
+          </Dropdown>
+        )}
+      </div>
+      <div className="f-0 ml-h">
+        {tools.map((name, ind) => {
+          const tool = toolsMap[name];
+          return (
+            <Tooltip title={tool.title} key={ind}>
+              <Button
+                className="mb-h"
+                onClick={() => handleToolBtns(name)}
+                type="primary"
+                shape="circle"
+                icon={tool.icon}
+                style={ind === 0 ? { marginLeft: "auto" } : undefined}
+                ghost
+              />
+            </Tooltip>
+          );
+        })}
+      </div>
     </div>
   );
 };
