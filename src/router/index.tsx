@@ -6,10 +6,10 @@
 import { useRoutes, Navigate } from "react-router-dom";
 import React, { ReactNode, useEffect, useState } from "react";
 import Layout from "@/layout";
-import { ResponseMenuItem } from "@/layout/_components/TheMenu";
+import { ResponseMenuItem } from "@/layout/_types";
 import Login from "@/views/login";
 import { CommonObj } from "@/vite-env";
-import { useStoreSpace } from "@/hooks";
+import { useStoreSlice } from "@/hooks";
 import { camelCase } from "lodash";
 
 export interface RouteItem {
@@ -71,8 +71,8 @@ const notFoundRoute = {
   element: LazyLoad("/error.tsx"),
 };
 export default () => {
-  const { allMenus } = useStoreSpace("menu");
-  const { updateRouteState } = useStoreSpace("routes");
+  const { allMenus } = useStoreSlice("menu");
+  const { updateRouteState } = useStoreSlice("routes");
   const [routes, setRoutes] = useState<RouteItem[]>([
     {
       name: "root",

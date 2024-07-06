@@ -4,7 +4,7 @@
 
 import { CSSProperties } from "react";
 import { Button } from "antd";
-import { useStoreSpace } from "@/hooks";
+import { useStoreSlice } from "@/hooks";
 
 interface Props {
   className?: string;
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default ({ className = "", ...restProps }: Props) => {
-  const { num, addNum, cutNum } = useStoreSpace("counter");
+  const { num, addNum, cutNum } = useStoreSlice("demo");
   return (
     <div className={`${className} f-sb-s`} {...restProps}>
       <div className="f-1 f-c-c-c">

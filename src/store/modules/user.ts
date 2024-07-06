@@ -1,6 +1,6 @@
-import { storage, isProd, defaultHomePath, defaultIconName, showMessage } from "@/utils";
+import { storage, defaultHomePath, defaultIconName, showMessage } from "@/utils";
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
-import { ResponseMenuItem } from "@/layout/_components/SideMenu/_types";
+import { ResponseMenuItem } from "@/layout/_types";
 import { PostUserLogin, PostUserLogout } from "@/api-mock";
 import { notification } from "antd";
 import { CommonObj } from "@/vite-env";
@@ -9,13 +9,15 @@ import dayjs from "dayjs";
 
 const expiration = 24 * 60 * 60 * 1000; // 过期时间，单位：秒，默认24小时不登录即会过期
 
-function getMenuNavs(navs: ResponseMenuItem[], level = 0): ResponseMenuItem[] {
+const { initMenus } = menuStore.actions;
+
+function handleMenusIcon(navs: ResponseMenuItem[], level = 0): ResponseMenuItem[] {
   if (!navs) return [];
   return navs.map((item: ResponseMenuItem) => {
     const { icon = defaultIconName, children = [] } = item;
     //为了保持统一及美观，对于嵌套两层以上的菜单项不展示图标
-    item.icon = level > 1 ? null : icon;
-    item.children = getMenuNavs(children, level + 1);
+    item.icon = level > 1 ? undefined : icon;
+    item.children = handleMenusIcon(children, level + 1);
     return item;
   });
 }
@@ -26,7 +28,6 @@ function getMenuNavs(navs: ResponseMenuItem[], level = 0): ResponseMenuItem[] {
  * @returns
  */
 const handleLoginIn = createAsyncThunk("userLoginIn", async (payload: CommonObj, { dispatch, getState, extra }) => {
-  const state = getState();
   const { remember, ...args } = payload.params;
   const { router, location } = payload.other;
   if (remember) {
@@ -36,14 +37,13 @@ const handleLoginIn = createAsyncThunk("userLoginIn", async (payload: CommonObj,
   }
   return await PostUserLogin(args).then(res => {
     const { user, navs, ...rest } = res as CommonObj;
-    const newNavs = getMenuNavs(
-      navs.filter((it: ResponseMenuItem) => {
-        const { auth_codes, path } = it;
-        if (path === "demo") return false; //过滤掉demo示例代码
-        if (!auth_codes) return true;
-        return auth_codes.includes(user.type);
-      })
-    );
+    const filterNavs = navs.filter((it: ResponseMenuItem) => {
+      const { auth_codes, path } = it;
+      if (path === "demo") return false; // 过滤掉demo示例代码
+      if (!auth_codes) return true;
+      return auth_codes.includes(user.type);
+    });
+    const newNavs = handleMenusIcon(filterNavs);
     const { id = "", name = "", nickname = "", type_text = "" } = user;
     user._title = name || nickname || type_text + id;
     const expired = Date.now() + expiration;
@@ -81,7 +81,7 @@ const handleLoginInAfter = (builder: any) => {
     state.userInfo = user;
     state.isLogin = true;
     state.expired = expired;
-    menuStore.actions.initMenus(navs);
+    initMenus(navs);
   });
 };
 
@@ -99,7 +99,7 @@ const handleLoginOut = createAsyncThunk("userLoginOut", async (payload: CommonOb
       if (isRemove) storage.removeItem(key);
     });
     storage.clear("session"); //清除sessionStorage的数据
-    // menuStore.actions.changeActiveIndex(0);
+    // changeActiveIndex(0);
     showMessage("退出成功！");
     const { pathname } = location;
     // const { path, fullPath, name } = route;
@@ -196,7 +196,7 @@ const userSlice = createSlice({
 
 export default userSlice;
 
-export const expose: CommonObj = {
+export const userExpose: CommonObj = {
   handleLoginIn,
   handleLoginOut,
 };

@@ -1,38 +1,17 @@
 /**
  * 文件说明-模板文件
  */
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Menu } from "antd";
-import type { MenuProps } from "antd";
-import { useRouter, useStoreSpace } from "@/hooks";
-import { CommonObj, ShowCodes } from "@/vite-env";
-import { IconNames } from "@/components/BaseIcon";
-import { getMenuNavs } from "@/store/modules/menu";
-import s from "./index.module.less";
+import { useRouter, useStoreSlice } from "@/hooks";
+import { CommonObj } from "@/vite-env";
+import { convertToMenuNavs } from "@/store/modules/menu";
 import { defaultHomePath } from "@/utils";
 import useMenu from "@/layout/_hooks";
 import BaseEmpty from "@/components/BaseEmpty";
+import s from "./index.module.less";
 
-export type LinkType = 0 | 1 | 2; //1 内部iframe渲染； 2, 新打开一个浏览器标签页展示
-export type AntdMenuItem = Required<MenuProps>["items"][number];
-export type ResponseMenuItem = {
-  id: string;
-  label: string; //导航文字
-  icon: IconNames; //首字母大写，Antd中有效的图标均可，例：TwitterOutlined
-  path: string;
-  type: number; //0 目录 1菜单（显示） 2菜单（不显示）3外链（暂未使用）
-  auth_codes?: number[] | null; //该路由的权限 0超级管理员 1普通管理员 2特殊用户 3普通用户 4游客用户 5开发人员
-  status: ShowCodes; //0 禁用 1启用
-  is_cache?: ShowCodes; //是否缓存：0否 1是
-  link_type?: LinkType;
-  disabled?: ShowCodes; //是否禁用：0否 1是
-  order?: number; //显示的位置顺序，数值越大越靠后，支持负数
-  component?: string;
-  children?: ResponseMenuItem[];
-  create_time?: string; //创建时间
-  update_time?: string; //修改时间
-};
 interface Props {
   className?: string;
   defaultSelectedKeys?: string[];
@@ -42,13 +21,14 @@ const { VITE_APP_NAME } = import.meta.env;
 const title = VITE_APP_NAME;
 
 export default ({ className = "" }: Props) => {
-  const { isFold } = useStoreSpace("base");
-  const { seledKeys, openKeys, allMenus, sideMenus, updateState: updateMenuState } = useStoreSpace("menu");
+  const { isFold } = useStoreSlice("base");
+  const { seledKeys, openKeys, allMenus, sideMenus, updateState: updateMenuState } = useStoreSlice("menu");
   const { setActiveKeys } = useMenu();
   const router = useRouter();
   const location = useLocation();
   const { pathname } = location;
-  const items = getMenuNavs(sideMenus);
+  const items = convertToMenuNavs(sideMenus);
+  console.log(sideMenus, items, "items-navs------------------");
   useEffect(() => {
     setActiveKeys(allMenus, pathname);
   }, [allMenus, pathname]);

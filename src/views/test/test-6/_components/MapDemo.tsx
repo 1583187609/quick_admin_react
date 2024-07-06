@@ -3,9 +3,10 @@
  */
 
 import { CSSProperties } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { counterStore } from "@/store";
+import { connect } from "react-redux";
+import demoStore from "@/store/modules/demo";
 import { Button } from "antd";
+const { addNum, cutNum } = demoStore.actions;
 
 interface Props {
   className?: string;
@@ -14,14 +15,13 @@ interface Props {
 }
 // 获取store中的数据的方法
 const mapState = (state: any) => {
-  const { counter } = state;
+  const { demo } = state;
   return {
-    num: counter.num,
+    num: demo.num,
   };
 };
 // 修改store中的数据的方法
 const mapDispatch = (dispatch: any) => {
-  const { addNum, cutNum } = counterStore;
   return {
     handleAdd: (num: number) => dispatch(addNum(num)),
     handleCut: (num: number) => dispatch(cutNum(num)),

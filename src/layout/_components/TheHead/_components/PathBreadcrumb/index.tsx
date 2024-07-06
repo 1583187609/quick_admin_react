@@ -1,10 +1,10 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { Breadcrumb } from "antd";
-import { ResponseMenuItem } from "@/layout/_components/TheMenu";
+import { ResponseMenuItem } from "@/layout/_types";
 import { CommonObj } from "@/vite-env";
 import { defaultHomePath } from "@/utils";
 import { useLocation } from "react-router-dom";
-import { useStoreSpace } from "@/hooks";
+import { useStoreSlice } from "@/hooks";
 import BaseIcon from "@/components/BaseIcon";
 import useMenu from "@/layout/_hooks";
 
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default ({ className = "", ...restProps }: Props) => {
-  const { allMenus } = useStoreSpace("menu");
+  const { allMenus } = useStoreSlice("menu");
   const { toFirstPath } = useMenu();
   const location = useLocation();
   const { pathname } = location;

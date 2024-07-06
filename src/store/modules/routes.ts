@@ -1,9 +1,4 @@
-// import { useUserStore, useRouteStore, useBaseStore } from "@/store";
-// import { useRoute, useRouter } from "vue-router";
-import { LinkType, ResponseMenuItem } from "@/layout/_components/SideMenu/_types";
 import { createSlice } from "@reduxjs/toolkit";
-import { defaultHomePath, storage } from "@/utils";
-import { camelCase } from "lodash";
 import { updateState } from "../_utils";
 
 // const modules = import.meta.glob("../../views/**/*.tsx");
@@ -51,25 +46,9 @@ import { updateState } from "../_utils";
 export default createSlice({
   name: "route",
   initialState: {
-    // routes: "", // 初始路由
     isCreatedRoute: false, // 路由是否已创建完毕
   },
   reducers: {
     updateRouteState: updateState,
-    // 跳转路由
-    // push(state, { type, payload }) {
-    //   state.path = payload;
-    //   console.log(payload, "path-------------要跳转的路由");
-    // },
-    /**
-     * 创建路由
-     */
-    // createRoutes(menus = menuStore.allMenus) {
-    //   const routes = getFlatMenus(menus).map((it: ResponseMenuItem) => getRoute(it));
-    //   routes.forEach((item: any) => {
-    //     router.addRoute("layout", item);
-    //   });
-    //   isCreatedRoute.value = true;
-    // },
   },
 });

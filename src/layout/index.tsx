@@ -3,16 +3,17 @@
  */
 
 import { Outlet } from "react-router-dom";
-import TheMenu, { ResponseMenuItem } from "./_components/TheMenu";
+import TheMenu from "./_components/TheMenu";
 import TheHead from "./_components/TheHead";
 import { Suspense, useEffect, useState } from "react";
 import { Spin, Watermark } from "antd";
-import { useRouter, useStoreSpace } from "@/hooks";
+import { useRouter, useStoreSlice } from "@/hooks";
 import BaseImg from "@/components/BaseImg";
 import BaseIcon from "@/components/BaseIcon";
 import logoImg from "@/assets/images/logo.svg";
 import useMenu from "@/layout/_hooks";
 import s from "./index.module.less";
+import { ResponseMenuItem } from "@/layout/_types";
 
 interface Props {
   className?: string;
@@ -21,7 +22,7 @@ let reloadCb: undefined | (() => void);
 const { VITE_APP_NAME } = import.meta.env;
 
 export default ({ className = "" }: Props) => {
-  const { allMenus, sideMenus, activeIndex } = useStoreSpace("menu");
+  const { allMenus, sideMenus, activeIndex } = useStoreSlice("menu");
   const { changeActiveIndex } = useMenu();
   // const router = useRouter();
   // const groups = useContext(MenusContext);

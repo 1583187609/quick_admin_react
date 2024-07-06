@@ -26,7 +26,7 @@ const items = [
   },
   {
     key: "3",
-    label: "useStoreSpace",
+    label: "useStoreSlice",
     children: <StoreDemo />,
   },
 ];

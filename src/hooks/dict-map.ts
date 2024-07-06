@@ -1,12 +1,12 @@
 import { CommonObj, OptionItem, StrNum } from "@/vite-env";
 import { merge } from "lodash";
-import { useStoreSpace } from ".";
+import { useStoreSlice } from ".";
 import { DictName } from "@/dict";
 import { CascaderName } from "@/dict/cascader";
 import { typeOf } from "@/utils";
 
 export default () => {
-  const { dictMap, cascaderMap } = useStoreSpace("dict");
+  const { dictMap, cascaderMap } = useStoreSlice("dict");
   /**
    * 获取tagMap
    * @param name 映射map的名称

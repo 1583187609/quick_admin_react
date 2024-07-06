@@ -9,19 +9,18 @@
 
 import { ThunkAction, configureStore } from "@reduxjs/toolkit";
 import { Action, combineReducers } from "redux";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-// import logger from 'redux-logger'; // 我们想要添加的中间件
-import counter from "./modules/counter";
+import demo from "./modules/demo";
 import base from "./modules/base";
 import menu from "./modules/menu";
 import dict from "./modules/dict";
-import user, { expose as userExpose } from "./modules/user";
+import user, { userExpose } from "./modules/user";
 import routes from "./modules/routes";
-import { CommonObj } from "@/vite-env";
+// import logger from 'redux-logger'; // 想要添加的中间件
+// import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 const store = configureStore({
   reducer: combineReducers({
-    counter: counter.reducer,
+    demo: demo.reducer,
     base: base.reducer,
     menu: menu.reducer,
     dict: dict.reducer,
@@ -36,31 +35,21 @@ const store = configureStore({
 });
 export default store;
 
-export const menuStore = menu.actions;
-export const counterStore = counter.actions;
-export const baseStore = base.actions;
-export const dictStore = dict.actions;
-export const userStore = user.actions;
-export const routesStore = routes.actions;
-
-export type SpaceNames = keyof typeof actions;
-export const actions: CommonObj = {
-  menu: menu.actions,
-  counter: counter.actions,
-  base: base.actions,
-  dict: dict.actions,
-  user: user.actions,
-  routes: routes.actions,
+export type SliceNames = keyof typeof sliceMap;
+export const sliceMap = {
+  menu,
+  demo,
+  base,
+  dict,
+  user: {
+    expose: userExpose,
+    ...user,
+  },
+  routes,
 };
 
-export const exposes: CommonObj = {
-  user: userExpose,
-};
-
-// 使用这些类型进行简单的类型声明
-export type AppDispatch = typeof store.dispatch;
+export type RootDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
-// 在整个应用程序中使用它们，而不是简单地使用 `useDispatch` 和 `useSelector`
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export type RootThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
+// export const useAppDispatch = () => useDispatch<RootDispatch>();
+// export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

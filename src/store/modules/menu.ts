@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { LinkType, ResponseMenuItem } from "@/layout/_components/SideMenu/_types";
-import { AntdMenuItem } from "@/layout/_components/TheMenu";
+import React from "react";
+import { ResponseMenuItem } from "@/layout/_types";
+import { AntdMenuItem } from "@/layout/_types";
 import { createSlice, current } from "@reduxjs/toolkit";
 import { storage } from "@/utils";
-import * as Icons from "@ant-design/icons";
 import { CommonObj } from "@/vite-env";
 import { updateState } from "../_utils";
+import * as Icons from "@ant-design/icons";
 
-export function getMenuNavs(menus: ResponseMenuItem[] = [], level = 0): AntdMenuItem[] {
-  menus = menus.filter((it: ResponseMenuItem) => it.type !== 2);
-  return menus.map((item: ResponseMenuItem) => {
+export function convertToMenuNavs(menus: ResponseMenuItem[] = [], level = 0): AntdMenuItem[] {
+  const filterMenus = menus.filter((it: ResponseMenuItem) => it.type !== 2);
+  const antdMenus = filterMenus.map((item: ResponseMenuItem) => {
     let { path, icon = "TwitterOutlined", children, label, type } = item;
     const obj: CommonObj = {
       key: path,
-      icon: level < 1 ? React.createElement(Icons[icon] ?? Icons.TwitterOutlined) : null, //为了保持统一美观好看性，菜单多语两级的就不展示图标了
+      icon: level < 1 ? React.createElement(Icons[icon] ?? Icons.TwitterOutlined) : null, // 为了保持统一美观好看性，菜单多语两级的就不展示图标了
       label,
       type,
     };
     if (children?.length) {
-      obj.children = getMenuNavs(children, level + 1);
+      obj.children = convertToMenuNavs(children, level + 1);
     }
     return obj as AntdMenuItem;
   });
+  return antdMenus;
 }
 
 const localMenus = storage.getItem("allMenus") || [];

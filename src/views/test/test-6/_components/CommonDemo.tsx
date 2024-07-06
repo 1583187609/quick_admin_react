@@ -4,9 +4,10 @@
 
 import { CSSProperties } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { counterStore } from "@/store";
+import demoStore from "@/store/modules/demo";
 import { Button } from "antd";
 import BaseTag from "@/components/BaseTag";
+import { RootState } from "@/store";
 
 interface Props {
   className?: string;
@@ -14,11 +15,11 @@ interface Props {
   [key: string]: any;
 }
 
-const { addNum, cutNum } = counterStore;
+const { addNum, cutNum } = demoStore.actions;
 
 export default ({ className = "", ...restProps }: Props) => {
   const dispatch = useDispatch();
-  const num = useSelector(state => state.counter.num);
+  const num = useSelector((state: RootState) => state.demo.num);
   const handleAdd = (num: number) => dispatch(addNum(num));
   const handleCut = (num: number) => dispatch(cutNum(num));
   return (

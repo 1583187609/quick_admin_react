@@ -6,7 +6,7 @@ import { useContext, useRef } from "react";
 import Captcha from "./_components/Captcha";
 import FindPassword from "./_components/FindPassword";
 import Register from "./_components/Register";
-import { useRouter, useStoreSpace } from "@/hooks";
+import { useRouter, useStoreSlice } from "@/hooks";
 import { CommonObj } from "@/vite-env";
 import { useLocation } from "react-router-dom";
 import s from "./index.module.less";
@@ -18,7 +18,7 @@ const initVals = {
 };
 
 export default () => {
-  const { handleLoginIn } = useStoreSpace("user");
+  const { handleLoginIn } = useStoreSlice("user");
   const formRef = useRef();
   const router = useRouter();
   const location = useLocation();

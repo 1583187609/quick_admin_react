@@ -5,7 +5,7 @@
 import React, { useContext, useMemo, useState } from "react";
 import { Popover, Divider } from "antd";
 import { Button, Modal } from "antd";
-import { ResponseMenuItem } from "../TheMenu";
+import { ResponseMenuItem } from "@/layout/_types";
 import PageTags from "./_components/PageTags";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import UserInfo from "./_components/UserInfo";
@@ -22,7 +22,7 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
-import { useRouter, useStoreSpace } from "@/hooks";
+import { useRouter, useStoreSlice } from "@/hooks";
 import PathBreadcrumb from "./_components/PathBreadcrumb";
 import s from "./index.module.less";
 
@@ -37,9 +37,9 @@ interface Props {
 const { VITE_APP_NAME } = import.meta.env;
 
 export default ({ className = "" }: Props) => {
-  const { isFold, toggleFold } = useStoreSpace("base");
-  const { userInfo, handleLoginOut } = useStoreSpace("user");
-  const { activeIndex, allMenus } = useStoreSpace("menu");
+  const { isFold, toggleFold } = useStoreSlice("base");
+  const { userInfo, handleLoginOut } = useStoreSlice("user");
+  const { activeIndex, allMenus } = useStoreSlice("menu");
   const router = useRouter();
   const location = useLocation();
   const { pathname } = location;
@@ -110,7 +110,7 @@ export default ({ className = "" }: Props) => {
           selectedKeys={[rootKey]}
           mode="horizontal"
           theme="dark"
-          items={getMenuNavs(newGroups)}
+          items={convertToMenuNavs(newGroups)}
         /> */}
         <div className="f-0 ml-8 mr-8 f-fe-s">
           <div className={`${s.info} f-sa-fe-c`}>

@@ -1,10 +1,10 @@
-import { useRouter, useStoreSpace } from "@/hooks";
-import { ResponseMenuItem } from "./_components/TheMenu";
+import { useRouter, useStoreSlice } from "@/hooks";
+import { ResponseMenuItem } from "@/layout/_types";
 
 export default () => {
   const router = useRouter();
-  const { toggleFold } = useStoreSpace("base");
-  const { allMenus, updateState: updateMenuState } = useStoreSpace("menu");
+  const { toggleFold } = useStoreSlice("base");
+  const { allMenus, updateState: updateMenuState } = useStoreSlice("menu");
 
   //设置打开的菜单、被选中的菜单keys
   function setActiveKeys(navs: ResponseMenuItem[], pathName: string) {

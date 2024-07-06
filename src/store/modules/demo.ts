@@ -1,4 +1,5 @@
 /**
+ * 这个 sliceStore 仅用作测试，和语法示例，并未承载任何业务功能
  * redux-toolkit中的createAsyncThunk使用介绍
  * @link https://blog.csdn.net/weixin_57017198/article/details/133796912
  */
@@ -36,7 +37,7 @@ export const getAsyncCountAction = createAsyncThunk(
 // 创建 slice。每一个 slice 里都包含了 reducer 和 actions，可以实现模块化的封装
 export default createSlice({
   //标记 slice，作为 action.type 的前缀
-  name: "counter",
+  name: "demo",
   //state 的初始值
   initialState: {
     num: 1,
@@ -59,7 +60,7 @@ export default createSlice({
   /**
    * 可以让 slice 处理在别处定义的 Action，包括由 createAsyncThunk 创建的异步的 Action或其他 slice 生成的 Action
    */
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     const { pending, fulfilled, rejected } = getAsyncCountAction;
     builder
       .addCase(pending, (state, { payload }) => {
@@ -74,6 +75,6 @@ export default createSlice({
       });
   },
   selectors: {
-    selectItems: (state) => state.num,
+    selectItems: state => state.num,
   },
 });
