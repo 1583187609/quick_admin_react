@@ -2,7 +2,7 @@ import allAddress from "../data/address";
 import { getCascadeText, getDictCodes, getDictText } from "../dict";
 import { createPhone } from "../create";
 import { CommonObj, StrNum } from "@/vite-env";
-import { typeOf } from "./common";
+import { typeOf } from "./base";
 import dayjs from "dayjs";
 import Mock from "mockjs";
 

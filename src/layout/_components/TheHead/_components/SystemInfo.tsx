@@ -1,6 +1,7 @@
 import SectionForm, { SectionFormItem } from "@/components/form/SectionForm";
 import { name, version, scripts, dependencies, devDependencies } from "#/package.json";
 import { FormField } from "@/components/BaseFormItem";
+import { CommonObj } from "@/vite-env";
 
 const sections: SectionFormItem[] = [
   {

@@ -1,4 +1,4 @@
-import { FormField } from "@/components/BaseFormItem";
+import { FormField, StandardFormFieldAttrs } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { useEffect, useRef, useState } from "react";
 import { GetUserInfo, PostMockCommon } from "@/api-mock";
@@ -16,7 +16,7 @@ function getFields({ isAdd = false, formRef }: CommonObj): FormField[] {
       name: "avatar",
       label: "头像",
       type: "Custom",
-      element: <UploadAvatar name="avatar" formRef={formRef} />,
+      render: (attrs: StandardFormFieldAttrs) => <UploadAvatar name="avatar" {...attrs} formRef={formRef} />,
     },
     !isAdd && {
       name: "nickname",

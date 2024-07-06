@@ -2,7 +2,7 @@
  * 测试1
  */
 
-import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
+import { FormField, FormFieldAttrs, StandardFormFieldAttrs } from "@/components/BaseFormItem";
 import { Tabs, Select } from "antd";
 import { UserOutlined, UnlockOutlined } from "@ant-design/icons";
 import { PostMockCommon } from "@/api-mock";
@@ -314,9 +314,9 @@ export const getFields = (args: CommonObj): FormField[] => {
     isAgree && {
       name: "custom",
       label: "自定义项",
-      // type: "Custom", // 有 element 时，可以省略不写
+      // type: "Custom", // 有 render 时，可以省略不写
       extra: "声明type为Custom，同时写上element属性",
-      element: <div className="color-primary">这是一个自定义项</div>,
+      render: (attrs: StandardFormFieldAttrs) => <div className="color-primary">这是一个自定义项</div>,
       otherAttrs: {
         popover: "勾选【阅读并同意协议之后】，此字段才会显示，否则隐藏",
       },

@@ -29,15 +29,16 @@ const localMenus = storage.getItem("allMenus") || [];
 const menuSlice = createSlice({
   name: "menu",
   initialState: {
+    updatedTitle: false, // 是否已经更新了document.title
     openKeys: [], //打开的菜单项
     seledKeys: [], //选中的菜单项
+    activeIndex: 0, // 当前选中根菜单的下标项
     allMenus: localMenus, // 完整导航数据
     sideMenus: localMenus[0]?.children,
-    activeIndex: 0,
   } as CommonObj,
   reducers: {
     // 修改state的值
-    updateState,
+    updateMenuState: updateState,
     // 初始化菜单
     initMenus: (state, { payload = [] }) => {
       state.allMenus = payload;

@@ -1,8 +1,9 @@
-import { Divider, Space, Tag, Dropdown, Button, message } from "antd";
-import { CSSProperties, useState } from "react";
-import type { MenuProps } from "antd";
+import { Tag, Dropdown } from "antd";
+import { CSSProperties } from "react";
 import getMenus, { CloseMenuType } from "./menus";
 import { MenusDisabledCase } from "..";
+import cssVars from "@/assets/styles/_var.module.less";
+
 interface Props {
   className?: string;
   style?: CSSProperties;
@@ -53,7 +54,8 @@ export default ({
         //   },
         //   style
         // )}
-        color={active ? "#1677ff" : "blue"}
+        color={active ? cssVars.colorPrimary : "blue"}
+        // color={active ? cssVars.colorPrimary : "green"}
         closable={closable}
         icon={icon}
         onClick={onClick}

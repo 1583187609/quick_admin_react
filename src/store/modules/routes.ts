@@ -46,9 +46,9 @@ import { updateState } from "../_utils";
 export default createSlice({
   name: "route",
   initialState: {
-    isCreatedRoute: false, // 路由是否已创建完毕
+    // isCreatedRoute: false, // 路由是否已创建完毕
   },
   reducers: {
-    updateRouteState: updateState,
+    // updateRouteState: updateState,
   },
 });

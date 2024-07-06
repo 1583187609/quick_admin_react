@@ -9,23 +9,25 @@
 
 import { ThunkAction, configureStore } from "@reduxjs/toolkit";
 import { Action, combineReducers } from "redux";
-import demo from "./modules/demo";
 import base from "./modules/base";
+import set from "./modules/set";
 import menu from "./modules/menu";
 import dict from "./modules/dict";
 import user, { userExpose } from "./modules/user";
 import routes from "./modules/routes";
+import demo from "./modules/demo";
 // import logger from 'redux-logger'; // 想要添加的中间件
 // import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 const store = configureStore({
   reducer: combineReducers({
-    demo: demo.reducer,
+    set: set.reducer,
     base: base.reducer,
     menu: menu.reducer,
     dict: dict.reducer,
     user: user.reducer,
     routes: routes.reducer,
+    demo: demo.reducer,
   }),
   // 使用回调函数来自定义中间件
   // middleware: (getDefaultMiddleware) =>
@@ -37,15 +39,16 @@ export default store;
 
 export type SliceNames = keyof typeof sliceMap;
 export const sliceMap = {
-  menu,
-  demo,
   base,
+  set,
+  menu,
   dict,
   user: {
     expose: userExpose,
     ...user,
   },
   routes,
+  demo,
 };
 
 export type RootDispatch = typeof store.dispatch;

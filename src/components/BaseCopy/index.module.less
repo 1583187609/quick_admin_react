@@ -1,14 +1,17 @@
+.hover() {
+  &:hover {
+    color: @color-primary;
+  }
+}
 .base-copy {
   display: inline-flex;
-  &.has-val {
-    cursor: pointer;
-    &:hover {
-      color: @color-primary;
-    }
+  cursor: pointer;
+  &.hover {
+    .hover();
   }
-  // .icon {
-  //   color: @color-primary;
-  //   // vertical-align: bottom;
-  //   // line-height: inherit;
-  // }
+  .icon {
+    // vertical-align: bottom;
+    // line-height: inherit;
+    .hover();
+  }
 }

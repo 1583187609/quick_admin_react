@@ -1,6 +1,6 @@
-import { BaseDataType, CommonObj, OptionItem, StrNum } from "@/vite-env";
+import { BaseDataType, CommonObj, OptionItem } from "@/vite-env";
 import { CSSProperties, ReactNode, RefAttributes } from "react";
-import { defaultValidTypes } from "./_config";
+import { defaultValidTypes, fieldMap } from "./_config";
 import { CheckboxGroupProps } from "antd/es/checkbox";
 import { Dayjs } from "dayjs";
 import { PickerLocale, RangePickerDateProps } from "antd/es/date-picker/generatePicker";
@@ -8,29 +8,9 @@ import { SizeType } from "antd/es/config-provider/SizeContext";
 import { RadioGroupProps } from "antd";
 import { CascaderName, DictName } from "@/dict";
 
+export type FormItemType = keyof typeof fieldMap;
 export type ValidType = keyof typeof defaultValidTypes;
-export type FormItemType =
-  | "Children"
-  | "Input"
-  | "AutoComplete"
-  | "InputNumber"
-  | "Password"
-  | "Search"
-  | "TextArea"
-  | "Select"
-  | "RadioGroup"
-  | "Rate"
-  | "Switch"
-  | "Cascader"
-  | "TimePicker"
-  | "TimeRangePicker"
-  | "DatePicker"
-  | "DateRangePicker"
-  | "Checkbox"
-  | "CheckboxGroup"
-  | "Slider"
-  | "BaseNumberRange"
-  | "Custom";
+
 export type ValidateTriggerType = "onBlur" | "onChange";
 export interface FieldAttrs {
   style?: CSSProperties;
@@ -87,13 +67,19 @@ export interface ColAttrs {
 export interface RuleItem {
   [key: string]: any;
 }
+
+export interface StandardFormFieldAttrs {
+  value?: string;
+  onChange?: (val: string) => void;
+  [key: string]: any;
+}
 export interface FormFieldAttrs {
   type?: FormItemType; // 表单字段控件类型
   name: string; // 同 antd 的属性
   label: ReactNode; // 同 antd 的属性
   rules?: RuleItem[]; // 同 antd 的属性
   required?: boolean; // 同 antd 的属性
-  element?: any; //type 为 Custom 时，要渲染的内容
+  render?: (attrs: StandardFormFieldAttrs) => ReactNode; //type 为 Custom 时，要渲染的内容
   extra?: ReactNode;
   attrs?: FieldAttrs;
   validateTrigger?: ValidateTriggerType | ValidateTriggerType[]; // 同 antd 的属性
@@ -115,3 +101,14 @@ export interface PopoverAttrs {
 }
 
 export type ChildrenStyle = "custom" | "expand" | "compact" | "addDel"; //自定义方式，行撑满，紧凑型, 加减行
+
+export interface DefaultFieldAttrs {
+  // [key in FormItemType]: {
+  [key: string]: {
+    valuePropName?: string;
+    attrs?: {
+      getAttrs?: (field: FormFieldAttrs) => FieldAttrs | undefined;
+      [key: string]: any;
+    };
+  };
+}

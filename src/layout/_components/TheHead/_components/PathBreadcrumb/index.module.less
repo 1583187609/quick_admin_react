@@ -1,0 +1,46 @@
+.path-breadcrumb {
+  .item {
+    @light: @color-text-light;
+    @active: @color-text-heavyer;
+    &.dark {
+      color: @color-text-light;
+      &:hover:not(.home) {
+        color: @active;
+        transition: @transition-time-main;
+      }
+      &.link {
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      &.active {
+        color: @active;
+      }
+      &.home {
+        cursor: inherit;
+      }
+    }
+    &.light {
+      @light: @color-text-lighter;
+      @active: #eee;
+      color: @light;
+      &:hover:not(.home) {
+        color: @active;
+        transition: @transition-time-main;
+      }
+      &.link {
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      &.active {
+        color: @active;
+      }
+      &.home {
+        cursor: inherit;
+      }
+    }
+  }
+}

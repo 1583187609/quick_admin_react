@@ -18,9 +18,22 @@ export default (name: SliceNames): CommonObj => {
   if (!name) throw Error("请传入 store 唯一ID名称");
   const slice = sliceMap[name];
   if (!slice) throw new Error(`未找到名称为${name}的store slice`);
+
+  // if (name === "set") {
+  //   console.log(slice, "slice---------------");
+  // }
+  if (name === "routes") {
+    console.log(name, "slice-routes--------------");
+  }
   const dispatch = useDispatch();
+  const states = useSelector((state: RootState) => state[name]);
+  /**
+   * 重置state 后续再完善
+   * @param name
+   */
+  function resetState(name: SliceNames) {}
   return {
-    ...useSelector((state: RootState) => state[name]),
+    ...states,
     ...getReducers(slice.actions, dispatch),
     ...getReducers(slice.expose, dispatch),
   };

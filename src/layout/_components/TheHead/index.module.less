@@ -1,5 +1,20 @@
 .header {
   background: @nav-bg-dark;
+  &.white {
+    background: #fff;
+  }
+  .border-bottom {
+    border-bottom: @border-lighter;
+  }
+  .title {
+    cursor: pointer;
+    color: #fff;
+    height: @header-height;
+    font-size: 16px;
+    line-height: 24px;
+    padding: 0 @gap;
+    background: @nav-bg-dark;
+  }
 }
 .info {
   color: #999;
@@ -30,5 +45,13 @@
   margin-right: 0 !important;
   &:not(:last-child) {
     margin-bottom: @gap-half;
+  }
+}
+.breadcrumb-box {
+  height: @gap-two;
+  padding: 0 @gap-half;
+  border-bottom: @border-lighter;
+  &.white {
+    background: #fff;
   }
 }

@@ -1,33 +1,8 @@
-import { cloneDeep, merge } from "lodash";
+import { merge } from "lodash";
 import dictMap from "../dict";
-import { getDictText, getCascadeText } from "../dict";
+import { getDictText } from "../dict";
 import { CommonObj, OptionItem } from "@/vite-env";
-
-/**
- * 检测元素所属类型
- * Object.prototype.toString.call(*)的可能结果如下所示：
- * @example null             [object Null]
- * @example undefined        [object Undefined]
- * @example Symbol());       [object Symbol]
- * @example true             [object Boolean]
- * @example ''               [object String]
- * @example 1                [object Number]
- * @example []               [object Array]
- * @example {}               [object Object]
- * @example new Date()       [object Date]
- * @example new Function()   [object Function]
- * @example new RegExp()     [object RegExp]
- * @example new Error()      [object Error]
- * @example document         [object HTMLDocument]
- * @example window           [object global] window 是全局对象 global 的引用
- * @param {*} ele 待检测的对象、字符串、数组等
- * @returns {String} 元素类型（String、Number、Boolean、Symbol、Undefined、Null、Function、Date、Array、Object、Regexp、Error、HtmlDocument、Global）
- */
-export function typeOf(ele: any) {
-  const endStr = Object.prototype.toString.call(ele);
-  const type = endStr.split(" ")[1].slice(0, -1);
-  return type;
-}
+import { typeOf } from "./base";
 
 /**
  * 获取请求参数
@@ -42,9 +17,7 @@ export function getRequestParams(req: CommonObj, ignoreKeys = ["phone"]) {
     const valType = typeOf(val);
     const isEmptyStr = val === "";
     const isIgnoreKey = ignoreKeys?.includes(key);
-    const isIgnoreType = ["Null", "Undefined", "Boolean", "Array"].includes(
-      valType
-    );
+    const isIgnoreType = ["Null", "Undefined", "Boolean", "Array"].includes(valType);
     return isEmptyStr || isIgnoreKey || isIgnoreType;
   }
   for (const key in reqParams) {
@@ -81,30 +54,13 @@ export function toViteMockApi(obj: CommonObj) {
 }
 
 /**
- * 删除对象属性(不改变原数组）
- * @param obj [object] 要删除属性所在的对象
- * @param attrs string[] 要删除的属性名
- */
-export function deleteAttrs(obj = {}, attrs: string[] = []) {
-  const newObj: CommonObj = cloneDeep(obj);
-  attrs.forEach((key, ind) => {
-    delete newObj[key];
-  });
-  return newObj;
-}
-
-/**
  * 判断数据是否在数据区间内
  * @param range [any,any] 数据区间
  * @param now 当前数据
  * @param parse 要转换成的格式，之后再进行对比
  */
 export type ParseRangeItemType = "date";
-export function getIsInDateRange(
-  range: [any, any],
-  now: any,
-  parse?: ParseRangeItemType
-) {
+export function getIsInDateRange(range: [any, any], now: any, parse?: ParseRangeItemType) {
   if (range?.length) {
     let [min, max] = range;
     if (parse === "date") {
@@ -131,11 +87,7 @@ export function filterByConditions(list: any[], byConditions: any[]) {
    * @other byKeys string[] 依据的字段名，示例：['name','nickname']
    * @other keyword string 依据的关键词，示例："范"
    */
-  function isIncludesKeyword(
-    record: CommonObj,
-    condition: CommonObj,
-    key: string
-  ) {
+  function isIncludesKeyword(record: CommonObj, condition: CommonObj, key: string) {
     const {
       type = "blur",
       byKeys,
@@ -212,7 +164,7 @@ export function getOptsFromDict(name: string, ignoreKeys: string[]) {
  */
 export function getDictMapKeys(name: string, val: string | number) {
   if (val === undefined) {
-    return Object.keys(dictMap[name]).map((item) => Number(item));
+    return Object.keys(dictMap[name]).map(item => Number(item));
   } else {
     return [val];
   }
@@ -224,11 +176,7 @@ export function getDictMapKeys(name: string, val: string | number) {
  * @param oldObj object 对象默认（初始）值
  * @return object 返回合并之后的对象
  */
-export function addObj(
-  newObj: CommonObj,
-  oldObj: CommonObj,
-  othObj: CommonObj
-) {
+export function addObj(newObj: CommonObj, oldObj: CommonObj, othObj: CommonObj) {
   // const obj: CommonObj = {};
   // for (const key in oldObj) {
   //   obj[key] = newObj[key] ?? oldObj[key];
@@ -268,16 +216,7 @@ export function getConstructorObj(obj: CommonObj = {}, excludes?: string[]) {
 export function getNavsTree(navs?: CommonObj[]): CommonObj[] | undefined {
   if (!navs) return;
   return navs.map((item: CommonObj, ind) => {
-    const {
-      label,
-      component = "",
-      path,
-      children,
-      status,
-      is_cache,
-      type,
-      ...rest
-    } = item;
+    const { label, component = "", path, children, status, is_cache, type, ...rest } = item;
     return {
       name: label,
       menu_path: path,
@@ -304,11 +243,7 @@ export function getNavsTree(navs?: CommonObj[]): CommonObj[] | undefined {
  * @param propsMap object 属性映射
  * @return object 查找到的树节点
  */
-export function findTreeNode(
-  arr: any[],
-  byId: string,
-  propsMap: CommonObj = { id: "id", children: "children" }
-) {
+export function findTreeNode(arr: any[], byId: string, propsMap: CommonObj = { id: "id", children: "children" }) {
   let node = null;
   function getFindInfo(arr: any[], byId: string): any {
     arr?.find((item: any, ind: number) => {
@@ -330,10 +265,7 @@ export function findTreeNode(
  * @example 发布到gitee上的有效地址：https://fanlichuan.gitee.io/quick_admin_vue3/dist/static/imgs/girl-1.jpg
  * @example VsCode Live Sever打开的有效地址：http://127.0.0.1:5500/dist/static/imgs/boy-6.jpg
  */
-export function getBasePath(
-  projectName = "quick_admin_vue3",
-  rootPath = "/dist"
-) {
+export function getBasePath(projectName = "quick_admin_vue3", rootPath = "/dist") {
   const isDev = process.env.NODE_ENV === "development";
   if (isDev) return ""; //开发模式
   const { origin, host } = location;

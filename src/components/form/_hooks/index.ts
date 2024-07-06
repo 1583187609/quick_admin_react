@@ -51,7 +51,7 @@ export const useInitForm = (props: CommonObj, ref: any): UseInitFormReturns => {
     resetButton = "重置",
     fetchSuccess,
     fetchFail,
-    fields,
+    fields = [],
     fetch,
     onSubmit,
     sections,

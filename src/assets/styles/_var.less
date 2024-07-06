@@ -22,6 +22,7 @@
 // 主题颜色
 // @color-primary: #ff8000;
 @color-primary: #1677ff;
+// @color-primary: #008000;
 @color-danger: #f56c6c;
 @color-info: #909399;
 @color-success: #67c23a;
@@ -67,11 +68,11 @@
 @border-lighter: 1px solid @color-border-lighter;
 
 // 边框圆角
-@radius-heavyer: 10px;
-@radius-heavy: 8px;
-@radius-main: 6px;
-@radius-light: 4px;
-@radius-lighter: 2px;
+@radius-heavyer: 12px;
+@radius-heavy: 10px;
+@radius-main: 8px;
+@radius-light: 6px;
+@radius-lighter: 4px;
 
 // 盒子高度
 @height-heavyester: 56px;
@@ -113,19 +114,11 @@
 // 其他渐变
 @color-gradient-dark-light: #08dca2;
 @color-gradient-dark-dark: #015db1;
-@color-gradient-dark: linear-gradient(
-  -30deg,
-  @color-gradient-dark-light 0%,
-  @color-gradient-dark-dark 100%
-);
+@color-gradient-dark: linear-gradient(-30deg, @color-gradient-dark-light 0%, @color-gradient-dark-dark 100%);
 @color-gradient-light: linear-gradient(135deg, #e2f7f3 0%, #dbe6f0 100%);
 // 背景渐变
 @color-bg-gradient-light: linear-gradient(90deg, #dbecf7 0%, #dafaf4 100%);
-@color-bg-gradient-dark: linear-gradient(
-  -30deg,
-  @color-gradient-dark-light 0%,
-  @color-gradient-dark-dark 100%
-);
+@color-bg-gradient-dark: linear-gradient(-30deg, @color-gradient-dark-light 0%, @color-gradient-dark-dark 100%);
 
 // 禁用颜色
 @color-disabled-bg: #eee;
@@ -147,11 +140,7 @@
 // 渐变色文字
 .text-gradient() {
   color: @color-primary;
-  background-image: -webkit-linear-gradient(
-    135deg,
-    @color-gradient-dark-light 0%,
-    @color-gradient-dark-dark 100%
-  );
+  background-image: -webkit-linear-gradient(135deg, @color-gradient-dark-light 0%, @color-gradient-dark-dark 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

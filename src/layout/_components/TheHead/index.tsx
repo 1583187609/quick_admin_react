@@ -2,10 +2,9 @@
  * 文件说明-模板文件
  */
 
-import React, { useContext, useMemo, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Popover, Divider } from "antd";
 import { Button, Modal } from "antd";
-import { ResponseMenuItem } from "@/layout/_types";
 import PageTags from "./_components/PageTags";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import UserInfo from "./_components/UserInfo";
@@ -24,65 +23,30 @@ import {
 import { useLocation } from "react-router-dom";
 import { useRouter, useStoreSlice } from "@/hooks";
 import PathBreadcrumb from "./_components/PathBreadcrumb";
+import SystemSet from "./_components/SystemSet";
+import BaseImg from "@/components/BaseImg";
+import logoImg from "@/assets/images/logo.svg";
+import { defaultHomePath } from "@/utils";
+import SideMenu from "../SideMenu";
 import s from "./index.module.less";
 
 interface Props {
   className?: string;
-  // onMenuItem: (ind: number, info: CommonObj) => void;
-  // reload: (cb?: () => void) => void;
-  // rootInd: number;
-  // setRootInd: (ind: number) => void;
+  [key: string]: any;
 }
 
 const { VITE_APP_NAME } = import.meta.env;
 
-export default ({ className = "" }: Props) => {
+export default ({ className = "", ...restProps }: Props) => {
   const { isFold, toggleFold } = useStoreSlice("base");
+  const { layout } = useStoreSlice("set");
   const { userInfo, handleLoginOut } = useStoreSlice("user");
-  const { activeIndex, allMenus } = useStoreSlice("menu");
   const router = useRouter();
   const location = useLocation();
-  const { pathname } = location;
   const { openPopup } = useContext(PopupContext);
-  const [updatedTitle, setUpdatedTitle] = useState(false); //是否更新了document.title
-  const rootKey = useMemo(() => findRootKey(allMenus, pathname, activeIndex), [allMenus, pathname, activeIndex]);
-  // 获取根key
-  function findRootKey(groups: ResponseMenuItem[], pathname: string, rootInd: number): string {
-    setUpdatedTitle(false);
-    if (groups[rootInd]?.children?.length) {
-      function isFind(children: ResponseMenuItem[]): boolean {
-        return !!children.find((sItem, sInd) => {
-          const { children = [], path, label } = sItem;
-          if (path === pathname) {
-            document.title = label;
-            setUpdatedTitle(true);
-          }
-          return path === pathname || isFind(children);
-        });
-      }
-      const target = groups.find((gItem, gInd) => {
-        const { children = [] } = gItem;
-        const find = isFind(children);
-        // if (find) {
-        //   setRootInd(gInd); //会触发警告，暂时不知道什么原因引起的
-        // }
-        return find;
-      });
-      return target?.path || "";
-    } else {
-      const { path = "", label = VITE_APP_NAME } = groups?.[rootInd] || {};
-      document.title = label;
-      setUpdatedTitle(path !== ""); //处理初始化刷新页面时，会更新页签中的值为pkg.name
-      return path;
-    }
-  }
-  //处理点击菜单选项
-  // function handleClickMenuItem<MenuProps>(info: CommonObj) {
-  //   const { key } = info;
-  //   const ind: number = newGroups?.findIndex((it) => it.path === key) as number;
-  //   // setRootInd(ind);
-  //   onMenuItem(ind, info);
-  // }
+  useEffect(() => {
+    // openPopup({ title: "系统设置", maskClosable: true }, <SystemSet />, "drawer");
+  }, []);
   //打开退出登录对话框
   function openLogoutDialog() {
     Modal.confirm({
@@ -98,20 +62,19 @@ export default ({ className = "" }: Props) => {
     });
   }
   return (
-    <div className={`${className} ${s.header} layout-the-head`}>
-      <div className="f-sb-c pr-h">
+    <div className={`${className} ${s.header} ${layout.type === "vertical" ? s.white : ""} layout-the-head`} {...restProps}>
+      <div className={`${layout.type === "vertical" ? s["border-bottom"] : ""} f-sb-c pr-h`}>
+        {layout.type === "horizontal" ? (
+          <div onClick={() => router.push(defaultHomePath)} className={`${s.title} f-0 f-c-c`}>
+            <BaseImg size={30} src={logoImg} />
+            <span className="line-2 ml-h">{isFold ? VITE_APP_NAME?.slice(0, 1) : VITE_APP_NAME}</span>
+          </div>
+        ) : null}
         <div className={`${s["toggle-btn"]} f-0`} onClick={() => toggleFold()}>
           {isFold ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </div>
-        <PathBreadcrumb className="f-1" />
-        {/* <Menu
-          className="f-1"
-          onClick={handleClickMenuItem}
-          selectedKeys={[rootKey]}
-          mode="horizontal"
-          theme="dark"
-          items={convertToMenuNavs(newGroups)}
-        /> */}
+        {layout.type === "horizontal" ? <SideMenu className="f-1" mode="horizontal" /> : <PathBreadcrumb className="f-1" />}
+
         <div className="f-0 ml-8 mr-8 f-fe-s">
           <div className={`${s.info} f-sa-fe-c`}>
             <div className={`${s.name}`}>{userInfo?._title ?? ""}</div>
@@ -140,7 +103,7 @@ export default ({ className = "" }: Props) => {
                 </Button>
                 <Button
                   className={`${s["pop-btn"]}`}
-                  onClick={() => openPopup("系统设置", "【系统设置】暂未开发", "drawer")}
+                  onClick={() => openPopup({ title: "系统设置", maskClosable: true }, <SystemSet />, "drawer")}
                   icon={<SettingOutlined />}
                   type="link"
                 >
@@ -148,7 +111,7 @@ export default ({ className = "" }: Props) => {
                 </Button>
                 <Button
                   className={`${s["pop-btn"]}`}
-                  onClick={() => openPopup("关于系统", <SystemInfo />, "drawer")}
+                  onClick={() => openPopup({ title: "关于系统", maskClosable: true }, <SystemInfo />, "drawer")}
                   icon={<InfoCircleOutlined />}
                   type="link"
                 >
@@ -165,9 +128,15 @@ export default ({ className = "" }: Props) => {
           </Popover>
         </div>
       </div>
+      {layout.type === "horizontal" && (
+        <div className={`${s["breadcrumb-box"]} ${s.white} f-fs-c`}>
+          <PathBreadcrumb />
+        </div>
+      )}
       <PageTags
-        updatedTitle={updatedTitle}
-        //  reload={reload}
+      // updatedTitle
+      // updatedTitle={updatedTitle}
+      //  reload={reload}
       />
     </div>
   );

@@ -45,7 +45,7 @@ export default () => {
       name: "captcha",
       label: "验证码",
       type: "Custom",
-      element: <Captcha name="captcha" formRef={formRef} />,
+      render: (attrs: any) => <Captcha name="captcha" formRef={formRef} {...attrs} />,
       required: true,
       rules: [{ min: 4, message: "验证码长度不足4位" }],
     },

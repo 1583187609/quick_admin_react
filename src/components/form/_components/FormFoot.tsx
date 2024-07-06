@@ -25,12 +25,16 @@ export default ({ className = "", loading, submitButton = "提交", resetButton 
   }
   return (
     <div className={`${className} pt-h pb-h f-c-c f-0`}>
-      <Button icon={<CloudUploadOutlined />} loading={loading} type="primary" htmlType="submit" {...submitBtn.attrs}>
-        {submitBtn.children}
-      </Button>
-      <Button icon={<RedoOutlined />} htmlType="button" onClick={handleReset} disabled={loading} {...resetBtn.attrs}>
-        {resetBtn.children}
-      </Button>
+      {submitBtn.children && (
+        <Button icon={<CloudUploadOutlined />} loading={loading} type="primary" htmlType="submit" {...submitBtn.attrs}>
+          {submitBtn.children}
+        </Button>
+      )}
+      {resetBtn.children && (
+        <Button icon={<RedoOutlined />} htmlType="button" onClick={handleReset} disabled={loading} {...resetBtn.attrs}>
+          {resetBtn.children}
+        </Button>
+      )}
     </div>
   );
 };

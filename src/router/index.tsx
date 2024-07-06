@@ -72,7 +72,7 @@ const notFoundRoute = {
 };
 export default () => {
   const { allMenus } = useStoreSlice("menu");
-  const { updateRouteState } = useStoreSlice("routes");
+  // const { updateRouteState } = useStoreSlice("routes");
   const [routes, setRoutes] = useState<RouteItem[]>([
     {
       name: "root",
@@ -90,7 +90,7 @@ export default () => {
   }, [allMenus]);
   useEffect(() => {
     if (routes.length > 2) {
-      updateRouteState({ isCreatedRoute: true });
+      // updateRouteState({ isCreatedRoute: true });
     }
   }, [routes]);
   function createRoutes(menus: ResponseMenuItem[]) {

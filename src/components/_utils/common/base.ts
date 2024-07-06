@@ -167,16 +167,13 @@ export function omitAttrs(obj: CommonObj, list = emptyVals) {
 /**
  * 剔除对象属性（不会改变原数组）
  * @param obj 要剔除属性的对象
- * @param arr 剔除的属性数组
+ * @param keys 剔除的属性数组
  */
-export function deleteAttrs(obj: CommonObj = {}, arr: string[] = []) {
+export function deleteAttrs(obj: CommonObj = {}, keys: string | string[]) {
   const newObj = JSON.parse(JSON.stringify(obj));
-  if (!arr?.length) return newObj;
-  for (const key in newObj) {
-    if (arr.includes(key)) {
-      delete newObj[key];
-    }
-  }
+  if (!keys?.length) return newObj;
+  if (typeof keys === "string") return delete newObj[keys];
+  keys.forEach(key => delete newObj[key]);
   return newObj;
 }
 

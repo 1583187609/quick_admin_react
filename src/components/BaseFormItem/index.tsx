@@ -3,45 +3,17 @@
  */
 
 import { useMemo } from "react";
-import {
-  Cascader,
-  Checkbox,
-  DatePicker,
-  Form,
-  Input,
-  AutoComplete,
-  InputNumber,
-  Radio,
-  Rate,
-  Select,
-  Slider,
-  Switch,
-  TimePicker,
-  Col,
-  TimeRangePickerProps,
-  Popover,
-  Space,
-} from "antd";
+import { Form, Col } from "antd";
 import { CSSProperties } from "react";
 import { merge } from "lodash";
 import BaseKeyVal from "@/components/BaseKeyVal";
-import {
-  CheckboxGroupAttrs,
-  ChildrenStyle,
-  DateRangePickerAttrs,
-  FormField,
-  FormFieldAttrs,
-  RadioGroupAttrs,
-  StandFieldAttrs,
-} from "./_types";
+import { ChildrenStyle, FormField, FormFieldAttrs, FormItemType } from "./_types";
 import { getColAttrs, getKeyVal } from "./_utils";
-import { defaultFieldAttrs, defaultValidTypes } from "./_config";
+import { defaultFieldAttrs, defaultValidTypes, fieldMap } from "./_config";
 import { CascaderName, DictName } from "@/dict";
 import { useDictMap } from "@/hooks";
 import { deleteAttrs } from "../_utils";
-import AddDelList from "./_components/AddDelList";
 import BaseQuestionPopover from "../BaseQuestionPopover";
-import BaseNumberRange from "../BaseNumberRange";
 
 export * from "./_types";
 export * from "./_config";
@@ -63,54 +35,32 @@ interface FieldProps {
   childrenStyle?: ChildrenStyle;
   [key: string]: any;
 }
-const Field = ({ field, childrenStyle = "custom", ...restProps }: FieldProps) => {
-  const { type, attrs, element, children } = field;
-  attrs && Object.assign(attrs, restProps);
-  if (type === "Input") return <Input {...attrs} />;
-  if (type === "Password") return <Input.Password {...attrs} />;
-  if (type === "TextArea") return <Input.TextArea {...attrs} />;
-  if (type === "Search") return <Input.Search {...attrs} />;
-  if (type === "InputNumber") return <InputNumber {...attrs} />;
-  if (type === "AutoComplete") return <AutoComplete {...(attrs as StandFieldAttrs)} />;
-  if (type === "Select") return <Select {...(attrs as StandFieldAttrs)} />;
-  if (type === "RadioGroup") return <Radio.Group {...(attrs as RadioGroupAttrs)} />;
-  if (type === "Rate") return <Rate {...attrs} />;
-  if (type === "TimePicker") return <TimePicker {...attrs} />;
-  if (type === "TimeRangePicker") return <TimePicker.RangePicker {...(attrs as TimeRangePickerProps)} />;
-  if (type === "DatePicker") return <DatePicker {...attrs} />;
-  if (type === "DateRangePicker") return <DatePicker.RangePicker {...(attrs as DateRangePickerAttrs)} />;
-  if (type === "Slider") return <Slider {...attrs} />;
-  if (type === "Cascader") return <Cascader {...(attrs as StandFieldAttrs)} />;
-  if (type === "Switch") return <Switch {...attrs} />;
-  if (type === "Checkbox") return <Checkbox {...attrs} />;
-  if (type === "CheckboxGroup") return <Checkbox.Group {...(attrs as CheckboxGroupAttrs)} />;
-  if (type === "BaseNumberRange") return <BaseNumberRange {...attrs} />;
-  if (type === "Custom") return element;
-  if (type === "Children") {
-    const formItems = children?.map((field: FormField, ind: number) => {
-      if (!field) return null;
-      return <BaseFormItem field={field as FormFieldAttrs} isChild key={ind} />;
-    });
-    if (childrenStyle === "compact") return <Space.Compact>{formItems}</Space.Compact>;
-    if (childrenStyle === "addDel") return <AddDelList formItems={formItems} />;
-    return formItems;
-  }
-  return <div className="color-danger">不存在该类型：{type}</div>;
-};
 
-const getSomeRequired = (children: FormField[]) => {
+const getSomeRequired = (children?: FormField[]): boolean => {
+  if (!children) return false;
   return !!children?.some(it => {
     if (!it) return false;
-    return (it as FormFieldAttrs).required;
+    const { required, children } = it as FormFieldAttrs;
+    return required || getSomeRequired(children);
   });
 };
 
-function BaseFormItem({ className = "", style, field, pureText, labelWidth, isChild, showChildLabel, ...restProps }: Props) {
+const FieldItem = ({ field, childrenStyle = "custom", ...restProps }: FieldProps) => {
+  const { type, attrs, render, children } = field;
+  attrs && Object.assign(attrs, restProps);
+  const renderField = fieldMap[type as FormItemType];
+  if (!renderField) return <div className="color-danger">不存在该类型：{type}</div>;
+  if (type === "Custom") return renderField(attrs, render);
+  if (type === "Children") return renderField(field, childrenStyle);
+  return renderField(attrs);
+};
+
+export default ({ className = "", style, field, pureText, labelWidth, isChild, showChildLabel, ...restProps }: Props) => {
   const { getOpts, getCascaderOpts } = useDictMap();
-  const { colAttrs, otherAttrs, getAttrs, childrenStyle, ...newField }: FormFieldAttrs = useMemo(() => {
-    const { extra, element, children } = field;
+  const fieldInfo: FormFieldAttrs = useMemo(() => {
+    const { extra, render, children } = field;
     let { type = "Input" } = field;
-    if (element) type = "Custom";
+    if (render) type = "Custom";
     else if (children) type = "Children";
     const tempField: FormFieldAttrs = merge({}, defaultFieldAttrs[type], field, { type });
     const { getAttrs } = tempField?.attrs ?? {};
@@ -142,32 +92,33 @@ function BaseFormItem({ className = "", style, field, pureText, labelWidth, isCh
     return tempField;
   }, [field]);
 
+  const { colAttrs, otherAttrs, getAttrs, childrenStyle, ...fieldAttrs } = fieldInfo;
+  const { render, ...standFieldAttrs } = fieldAttrs;
   return isChild ? (
     <>
       {pureText ? (
-        <BaseKeyVal className="mb-o" labelStyle={{ width: labelWidth }} {...getKeyVal(newField, pureText)} />
+        <BaseKeyVal className="mb-o" labelStyle={{ width: labelWidth }} {...getKeyVal(fieldAttrs, pureText)} />
       ) : (
         <Form.Item
           // className={`${className}`}
           style={style}
           labelCol={{ style: { width: labelWidth } }}
           // wrapperCol={getColAttrs(colAttrs)}
-          {...(showChildLabel ? newField : deleteAttrs(newField, ["label"]))}
+          {...(showChildLabel ? fieldAttrs : deleteAttrs(fieldAttrs, ["label"]))}
         >
-          <Field field={newField} />
+          <FieldItem field={fieldAttrs} />
         </Form.Item>
       )}
     </>
   ) : (
     <Col span={24} {...getColAttrs(colAttrs)}>
       {pureText ? (
-        <BaseKeyVal className="mb-o" labelStyle={{ width: labelWidth }} {...getKeyVal(newField, pureText)} />
+        <BaseKeyVal className="mb-o" labelStyle={{ width: labelWidth }} {...getKeyVal(fieldAttrs, pureText)} />
       ) : (
-        <Form.Item className={`${className}`} style={style} labelCol={{ style: { width: labelWidth } }} {...newField}>
-          <Field field={newField} childrenStyle={childrenStyle} />
+        <Form.Item className={`${className}`} style={style} labelCol={{ style: { width: labelWidth } }} {...standFieldAttrs}>
+          <FieldItem field={fieldAttrs} childrenStyle={childrenStyle} />
         </Form.Item>
       )}
     </Col>
   );
-}
-export default BaseFormItem;
+};

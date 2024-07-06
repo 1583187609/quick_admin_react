@@ -7,9 +7,6 @@ import { IconNames } from "@/components/BaseIcon";
 
 interface Props {}
 function getFields({ activeKey = "1" }: CommonObj): any[] {
-  function handleChange(name: IconNames | "") {
-    console.log(name, "name-----------");
-  }
   return [
     {
       name: "menu_name",
@@ -40,8 +37,7 @@ function getFields({ activeKey = "1" }: CommonObj): any[] {
           {
             name: "icon",
             label: "菜单图标",
-            type: "Custom",
-            element: <IconPicker onChange={handleChange} />,
+            render: (attrs: CommonObj) => <IconPicker {...attrs} />,
           },
         ]
       : []),

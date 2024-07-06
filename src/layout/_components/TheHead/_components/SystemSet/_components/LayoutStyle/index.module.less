@@ -1,0 +1,70 @@
+@ratio: 0.06;
+@height: @header-height * @ratio;
+@width: @asider-width * @ratio;
+@nav-width: @main-menu-width * @ratio;
+.layout-style {
+  .item {
+    padding: @gap-qtr;
+    margin: 0 @gap-half;
+    width: 1920px * @ratio;
+    height: 1080px * @ratio;
+    cursor: pointer;
+    border-radius: @radius-light;
+    border: 2px solid transparent;
+    @include shadow-main();
+    &:nth-child(1),
+    &:nth-child(2) {
+      margin-bottom: 12px;
+    }
+    .box {
+      &.menu {
+        background: @color-primary;
+      }
+      &.side {
+        background: mix(@color-primary, #ffffff, 65%);
+      }
+      &.main {
+        border-radius: 2px;
+        background: mix(@color-primary, #ffffff, 15%);
+      }
+    }
+    &.columns {
+      .menu {
+        width: @nav-width;
+      }
+      .side {
+        width: 16%;
+        &.right {
+          width: 100%;
+          height: 20%;
+        }
+      }
+    }
+    &.classics {
+      .menu {
+        height: @height;
+      }
+      .side {
+        flex-basis: @width;
+        background: @color-primary;
+      }
+    }
+    &.vertical {
+      .menu {
+        width: @width;
+        height: 100%;
+      }
+      .side {
+        flex-basis: @height;
+      }
+    }
+    &.horizontal {
+      .menu {
+        height: @height;
+      }
+    }
+    &.active {
+      border: 2px solid @color-primary;
+    }
+  }
+}

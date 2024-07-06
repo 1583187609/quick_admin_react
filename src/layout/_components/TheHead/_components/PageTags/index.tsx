@@ -4,7 +4,7 @@
 import { HomeOutlined, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import { storage, copyText, defaultHomePath, showMessage } from "@/utils";
-import { useEventListener, useRouter } from "@/hooks";
+import { useEventListener, useRouter, useStoreSlice } from "@/hooks";
 import { useLocation } from "react-router-dom";
 import PageTagItem from "./TagItem";
 import { CloseMenuType } from "./TagItem/menus";
@@ -17,14 +17,15 @@ export interface MenusDisabledCase {
 }
 interface Props {
   className?: string;
-  updatedTitle?: boolean;
   reload?: (cb?: () => void) => void;
 }
 interface PageTagItem {
   text: string;
   path: string;
 }
-export default ({ className = "", updatedTitle, reload }: Props) => {
+export default ({ className = "", reload }: Props) => {
+  const { layout } = useStoreSlice("set");
+  const { updatedTitle, updateMenuState } = useStoreSlice("menu");
   const location = useLocation();
   const router = useRouter();
   const contMenuIndRef = useRef(-2);
@@ -98,6 +99,7 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
       }
       setTags(tags.concat(data));
     }
+    updateMenuState({ updatedTitle: false });
   }
   //处理右键菜单的关闭事件
   function handleClose(type: CloseMenuType, ind: number) {
@@ -154,7 +156,11 @@ export default ({ className = "", updatedTitle, reload }: Props) => {
   }
 
   return (
-    <div className={`${className} ${s["page-tags"]} page-tags f-sb-c`}>
+    <div
+      className={`${className} ${["vertical", "horizontal"].includes(layout.type) ? s.white : ""} ${
+        s["page-tags"]
+      } page-tags f-sb-c`}
+    >
       <PageTagItem
         onClick={() => router.push(defaultHomePath)}
         className={`${s["tag-item"]} f-0`}

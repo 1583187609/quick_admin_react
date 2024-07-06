@@ -3,7 +3,7 @@ import { Form, InputNumber } from "antd";
 import { merge } from "lodash";
 import { showMessage } from "./_utils";
 
-interface Props {
+export interface Props {
   //下面四个是默认会自动传入的属性
   id?: string; //以数组形式回传值
   value?: string;

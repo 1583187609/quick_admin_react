@@ -9,6 +9,7 @@ import store from "./store";
 import BaseEmpty from "@/components/BaseEmpty";
 import FullLoading from "@/components/FullLoading";
 import { setupProdMockServer } from "./mockProdServer";
+// import cssVars from "@/assets/styles/_var.module.less";
 
 import "@/assets/styles/base.less";
 import "@/assets/styles/global.less";
@@ -20,8 +21,13 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   // <React.StrictMode>
   <Suspense fallback={<FullLoading mask={false}></FullLoading>}>
     <ConfigProvider
-      // renderEmpty={() => <BaseEmpty></BaseEmpty>} //全局空状态处理
       locale={zhCN}
+      // theme={{
+      //   token: {
+      //     colorPrimary: cssVars.colorPrimary,
+      //   },
+      // }}
+      // renderEmpty={() => <BaseEmpty></BaseEmpty>} //全局空状态处理
       //是为了全局解决Select，DatePicker，Cascader等组件选项框在Modal等弹出层中不跟随页面滚动的问题
       // 在 5.x版本中，不要使用，不然会导致预期之外的bug
       // getPopupContainer={(node: any) => {

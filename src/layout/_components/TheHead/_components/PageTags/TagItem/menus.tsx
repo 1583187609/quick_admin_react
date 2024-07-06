@@ -12,6 +12,7 @@ import {
   SnippetsOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
+import { CommonObj } from "@/vite-env";
 
 export type CloseMenuType =
   | "closeSelf" //点击标签右侧的关闭图标
@@ -131,12 +132,7 @@ export default ({ handleClose, disabledCase }: Props) => {
       key: "copyPath",
       disabled: disabledCase.copyPath,
       label: (
-        <Button
-          icon={<CopyOutlined />}
-          onClick={() => handleClose("copyPath")}
-          disabled={disabledCase.copyPath}
-          {...btnProps}
-        >
+        <Button icon={<CopyOutlined />} onClick={() => handleClose("copyPath")} disabled={disabledCase.copyPath} {...btnProps}>
           复制简单路径
         </Button>
       ),
@@ -163,12 +159,7 @@ export default ({ handleClose, disabledCase }: Props) => {
       key: "reload",
       disabled: disabledCase.reload,
       label: (
-        <Button
-          icon={<ReloadOutlined />}
-          onClick={() => handleClose("reload")}
-          disabled={disabledCase.reload}
-          {...btnProps}
-        >
+        <Button icon={<ReloadOutlined />} onClick={() => handleClose("reload")} disabled={disabledCase.reload} {...btnProps}>
           刷新
         </Button>
       ),

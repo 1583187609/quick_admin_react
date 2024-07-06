@@ -1,8 +1,39 @@
-import { CommonObj } from "@/vite-env";
-import { FieldAttrs, FormFieldAttrs, FormItemType } from "./_types";
-import type { TimePickerProps, TimeRangePickerProps } from "antd";
+import { ReactNode } from "react";
 import { regexp } from "../_utils";
 import dayjs from "dayjs";
+import {
+  Cascader,
+  Checkbox,
+  DatePicker,
+  Input,
+  AutoComplete,
+  InputNumber,
+  Radio,
+  Rate,
+  Select,
+  Slider,
+  Switch,
+  TimePicker,
+  TimePickerProps,
+  TimeRangePickerProps,
+  Space,
+  ColorPicker,
+} from "antd";
+import {
+  CheckboxGroupAttrs,
+  ChildrenStyle,
+  DateRangePickerAttrs,
+  FormField,
+  FormFieldAttrs,
+  RadioGroupAttrs,
+  StandFieldAttrs,
+  DefaultFieldAttrs,
+} from "./_types";
+import AddDelList from "./_components/AddDelList";
+import BaseNumberRange from "../BaseNumberRange";
+import { Props as BaseNumberRangeAttrs } from "@/components/BaseNumberRange";
+import { CommonObj } from "@/vite-env";
+import BaseFormItem from ".";
 
 const datePresets: TimePickerProps["presets"] = [
   { label: "昨天", value: dayjs().add(-1, "d") },
@@ -17,16 +48,42 @@ const dateRangePresets: TimeRangePickerProps["presets"] = [
   { label: "近90天", value: [dayjs().add(-90, "d"), dayjs()] },
 ];
 
+export const fieldMap: CommonObj = {
+  Input: (attrs: StandFieldAttrs) => <Input {...attrs} />,
+  Password: (attrs: StandFieldAttrs) => <Input.Password {...attrs} />,
+  TextArea: (attrs: StandFieldAttrs) => <Input.TextArea {...attrs} />,
+  Search: (attrs: StandFieldAttrs) => <Input.Search {...attrs} />,
+  InputNumber: (attrs: StandFieldAttrs) => <InputNumber {...attrs} />,
+  AutoComplete: (attrs: StandFieldAttrs) => <AutoComplete {...attrs} />,
+  Select: (attrs: StandFieldAttrs) => <Select {...attrs} />,
+  RadioGroup: (attrs: RadioGroupAttrs) => <Radio.Group {...attrs} />,
+  Rate: (attrs: StandFieldAttrs) => <Rate {...attrs} />,
+  TimePicker: (attrs: StandFieldAttrs) => <TimePicker {...attrs} />,
+  TimeRangePicker: (attrs: TimeRangePickerProps) => <TimePicker.RangePicker {...attrs} />,
+  DatePicker: (attrs: StandFieldAttrs) => <DatePicker {...attrs} />,
+  ColorPicker: (attrs: StandFieldAttrs) => <ColorPicker {...attrs} />,
+  DateRangePicker: (attrs: DateRangePickerAttrs) => <DatePicker.RangePicker {...attrs} />,
+  Slider: (attrs: StandFieldAttrs) => <Slider {...attrs} />,
+  Cascader: (attrs: StandFieldAttrs) => <Cascader {...attrs} />,
+  Switch: (attrs: StandFieldAttrs) => <Switch {...attrs} />,
+  Checkbox: (attrs: StandFieldAttrs) => <Checkbox {...attrs} />,
+  CheckboxGroup: (attrs: CheckboxGroupAttrs) => <Checkbox.Group {...attrs} />,
+  BaseNumberRange: (attrs: BaseNumberRangeAttrs) => <BaseNumberRange {...attrs} />,
+  Custom: (attrs: StandFieldAttrs, render: (attrs: StandFieldAttrs) => ReactNode) => render?.(attrs as StandFieldAttrs),
+  Children: (field: FormFieldAttrs, childrenStyle: ChildrenStyle) => {
+    const { children } = field;
+    const formItems = children?.map((item: FormField, ind: number) => {
+      if (!item) return null;
+      return <BaseFormItem field={item as FormFieldAttrs} isChild key={ind} />;
+    });
+    if (childrenStyle === "compact") return <Space.Compact>{formItems}</Space.Compact>;
+    if (childrenStyle === "addDel") return <AddDelList formItems={formItems} />;
+    return formItems;
+  },
+};
+
 //覆盖重写el-form-item 的默认属性值
-export const defaultFieldAttrs: {
-  [key in FormItemType]: {
-    valuePropName?: string;
-    attrs?: {
-      getAttrs?: (field: FormFieldAttrs) => FieldAttrs | undefined;
-      [key: string]: any;
-    };
-  };
-} = {
+export const defaultFieldAttrs: DefaultFieldAttrs = {
   Input: {
     attrs: {
       placeholder: "请输入{label}",
@@ -70,8 +127,8 @@ export const defaultFieldAttrs: {
   Switch: {
     valuePropName: "checked", //必须设置，不然会触发警告
     attrs: {
-      checkedChildren: "是",
-      unCheckedChildren: "否",
+      checkedChildren: "启用",
+      unCheckedChildren: "禁用",
     },
   },
   Checkbox: {

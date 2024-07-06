@@ -12,7 +12,7 @@ import { DownloadOutlined } from "@ant-design/icons";
 import { CommonObj, FinallyNext } from "@/vite-env";
 import { handleBtnNext } from "@/utils";
 import { TableCol } from "@/components/table/_types";
-import { FormFieldAttrs } from "@/components/BaseFormItem";
+import { FormFieldAttrs, StandardFormFieldAttrs } from "@/components/BaseFormItem";
 import InfoSteps from "@/views/_components/InfoSteps";
 import { useSelectOpts } from "@/hooks";
 import { ReconciliationOutlined } from "@ant-design/icons";
@@ -105,7 +105,7 @@ const getFields = ({ getSearchOpts }: CommonObj): FormFieldAttrs[] => {
     {
       name: "zdy",
       label: "自定义",
-      element: "【这是自定义的搜索项】",
+      render: (attrs: StandardFormFieldAttrs) => "【这是自定义的搜索项】",
       otherAttrs: {
         popover: "在搜索表单中一般几乎用不到自定义特性，此处用作示例",
       },

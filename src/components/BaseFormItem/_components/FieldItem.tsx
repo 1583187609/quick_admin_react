@@ -1,5 +1,5 @@
 /**
- * 文件说明 - 模板文件
+ * 文件说明-模板文件
  */
 
 import { CSSProperties } from "react";

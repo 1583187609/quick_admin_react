@@ -8,7 +8,7 @@ import allAddress from "../data/address";
 import { CommonObj } from "@/vite-env";
 import dayjs from "dayjs";
 import { merge } from "lodash";
-import { TableFieldAttrs } from "@/components/table";
+import { TableColAttrs } from "@/components/table";
 
 const { Random } = Mock;
 
@@ -183,7 +183,7 @@ export default toViteMockApi({
     const queryList = filterByConditions(allUsers, [["id", { type: "inArr", inArr: ids }]]);
     const labels: string[] = [];
     const props: string[] = [];
-    cols?.forEach((col: TableFieldAttrs, ind: number) => {
+    cols?.forEach((col: TableColAttrs, ind: number) => {
       const { label, prop } = col;
       labels.push(label as string);
       props.push(prop as string);

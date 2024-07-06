@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import { useStoreSlice } from "@/hooks";
 import BaseIcon from "@/components/BaseIcon";
 import useMenu from "@/layout/_hooks";
+import s from "./index.module.less";
 
 interface Props {
   className?: string;
@@ -16,9 +17,11 @@ interface Props {
 
 export default ({ className = "", ...restProps }: Props) => {
   const { allMenus } = useStoreSlice("menu");
+  const { layout } = useStoreSlice("set");
   const { toFirstPath } = useMenu();
   const location = useLocation();
   const { pathname } = location;
+  const isDark = ["vertical", "horizontal"].includes(layout.type);
   const [breadcrumbs, setBreadcrumbs] = useState<ResponseMenuItem[]>([
     {
       id: "0",
@@ -45,13 +48,19 @@ export default ({ className = "", ...restProps }: Props) => {
   }
   return (
     <Breadcrumb
-      className={`${className}`}
+      className={`${className} ${s["path-breadcrumb"]}`}
+      separator={<span className={`${s.item} ${isDark ? s.dark : s.light}`}>/</span>}
+      // params={{}} //路由参数
       items={breadcrumbs.map((item: ResponseMenuItem, ind: number) => {
         const { path, label, icon } = item;
         return {
-          href: path,
           title: (
-            <div onClick={() => toFirstPath(item)} style={{ color: "#fff" }}>
+            <div
+              onClick={() => toFirstPath(item)}
+              className={`${s.item} ${isDark ? s.dark : s.light} ${ind == breadcrumbs.length - 1 ? s.active : ""} ${
+                ind === 0 ? s.home : ""
+              } ${ind !== 0 && ind !== breadcrumbs.length - 1 ? s.link : ""}`}
+            >
               {icon && <BaseIcon className="mr-4" name={icon} />}
               {label}
             </div>

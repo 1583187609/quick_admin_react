@@ -3,9 +3,7 @@
 /********************************************************************/
 
 // import { RendererElement, RendererNode, VNode, h } from "vue";
-// import { ElMessage } from "element-plus";
-// import type { MessageParams, TableColumnCtx } from "element-plus";
-import cssVars from "@/assets/styles/_css_var.module.less";
+import cssVars from "@/assets/styles/_var.module.less";
 import { message } from "antd";
 import { getChinaCharLength, storage, typeOf } from "@/components/_utils";
 import { PopoverAttrs } from "@/components/BaseFormItem";
@@ -14,6 +12,7 @@ import type { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { merge, omitBy } from "lodash";
 import dayjs from "dayjs";
 import { defaultFieldAttrs, FormItemType } from "@/components/BaseFormItem";
+import * as Icons from "@ant-design/icons";
 
 /**
  * 展示message提示信息
@@ -22,22 +21,11 @@ import { defaultFieldAttrs, FormItemType } from "@/components/BaseFormItem";
  */
 export function showMessage(hint: string, type: TostMessageType = "success") {
   if (!hint) return;
-  // if (typeof hint === "string") {
   //   const speed = 7; //速度：7字/秒
   //   let duration = (hint.length / speed) * 1000;
   //   if (duration < 1500) {
   //     duration = 1500;
   //   }
-  //   ElMessage({
-  //     message: hint,
-  //     type,
-  //     duration,
-  //     grouping: true,
-  //     showClose: duration > 2000,
-  //   });
-  // } else {
-  //   ElMessage(hint);
-  // }
   message[type](hint);
 }
 
@@ -313,9 +301,31 @@ export function getMaxLength(fields: FormFieldAttrs[] = [], num = 2): number {
   return max + num;
 }
 
-//获取用户信息
+/**
+ * 获取用户信息
+ * @returns
+ */
 export function getUserInfo(): CommonObj | null {
   const info = storage.getItem("userInfo");
   if (!info) showMessage("检测到未登录异常", "error");
   return info;
 }
+
+export const getIconNames = () => {
+  const names: string[] = [];
+  Object.keys(Icons).forEach((name: any, ind: number) => {
+    const code = name.charCodeAt(0);
+    const isUpper = code >= 65 && code <= 90;
+    if (isUpper) names.push(name);
+    // else {
+    //   // 可以通过使用 getTwoToneColor() 和 setTwoToneColor(colorString) 来全局设置图标主色。
+    // }
+  });
+  return names;
+};
+
+/**
+ * antd 图标的名称集合
+ */
+// type IconNames = (typeof allIconNames)[number];
+export const allIconNames = getIconNames();

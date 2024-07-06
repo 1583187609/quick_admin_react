@@ -1,6 +1,7 @@
 import React from "react";
 import * as Icons from "@ant-design/icons";
 import { toCssVal } from "@/components/_utils";
+// import { OmitUser } from "@/vite-env";
 
 interface Props {
   className?: string;
@@ -11,6 +12,7 @@ interface Props {
   title?: string;
 }
 
+// export type IconNames = OmitUser<keyof typeof Icons, "createFromIconfontCN" | "default" | "getTwoToneColor" | "setTwoToneColor">;
 export type IconNames = keyof typeof Icons;
 
 export default ({ className = "", name = "ChromeFilled", size = "1em", color, title, onClick }: Props) => {
