@@ -2,7 +2,7 @@
 /***************************** 系统常量 ******************************/
 /********************************************************************/
 
-import { getExportData } from "@/utils";
+import { getExportData } from "@/components/_utils";
 import { ReqMap, ResMap } from "@/components/BaseCrud";
 import { ColSpanAttrs } from "@/components/form";
 import config from "@/config";

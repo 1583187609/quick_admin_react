@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Empty } from "antd";
-import { toCssVal } from "@/utils";
+import { toCssVal } from "@/components/_utils";
 import { StrNum } from "@/vite-env";
 
 interface Props {

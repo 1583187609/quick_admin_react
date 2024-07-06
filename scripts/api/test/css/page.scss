@@ -1,0 +1,68 @@
+$gap-qtr: 4px;
+$gap-half: 8px;
+$gap: 16px;
+$gap-one-half: 24px;
+$gap-two: 32px;
+$head-height: 50px;
+[v-cloak] {
+  display: none;
+}
+.page {
+}
+.navs {
+  height: 100vh;
+  background: #ddd;
+  width: 300px;
+  overflow: auto;
+  .type {
+    height: $head-height;
+    line-height: $head-height;
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    background: #ccc;
+  }
+  .ul {
+    overflow: auto;
+    .li {
+      cursor: pointer;
+      padding: 0 $gap;
+      height: 40px;
+      line-height: 40px;
+      &:hover {
+        background: #ccc;
+      }
+      &.active {
+        background: #fff;
+      }
+    }
+  }
+}
+.main {
+  height: 100vh;
+  .header {
+    padding: 0 $gap;
+    height: $head-height;
+    line-height: $head-height;
+    background: #ddd;
+    .btn {
+      height: 32px;
+      line-height: 32px;
+      border-radius: 8px;
+      padding: 0 $gap;
+      &:not(:last-child) {
+        margin-right: $gap;
+      }
+      &.active {
+        cursor: pointer;
+        border-radius: 8px;
+        padding: 0 $gap;
+        background: #ccc;
+      }
+    }
+  }
+  .bodyer {
+    padding: $gap-half $gap 100px;
+    overflow: auto;
+  }
+}

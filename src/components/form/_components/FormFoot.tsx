@@ -2,7 +2,7 @@ import { Button } from "antd";
 import { RedoOutlined, CloudUploadOutlined } from "@ant-design/icons";
 import { getBtnProps } from "../_utils";
 import { BtnAttrs } from "@/components/form/_types";
-import { showMessage } from "@/utils";
+import { showMessage } from "@/components/_utils";
 
 interface Props {
   className?: string;

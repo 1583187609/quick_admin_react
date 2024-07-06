@@ -6,7 +6,7 @@ import { ReactNode, forwardRef } from "react";
 import { Form } from "antd";
 import { CSSProperties } from "react";
 import { FormField } from "@/components/BaseFormItem";
-import { getMaxLength } from "@/utils";
+import { getMaxLength } from "@/components/_utils";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import FormFields from "@/components/form/_components/FormFields";
 import FormFoot from "@/components/form/_components/FormFoot";

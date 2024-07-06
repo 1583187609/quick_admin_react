@@ -7,7 +7,7 @@ import { Button, Form } from "antd";
 import { CSSProperties } from "react";
 import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { CaretDownOutlined } from "@ant-design/icons";
-import { getMaxLength, convertDateField, emptyVals, debounce } from "@/utils";
+import { getMaxLength, convertDateField, emptyVals, debounce } from "@/components/_utils";
 import { merge } from "lodash";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { SizeType } from "antd/es/config-provider/SizeContext";

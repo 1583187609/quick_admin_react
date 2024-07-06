@@ -5,7 +5,7 @@
 import { StrNum } from "@/vite-env";
 import { CSSProperties, useContext, useEffect, useRef, useState } from "react";
 import { PopupContext } from "@/components/provider/PopupProvider";
-import { getIsOver } from "@/utils";
+import { getIsOver } from "@/components/_utils";
 import s from "./index.module.less";
 
 interface Props {

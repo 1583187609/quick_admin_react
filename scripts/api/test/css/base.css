@@ -1,0 +1,1821 @@
+@charset "UTF-8";
+.rotate {
+  animation: rotate 1s linear infinite;
+}
+
+.rotate:hover {
+  animation-play-state: paused;
+}
+
+.bounce-in {
+  animation: bounceIn 1.2s;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease-in;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/*
+* 重置样式
+* 1、使用阿里 reset.css
+* 2、尽量不要使用通配符*，影响性能
+* width: auto;  //fill-available()、max-content()、min-content()、fit-content();
+**/
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  color: #666;
+  font-size: 14px;
+  font-family: "PingFang SC", "Microsoft YaHei", "Gill Sans", "Gill Sans MT",
+    "Calibri", "Trebuchet MS", sans-serif;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* 用于移动端。touch：当手指从触摸屏上移开，会保持一段时间的滚动；auto：当手指从触摸屏上移开，滚动会立即停止。touch解决IOS端，经常遇到元素滚动时卡顿的问题 */
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  box-sizing: border-box;
+  vertical-align: baseline;
+  overscroll-behavior: none;
+  word-wrap: break-word;
+  word-break: break-all;
+  outline: none;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+canvas,
+img {
+  display: block;
+}
+
+body {
+  line-height: 1.4;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+input,
+button,
+textarea {
+  caret-color: #ff8000;
+  outline: none;
+}
+
+a {
+  color: #666;
+  text-decoration: none;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+button {
+  box-sizing: border-box;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+::-webkit-input-placeholder {
+  color: #999;
+}
+
+::selection {
+  color: #fff;
+  background-color: #ff8000;
+}
+
+/**
+* 滚动条
+*/
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #ddd;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background: #f8f8f8;
+}
+
+.hover-show-scroll::-webkit-scrollbar-thumb {
+  box-shadow: none;
+  background: transparent;
+}
+
+.hover-show-scroll::-webkit-scrollbar-track {
+  box-shadow: none;
+  background: transparent;
+}
+
+.hover-show-scroll:hover::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #ddd;
+}
+
+.hover-show-scroll:hover::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #eee;
+}
+
+.all-hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/**
+* 常用类
+*/
+.clear::after {
+  display: block;
+  clear: both;
+  content: "";
+  visibility: hidden;
+  height: 0;
+}
+
+.un-colorful {
+  filter: grayscale(1);
+}
+
+.no-select {
+  user-select: none;
+}
+
+.btn,
+.link {
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+.link:hover {
+  color: #ff8000;
+  text-decoration: underline;
+}
+
+.break {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.line-1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  word-break: break-all;
+  /*! autoprefixer: ignore next */
+  display: -webkit-box;
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  word-break: break-all;
+  /*! autoprefixer: ignore next */
+  display: -webkit-box;
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  word-break: break-all;
+  /*! autoprefixer: ignore next */
+  display: -webkit-box;
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.line-4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  word-break: break-all;
+  /*! autoprefixer: ignore next */
+  display: -webkit-box;
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.line-5 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  word-break: break-all;
+  /*! autoprefixer: ignore next */
+  display: -webkit-box;
+  /* autoprefixer: off */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+/**
+* 弹性布局类
+*/
+.f-fs-fs {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.f-fs-fs-c {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.f-fs-fs-w {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.f-fs-fe {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.f-fs-fe-c {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.f-fs-fe-w {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.f-fs-c {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.f-fs-c-c {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+
+.f-fs-c-w {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.f-fs-b {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+.f-fs-b-c {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  flex-direction: column;
+}
+
+.f-fs-b-w {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.f-fs-s {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.f-fs-s-c {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.f-fs-s-w {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.f-fe-fs {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.f-fe-fs-c {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.f-fe-fs-w {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.f-fe-fe {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.f-fe-fe-c {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.f-fe-fe-w {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.f-fe-c {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.f-fe-c-c {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
+}
+
+.f-fe-c-w {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.f-fe-b {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+}
+
+.f-fe-b-c {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  flex-direction: column;
+}
+
+.f-fe-b-w {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.f-fe-s {
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+.f-fe-s-c {
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.f-fe-s-w {
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.f-c-fs {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.f-c-fs-c {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.f-c-fs-w {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.f-c-fe {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.f-c-fe-c {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.f-c-fe-w {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.f-c-c {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.f-c-c-c {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.f-c-c-w {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.f-c-b {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.f-c-b-c {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  flex-direction: column;
+}
+
+.f-c-b-w {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.f-c-s {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.f-c-s-c {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.f-c-s-w {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.f-sb-fs {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.f-sb-fs-c {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.f-sb-fs-w {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.f-sb-fe {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.f-sb-fe-c {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.f-sb-fe-w {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.f-sb-c {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.f-sb-c-c {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
+
+.f-sb-c-w {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.f-sb-b {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.f-sb-b-c {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-direction: column;
+}
+
+.f-sb-b-w {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.f-sb-s {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.f-sb-s-c {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.f-sb-s-w {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.f-sa-fs {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.f-sa-fs-c {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.f-sa-fs-w {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.f-sa-fe {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+
+.f-sa-fe-c {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.f-sa-fe-w {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.f-sa-c {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.f-sa-c-c {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+}
+
+.f-sa-c-w {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.f-sa-b {
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+}
+
+.f-sa-b-c {
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+  flex-direction: column;
+}
+
+.f-sa-b-w {
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.f-sa-s {
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+.f-sa-s-c {
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.f-sa-s-w {
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.f-se {
+  justify-content: space-between;
+}
+
+.f-se::before,
+.f-se::after {
+  content: "";
+  width: 0;
+  height: 0;
+  display: block;
+}
+
+/**
+* 当呈多行多列排列且最后一行凑不满一行时，为了行列对齐好看，需要使用额外的空盒子填充占满（需加这个类）
+*/
+.f-empty {
+  height: 0 !important;
+  visibility: hidden;
+  overflow: hidden;
+}
+
+/**
+*.flex-0要单独处理
+*{flex: 0;}  =>  {flex-grow: 0; flex-shrink: 1; flex-basis: 0%;};
+*{flex: 1;}  =>  {flex-grow: 1; flex-shrink: 1; flex-basis: 0%;};  -->宽度等比例伸长或缩小
+*{flex: auto;}  =>  {flex-grow: 1; flex-shrink: 1; flex-basis: auto;};  -->适用于元素充分利用剩余空间，比如头部导航文字多少不一致时使用
+*{flex: none;}  =>  {flex-grow: 0; flex-shrink: 0; flex-basis: auto;};
+*/
+.f-0 {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.f-1 {
+  flex: 1;
+}
+
+.f-2 {
+  flex: 2;
+}
+
+.f-3 {
+  flex: 3;
+}
+
+/**
+* 只对于弹性布局（flex）和栅格布局（grid）适用
+* 注意：gap兼容性不是特别好
+*/
+.g-qtr {
+  gap: 4px;
+}
+
+.g-half {
+  gap: 8px;
+}
+
+.g-one {
+  gap: 16px;
+}
+
+.g-one-half {
+  gap: 24px;
+}
+
+.g-two {
+  gap: 32px;
+}
+
+/**
+* padding、margin间距
+* p-qtr ~ ml-two
+* p-2 ~ ml-32
+*/
+.p-q {
+  padding: 4px;
+}
+
+.p-h {
+  padding: 8px;
+}
+
+.p-o {
+  padding: 16px;
+}
+
+.p-oh {
+  padding: 24px;
+}
+
+.p-t {
+  padding: 32px;
+}
+
+.p-2 {
+  padding: 2px;
+}
+
+.p-4 {
+  padding: 4px;
+}
+
+.p-6 {
+  padding: 6px;
+}
+
+.p-8 {
+  padding: 8px;
+}
+
+.p-10 {
+  padding: 10px;
+}
+
+.p-12 {
+  padding: 12px;
+}
+
+.p-14 {
+  padding: 14px;
+}
+
+.p-16 {
+  padding: 16px;
+}
+
+.p-18 {
+  padding: 18px;
+}
+
+.p-20 {
+  padding: 20px;
+}
+
+.p-22 {
+  padding: 22px;
+}
+
+.p-24 {
+  padding: 24px;
+}
+
+.p-26 {
+  padding: 26px;
+}
+
+.p-28 {
+  padding: 28px;
+}
+
+.p-30 {
+  padding: 30px;
+}
+
+.p-32 {
+  padding: 32px;
+}
+
+.pt-q {
+  padding-top: 4px;
+}
+
+.pt-h {
+  padding-top: 8px;
+}
+
+.pt-o {
+  padding-top: 16px;
+}
+
+.pt-oh {
+  padding-top: 24px;
+}
+
+.pt-t {
+  padding-top: 32px;
+}
+
+.pt-2 {
+  padding-top: 2px;
+}
+
+.pt-4 {
+  padding-top: 4px;
+}
+
+.pt-6 {
+  padding-top: 6px;
+}
+
+.pt-8 {
+  padding-top: 8px;
+}
+
+.pt-10 {
+  padding-top: 10px;
+}
+
+.pt-12 {
+  padding-top: 12px;
+}
+
+.pt-14 {
+  padding-top: 14px;
+}
+
+.pt-16 {
+  padding-top: 16px;
+}
+
+.pt-18 {
+  padding-top: 18px;
+}
+
+.pt-20 {
+  padding-top: 20px;
+}
+
+.pt-22 {
+  padding-top: 22px;
+}
+
+.pt-24 {
+  padding-top: 24px;
+}
+
+.pt-26 {
+  padding-top: 26px;
+}
+
+.pt-28 {
+  padding-top: 28px;
+}
+
+.pt-30 {
+  padding-top: 30px;
+}
+
+.pt-32 {
+  padding-top: 32px;
+}
+
+.pr-q {
+  padding-right: 4px;
+}
+
+.pr-h {
+  padding-right: 8px;
+}
+
+.pr-o {
+  padding-right: 16px;
+}
+
+.pr-oh {
+  padding-right: 24px;
+}
+
+.pr-t {
+  padding-right: 32px;
+}
+
+.pr-2 {
+  padding-right: 2px;
+}
+
+.pr-4 {
+  padding-right: 4px;
+}
+
+.pr-6 {
+  padding-right: 6px;
+}
+
+.pr-8 {
+  padding-right: 8px;
+}
+
+.pr-10 {
+  padding-right: 10px;
+}
+
+.pr-12 {
+  padding-right: 12px;
+}
+
+.pr-14 {
+  padding-right: 14px;
+}
+
+.pr-16 {
+  padding-right: 16px;
+}
+
+.pr-18 {
+  padding-right: 18px;
+}
+
+.pr-20 {
+  padding-right: 20px;
+}
+
+.pr-22 {
+  padding-right: 22px;
+}
+
+.pr-24 {
+  padding-right: 24px;
+}
+
+.pr-26 {
+  padding-right: 26px;
+}
+
+.pr-28 {
+  padding-right: 28px;
+}
+
+.pr-30 {
+  padding-right: 30px;
+}
+
+.pr-32 {
+  padding-right: 32px;
+}
+
+.pb-q {
+  padding-bottom: 4px;
+}
+
+.pb-h {
+  padding-bottom: 8px;
+}
+
+.pb-o {
+  padding-bottom: 16px;
+}
+
+.pb-oh {
+  padding-bottom: 24px;
+}
+
+.pb-t {
+  padding-bottom: 32px;
+}
+
+.pb-2 {
+  padding-bottom: 2px;
+}
+
+.pb-4 {
+  padding-bottom: 4px;
+}
+
+.pb-6 {
+  padding-bottom: 6px;
+}
+
+.pb-8 {
+  padding-bottom: 8px;
+}
+
+.pb-10 {
+  padding-bottom: 10px;
+}
+
+.pb-12 {
+  padding-bottom: 12px;
+}
+
+.pb-14 {
+  padding-bottom: 14px;
+}
+
+.pb-16 {
+  padding-bottom: 16px;
+}
+
+.pb-18 {
+  padding-bottom: 18px;
+}
+
+.pb-20 {
+  padding-bottom: 20px;
+}
+
+.pb-22 {
+  padding-bottom: 22px;
+}
+
+.pb-24 {
+  padding-bottom: 24px;
+}
+
+.pb-26 {
+  padding-bottom: 26px;
+}
+
+.pb-28 {
+  padding-bottom: 28px;
+}
+
+.pb-30 {
+  padding-bottom: 30px;
+}
+
+.pb-32 {
+  padding-bottom: 32px;
+}
+
+.pl-q {
+  padding-left: 4px;
+}
+
+.pl-h {
+  padding-left: 8px;
+}
+
+.pl-o {
+  padding-left: 16px;
+}
+
+.pl-oh {
+  padding-left: 24px;
+}
+
+.pl-t {
+  padding-left: 32px;
+}
+
+.pl-2 {
+  padding-left: 2px;
+}
+
+.pl-4 {
+  padding-left: 4px;
+}
+
+.pl-6 {
+  padding-left: 6px;
+}
+
+.pl-8 {
+  padding-left: 8px;
+}
+
+.pl-10 {
+  padding-left: 10px;
+}
+
+.pl-12 {
+  padding-left: 12px;
+}
+
+.pl-14 {
+  padding-left: 14px;
+}
+
+.pl-16 {
+  padding-left: 16px;
+}
+
+.pl-18 {
+  padding-left: 18px;
+}
+
+.pl-20 {
+  padding-left: 20px;
+}
+
+.pl-22 {
+  padding-left: 22px;
+}
+
+.pl-24 {
+  padding-left: 24px;
+}
+
+.pl-26 {
+  padding-left: 26px;
+}
+
+.pl-28 {
+  padding-left: 28px;
+}
+
+.pl-30 {
+  padding-left: 30px;
+}
+
+.pl-32 {
+  padding-left: 32px;
+}
+
+.m-q {
+  margin: 4px;
+}
+
+.m-h {
+  margin: 8px;
+}
+
+.m-o {
+  margin: 16px;
+}
+
+.m-oh {
+  margin: 24px;
+}
+
+.m-t {
+  margin: 32px;
+}
+
+.m-2 {
+  margin: 2px;
+}
+
+.m-4 {
+  margin: 4px;
+}
+
+.m-6 {
+  margin: 6px;
+}
+
+.m-8 {
+  margin: 8px;
+}
+
+.m-10 {
+  margin: 10px;
+}
+
+.m-12 {
+  margin: 12px;
+}
+
+.m-14 {
+  margin: 14px;
+}
+
+.m-16 {
+  margin: 16px;
+}
+
+.m-18 {
+  margin: 18px;
+}
+
+.m-20 {
+  margin: 20px;
+}
+
+.m-22 {
+  margin: 22px;
+}
+
+.m-24 {
+  margin: 24px;
+}
+
+.m-26 {
+  margin: 26px;
+}
+
+.m-28 {
+  margin: 28px;
+}
+
+.m-30 {
+  margin: 30px;
+}
+
+.m-32 {
+  margin: 32px;
+}
+
+.mt-q {
+  margin-top: 4px;
+}
+
+.mt-h {
+  margin-top: 8px;
+}
+
+.mt-o {
+  margin-top: 16px;
+}
+
+.mt-oh {
+  margin-top: 24px;
+}
+
+.mt-t {
+  margin-top: 32px;
+}
+
+.mt-2 {
+  margin-top: 2px;
+}
+
+.mt-4 {
+  margin-top: 4px;
+}
+
+.mt-6 {
+  margin-top: 6px;
+}
+
+.mt-8 {
+  margin-top: 8px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mt-12 {
+  margin-top: 12px;
+}
+
+.mt-14 {
+  margin-top: 14px;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+.mt-18 {
+  margin-top: 18px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mt-22 {
+  margin-top: 22px;
+}
+
+.mt-24 {
+  margin-top: 24px;
+}
+
+.mt-26 {
+  margin-top: 26px;
+}
+
+.mt-28 {
+  margin-top: 28px;
+}
+
+.mt-30 {
+  margin-top: 30px;
+}
+
+.mt-32 {
+  margin-top: 32px;
+}
+
+.mr-q {
+  margin-right: 4px;
+}
+
+.mr-h {
+  margin-right: 8px;
+}
+
+.mr-o {
+  margin-right: 16px;
+}
+
+.mr-oh {
+  margin-right: 24px;
+}
+
+.mr-t {
+  margin-right: 32px;
+}
+
+.mr-2 {
+  margin-right: 2px;
+}
+
+.mr-4 {
+  margin-right: 4px;
+}
+
+.mr-6 {
+  margin-right: 6px;
+}
+
+.mr-8 {
+  margin-right: 8px;
+}
+
+.mr-10 {
+  margin-right: 10px;
+}
+
+.mr-12 {
+  margin-right: 12px;
+}
+
+.mr-14 {
+  margin-right: 14px;
+}
+
+.mr-16 {
+  margin-right: 16px;
+}
+
+.mr-18 {
+  margin-right: 18px;
+}
+
+.mr-20 {
+  margin-right: 20px;
+}
+
+.mr-22 {
+  margin-right: 22px;
+}
+
+.mr-24 {
+  margin-right: 24px;
+}
+
+.mr-26 {
+  margin-right: 26px;
+}
+
+.mr-28 {
+  margin-right: 28px;
+}
+
+.mr-30 {
+  margin-right: 30px;
+}
+
+.mr-32 {
+  margin-right: 32px;
+}
+
+.mb-q {
+  margin-bottom: 4px;
+}
+
+.mb-h {
+  margin-bottom: 8px;
+}
+
+.mb-o {
+  margin-bottom: 16px;
+}
+
+.mb-oh {
+  margin-bottom: 24px;
+}
+
+.mb-t {
+  margin-bottom: 32px;
+}
+
+.mb-2 {
+  margin-bottom: 2px;
+}
+
+.mb-4 {
+  margin-bottom: 4px;
+}
+
+.mb-6 {
+  margin-bottom: 6px;
+}
+
+.mb-8 {
+  margin-bottom: 8px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.mb-12 {
+  margin-bottom: 12px;
+}
+
+.mb-14 {
+  margin-bottom: 14px;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}
+
+.mb-18 {
+  margin-bottom: 18px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mb-22 {
+  margin-bottom: 22px;
+}
+
+.mb-24 {
+  margin-bottom: 24px;
+}
+
+.mb-26 {
+  margin-bottom: 26px;
+}
+
+.mb-28 {
+  margin-bottom: 28px;
+}
+
+.mb-30 {
+  margin-bottom: 30px;
+}
+
+.mb-32 {
+  margin-bottom: 32px;
+}
+
+.ml-q {
+  margin-left: 4px;
+}
+
+.ml-h {
+  margin-left: 8px;
+}
+
+.ml-o {
+  margin-left: 16px;
+}
+
+.ml-oh {
+  margin-left: 24px;
+}
+
+.ml-t {
+  margin-left: 32px;
+}
+
+.ml-2 {
+  margin-left: 2px;
+}
+
+.ml-4 {
+  margin-left: 4px;
+}
+
+.ml-6 {
+  margin-left: 6px;
+}
+
+.ml-8 {
+  margin-left: 8px;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}
+
+.ml-12 {
+  margin-left: 12px;
+}
+
+.ml-14 {
+  margin-left: 14px;
+}
+
+.ml-16 {
+  margin-left: 16px;
+}
+
+.ml-18 {
+  margin-left: 18px;
+}
+
+.ml-20 {
+  margin-left: 20px;
+}
+
+.ml-22 {
+  margin-left: 22px;
+}
+
+.ml-24 {
+  margin-left: 24px;
+}
+
+.ml-26 {
+  margin-left: 26px;
+}
+
+.ml-28 {
+  margin-left: 28px;
+}
+
+.ml-30 {
+  margin-left: 30px;
+}
+
+.ml-32 {
+  margin-left: 32px;
+}
+
+/**
+* 字体大小
+*/
+/**
+* 字体粗细
+*/
+/**
+* gap类（用来取代margin、padding、gap属性）
+* 注意：gap兼容性不是特别好
+*/
+/**
+* 基于flex-basis的响应式布局
+* xs <768px 响应式栅格数或者栅格属性对象
+* sm ≥768px 响应式栅格数或者栅格属性对象
+* md ≥992px 响应式栅格数或者栅格属性对象
+* lg ≥1200px 响应式栅格数或者栅格属性对象
+* xl ≥1920px 响应式栅格数或者栅格属性对象
+*/

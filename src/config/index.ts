@@ -105,7 +105,7 @@ const config = {
       //   has_more: "hasMore",
       //   records: "list",
       // }),
-      filterByAuth: (auth: number[]) => auth.includes(getUserInfo().type),
+      filterByAuth: (auth: number[]) => auth.includes(getUserInfo()?.type),
       // filterByAuth: (auth: number[]) => true,
       //跟下面的size  small 搭配使用
       // colSpanAttrs: () => ({

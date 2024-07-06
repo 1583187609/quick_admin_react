@@ -1,4 +1,4 @@
-import { showMessage } from "@/utils";
+import { showMessage } from "@/components/_utils";
 import { IButtonMenu, IDomEditor } from "@wangeditor/editor";
 
 export type TypeTypes = "text" | "html";

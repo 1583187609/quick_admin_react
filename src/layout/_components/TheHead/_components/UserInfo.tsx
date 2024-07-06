@@ -86,7 +86,7 @@ export default ({ id }: Props) => {
   useEffect(() => {
     getDetail(id);
   }, []);
-  const [initVals, setInitVals] = useState(null);
+  const [initVals, setInitVals] = useState<CommonObj | null>(null);
   function getDetail(id: number) {
     setTimeout(() => {
       setInitVals(getUserInfo());

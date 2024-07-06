@@ -2,19 +2,14 @@ import Router from "@/router";
 import BaseDrawer, { PlacementType } from "@/components/BaseDrawer";
 import BaseModal from "@/components/BaseModal";
 import { useState, createContext } from "react";
-import { showMessage, sortObjArrByKey } from "@/utils";
+import { showMessage, sortObjArrByKey } from "@/components/_utils";
 
 type BaseRenderData = any;
 interface Props {
   children: any;
 }
 export type PopupType = "drawer" | "modal";
-export type OpenPopupType =
-  | ModalPopup
-  | DrawerPopup
-  | PopupType
-  | ModalId
-  | DrawerId; //打开的弹窗类型
+export type OpenPopupType = ModalPopup | DrawerPopup | PopupType | ModalId | DrawerId; //打开的弹窗类型
 export interface DrawerHeadAttrs {
   title?: string;
   [key: string]: any;
@@ -59,11 +54,7 @@ export type FootRenderData = null | boolean | BaseRenderData;
 export interface PopupContextProps {
   openDrawer: (head: DrawerHeadTypes | DrawerId, body?: BaseRenderData) => void;
   closeDrawer: (popup: CloseDrawerType, destroyed?: boolean) => void;
-  openModal: (
-    head: ModalHeadTypes | ModalId,
-    body?: BaseRenderData,
-    foot?: FootRenderData
-  ) => void;
+  openModal: (head: ModalHeadTypes | ModalId, body?: BaseRenderData, foot?: FootRenderData) => void;
   closeModal: (popup: CloseModalType, destroyed?: boolean) => void;
   openPopup: (
     head: DrawerHeadTypes | ModalHeadTypes | ModalId | DrawerId,
@@ -97,9 +88,7 @@ export default ({ children }: Props) => {
     if (typeof head === "object")
       return Object.assign(
         { [closeKeyMap[type]]: () => closePopup(popupId) },
-        popupId.startsWith("modal")
-          ? { onOk: () => closePopup(popupId) }
-          : null,
+        popupId.startsWith("modal") ? { onOk: () => closePopup(popupId) } : null,
         head
       );
     return {
@@ -111,14 +100,11 @@ export default ({ children }: Props) => {
   /**
    * 抽屉 drawer
    */
-  function openDrawer(
-    head: DrawerHeadTypes | DrawerId,
-    body: BaseRenderData = "默认 drawer body 内容"
-  ) {
+  function openDrawer(head: DrawerHeadTypes | DrawerId, body: BaseRenderData = "默认 drawer body 内容") {
     if (drawerTimer) return showMessage("您的操作太频繁了", "warning");
     if (typeof head === "string" && head.startsWith("drawer-")) {
       const id = Number(head.split("-")[1]);
-      const target = drawers.find((it) => it.id === id);
+      const target = drawers.find(it => it.id === id);
       if (target) return (target.open = true);
       return showMessage(`不存在抽屉【drawer-${id}】`, "error");
     }
@@ -134,14 +120,11 @@ export default ({ children }: Props) => {
     setDrawers(drawers.slice());
   }
 
-  function closeDrawer(
-    popup: CloseDrawerType = `drawer-${drawers.at(-1)?.id ?? 0}`,
-    destroyed = true
-  ) {
+  function closeDrawer(popup: CloseDrawerType = `drawer-${drawers.at(-1)?.id ?? 0}`, destroyed = true) {
     if (popup === "all") {
       drawers.length = 0;
     } else {
-      const ind = drawers.findIndex((item) => {
+      const ind = drawers.findIndex(item => {
         if (typeof popup !== "string") return item === popup;
         return item.id === Number(popup.split("-")[1]);
       });
@@ -160,15 +143,11 @@ export default ({ children }: Props) => {
   /**
    * 对话框modal
    */
-  function openModal(
-    head: ModalHeadTypes | ModalId,
-    body: BaseRenderData = "默认 modal body 内容",
-    foot: FootRenderData = null
-  ) {
+  function openModal(head: ModalHeadTypes | ModalId, body: BaseRenderData = "默认 modal body 内容", foot: FootRenderData = null) {
     if (modalTimer) return showMessage("您的操作太频繁了", "warning");
     if (typeof head === "string" && head.startsWith("modal-")) {
       const id = Number(head.split("-")[1]);
-      const target = modals.find((it) => it.id === id);
+      const target = modals.find(it => it.id === id);
       if (target) return (target.open = true);
       return showMessage(`不存在模态框【modal-${id}】`, "error");
     }
@@ -185,10 +164,7 @@ export default ({ children }: Props) => {
     setModals(modals.slice());
   }
 
-  function closeModal(
-    popup: CloseModalType = `modal-${modals.at(-1)?.id ?? 0}`,
-    destroyed = true
-  ) {
+  function closeModal(popup: CloseModalType = `modal-${modals.at(-1)?.id ?? 0}`, destroyed = true) {
     if (popup === "all") {
       modals.length = 0;
     } else {
@@ -219,8 +195,7 @@ export default ({ children }: Props) => {
   ) {
     if (typeof head === "string") {
       const isModId = head.startsWith("modal-");
-      if (isModId || head.startsWith("drawer-"))
-        return isModId ? openModal(head) : openDrawer(head);
+      if (isModId || head.startsWith("drawer-")) return isModId ? openModal(head) : openDrawer(head);
     }
     if (type === "modal") {
       openModal(head, body, foot);
@@ -238,7 +213,7 @@ export default ({ children }: Props) => {
     if (num <= 0) throw new Error("请传入一个正整数");
     const popups = sortObjArrByKey([...modals, ...drawers], "createAt", "desc");
     const topPops = popups.slice(0, num);
-    return topPops?.map((it) => `${it.name}-${it.id}` as DrawerId | ModalId);
+    return topPops?.map(it => `${it.name}-${it.id}` as DrawerId | ModalId);
   }
 
   function closePopup(popup: ClosePopupType = 1, destroyed = true) {
@@ -304,12 +279,7 @@ export default ({ children }: Props) => {
         {modals.map((modal, ind) => {
           const { open, body, foot, attrs } = modal;
           return (
-            <BaseModal
-              open={open}
-              footer={foot === true ? undefined : foot}
-              {...attrs}
-              key={ind}
-            >
+            <BaseModal open={open} footer={foot === true ? undefined : foot} {...attrs} key={ind}>
               {body}
             </BaseModal>
           );

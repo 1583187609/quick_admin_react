@@ -1,6 +1,6 @@
 import React from "react";
 import * as Icons from "@ant-design/icons";
-import { toCssVal } from "@/utils";
+import { toCssVal } from "@/components/_utils";
 
 interface Props {
   className?: string;
@@ -13,14 +13,7 @@ interface Props {
 
 export type IconNames = keyof typeof Icons;
 
-export default ({
-  className = "",
-  name = "ChromeFilled",
-  size = "1em",
-  color,
-  title,
-  onClick,
-}: Props) => {
+export default ({ className = "", name = "ChromeFilled", size = "1em", color, title, onClick }: Props) => {
   const Icon: any = Icons[name] ?? Icons.TwitterOutlined;
   return React.createElement(Icon, {
     className: `${className}`,

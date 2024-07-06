@@ -61,9 +61,6 @@ export default ({}: Props) => {
   const onChange = (key: string) => {
     console.log(key);
   };
-  useEffect(() => {
-    // getUserInfo();
-  }, []);
   return (
     <div className={`${s.wrap}`}>
       <div className={`${s.row} f-sb-s`}>

@@ -7,7 +7,7 @@ import BaseBtn, { BtnName, BtnItem } from "@/components/BaseBtn";
 import { DownOutlined } from "@ant-design/icons";
 import { CSSProperties, useState } from "react";
 import { CommonObj } from "@/vite-env";
-import { defaultGroupBtnsMaxNum } from "@/utils";
+import { defaultGroupBtnsMaxNum } from "@/components/_utils";
 import { ButtonSize, ButtonType } from "antd/es/button";
 import s from "./index.module.less";
 

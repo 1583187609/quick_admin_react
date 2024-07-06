@@ -2,10 +2,9 @@
  * 文件说明-模板文件
  */
 
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { message, Popover, Divider } from "antd";
-import { Menu, Button, Modal } from "antd";
-import { getMenuNavs } from "@/store/modules/menu";
+import React, { useContext, useMemo, useState } from "react";
+import { Popover, Divider } from "antd";
+import { Button, Modal } from "antd";
 import { ResponseMenuItem } from "../TheMenu";
 import PageTags from "./_components/PageTags";
 import { PopupContext } from "@/components/provider/PopupProvider";
@@ -23,11 +22,8 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
-import { defaultHomePath, getUserInfo } from "@/utils";
-import { useDispatch } from "react-redux";
 import { useRouter, useStoreSpace } from "@/hooks";
 import PathBreadcrumb from "./_components/PathBreadcrumb";
-import { CommonObj } from "@/vite-env";
 import s from "./index.module.less";
 
 interface Props {

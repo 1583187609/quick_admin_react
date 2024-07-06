@@ -6,7 +6,7 @@ import { Table } from "antd";
 import OperateBtns, { DefaultBaseBtnAttrs, btnGapMap, defaultBaseBtnAttrs } from "../OperateBtns";
 import { BtnName, BaseBtnType, BtnItem, getBtnObj } from "@/components/BaseBtn";
 import { btnsMap } from "@/components/BaseBtn";
-import { emptyVals, getChinaCharLength, isDev, showMessage } from "@/utils";
+import { emptyVals, getChinaCharLength, isDev, showMessage } from "@/components/_utils";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import { TableCol, TableColAttrs, RowKeyType, StandardTableColAttrs, SpecialColKeys } from "@/components/table/_types";
 import { defaultColumnAttrs, defaultTableAttrs, defaultPagination } from "@/components/table/_config";

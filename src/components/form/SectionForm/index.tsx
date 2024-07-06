@@ -7,7 +7,7 @@ import { Button, Form } from "antd";
 import { CSSProperties } from "react";
 import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { CaretDownOutlined } from "@ant-design/icons";
-import { getMaxLength } from "@/utils";
+import { getMaxLength } from "@/components/_utils";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import FormFields from "../_components/FormFields";
 import FormFoot from "../_components/FormFoot";

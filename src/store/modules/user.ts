@@ -5,7 +5,6 @@ import { PostUserLogin, PostUserLogout } from "@/api-mock";
 import { notification } from "antd";
 import { CommonObj } from "@/vite-env";
 import menuStore from "@/store/modules/menu";
-import routesStore from "@/store/modules/routes";
 import dayjs from "dayjs";
 
 const expiration = 24 * 60 * 60 * 1000; // 过期时间，单位：秒，默认24小时不登录即会过期

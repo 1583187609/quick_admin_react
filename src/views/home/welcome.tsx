@@ -34,7 +34,7 @@ function getTimePeriodAlias() {
 }
 export default ({ className = "" }: Props) => {
   const router = useRouter();
-  const userInfo = getUserInfo();
+  const userInfo = getUserInfo() ?? {};
   const timeAlias = getTimePeriodAlias();
   return (
     <div className={`${className} f-c-c-c f-1`}>
@@ -43,11 +43,7 @@ export default ({ className = "" }: Props) => {
         title={`欢迎回来，${userInfo._title}`}
         subTitle={`${timeAlias}好，别忘了照顾好自己哦~`}
         extra={
-          <Button
-            icon={<ArrowUpOutlined />}
-            onClick={() => router.push("/workbench")}
-            type="primary"
-          >
+          <Button icon={<ArrowUpOutlined />} onClick={() => router.push("/workbench")} type="primary">
             前往工作台
           </Button>
         }

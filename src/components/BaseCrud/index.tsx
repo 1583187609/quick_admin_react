@@ -12,7 +12,7 @@ import { Modal } from "antd";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import ImportModal from "./_components/ImportModal";
 import { merge } from "lodash";
-import { getUserInfo, omitAttrs, printLog, showMessage } from "@/utils";
+import { getUserInfo, omitAttrs, printLog, showMessage } from "@/components/_utils";
 import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { ExportBtnParams, FormAttrs, TableAttrs, ReqMap, ResMap } from "./_types";
 import { TableCol, TableColAttrs } from "@/components/table/_types";
@@ -76,7 +76,7 @@ export default forwardRef(
       resMap = {},
       log = true,
       children,
-      filterByAuth = (auth: number[]) => auth.includes(getUserInfo().type),
+      filterByAuth = (auth: number[]) => auth.includes(getUserInfo()?.type),
     }: Props,
     ref: any
   ) => {

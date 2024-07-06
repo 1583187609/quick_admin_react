@@ -2,7 +2,7 @@
 /*************************** 正则表单式配置 ***************************/
 
 import config from "@/config";
-import { getExportData } from "@/utils";
+import { getExportData } from "@/components/_utils";
 
 /********************************************************************/
 export default getExportData(

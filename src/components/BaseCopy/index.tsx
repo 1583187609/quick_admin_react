@@ -6,7 +6,7 @@ import { CSSProperties } from "react";
 import { StrNum } from "@/vite-env";
 import BaseIcon from "@/components/BaseIcon";
 import { Tooltip } from "antd";
-import { showMessage } from "@/utils";
+import { showMessage } from "@/components/_utils";
 import s from "./index.module.less";
 
 interface Props {

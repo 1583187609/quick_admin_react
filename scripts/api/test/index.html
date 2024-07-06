@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>生成接口文档测试</title>
+    <link rel="icon" type="image/svg+xml" href="/public/icon.svg" />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/page.css" />
+  </head>
+  <body>
+    <div id="app" class="page f-sb-s" v-cloak>
+      <div class="navs f-0 f-fs-s-c">
+        <div id="type" class="type f-0">{{name}}({{filesData.length}})</div>
+        <ul class="ul f-1">
+          <li
+            @click="onNavItem(-1)"
+            class="li line-1"
+            :class="{active: currInd===-1}"
+          >
+            index.{{lang}}
+          </li>
+          <li
+            @click="onNavItem(ind)"
+            class="li line-1"
+            :class="{active: currInd===ind}"
+            v-for="(item,ind) in fileNames"
+            :key="ind"
+          >
+            {{item}}
+          </li>
+        </ul>
+      </div>
+      <div id="main" class="f-1 main f-fs-s-c">
+        <div class="header f-sb-c f-0">
+          <ul class="f-fs-c">
+            <li
+              @click="changeTool('eolink')"
+              class="btn"
+              :class="{active: tool==='eolink'}"
+            >
+              Eolink
+            </li>
+            <li
+              @click="changeTool('yapi')"
+              class="btn"
+              :class="{active: tool==='yapi'}"
+            >
+              Yapi
+            </li>
+          </ul>
+          <ul class="f-fs-c">
+            <li
+              @click="changeLange('ts')"
+              class="btn"
+              :class="{active: lang==='ts'}"
+            >
+              TypeScript
+            </li>
+            <li
+              @click="changeLange('js')"
+              class="btn"
+              :class="{active: lang==='js'}"
+            >
+              JavaScript
+            </li>
+          </ul>
+        </div>
+        <div class="f-1 bodyer" v-html="htmlStr"></div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="module">
+      import { br, n, t } from "../utils/consts.js";
+      import { getApiIndexStr } from "../utils/public.js";
+      import { getFilesData, getDefaultOpts } from "./methods.js";
+      import { getApiFilesStrsByType } from "./methods.js";
+      const { createApp } = Vue;
+      createApp({
+        data() {
+          return {
+            tool: "eolink", //api 工具，可选：eolink, yapi
+            name: "问诊",
+            lang: "ts", //语言类型，可选：js, ts
+            currInd: -1, //左侧菜单导航的下标
+            httpPath: "",
+            htmlStr: "",
+            filesData: [],
+          };
+        },
+        computed: {
+          fileNames() {
+            return this.filesData.map((item) => {
+              return `${item.id}.${this.lang} - ${item.title}`;
+            });
+          },
+        },
+        mounted() {
+          this.init();
+        },
+        methods: {
+          init() {
+            const { tool, currInd } = this;
+            this.filesData = getFilesData(tool);
+            this.httpPath = getDefaultOpts(tool).httpPath;
+            this.getReqParamsTypes();
+            this.render(currInd);
+          },
+          render(fileInd = -1) {
+            let htmlStr = "";
+            const { filesData, httpPath, lang, tool } = this;
+            if (fileInd >= 0) {
+              const getApiFilesStrs = getApiFilesStrsByType(tool);
+              const filesStrs = getApiFilesStrs(filesData, httpPath, lang);
+              htmlStr = filesStrs[fileInd].fileStr;
+            } else {
+              console.log(filesData, "filesData----------");
+              htmlStr = getApiIndexStr(this.name, filesData, lang);
+            }
+            this.htmlStr = `<code>${htmlStr}</code>`;
+          },
+          getUrlParams() {
+            const arr = location.search.slice(1).split("&");
+            const params = {};
+            arr.forEach((item) => {
+              const [key, val] = item.split("=") || [];
+              params[key] = val;
+              params[key] = val;
+            });
+            return params || {};
+          },
+          onNavItem(ind) {
+            this.currInd = ind;
+            this.render(ind);
+          },
+          changeTool(tool) {
+            if (this.tool !== tool) {
+              this.tool = tool;
+              this.currInd = -1;
+              this.init();
+            }
+          },
+          changeLange(lang) {
+            this.lang = lang;
+            this.init();
+          },
+          /**
+           * 下面是测试函数
+           */
+          getReqParamsTypes(typeKey = "apiRequestType") {
+            const textMap = {
+              apiRequestType: "请求类型",
+              apiRequestParamJsonType: "请求参数json类型",
+              apiRequestParamType: "请求参数类型",
+            };
+            if (this.tool !== "eolink") {
+              console.log("仅eolink才会执行getReqParamsTypes");
+              return;
+            }
+            let arr = [];
+            this.filesData.forEach((item) => {
+              item.datas.forEach((item) => {
+                const typeVal = item.baseInfo[typeKey];
+                const { apiURI, apiName, apiID } = item.baseInfo;
+                const target = arr.find((it) => it.type === typeVal);
+                if (!target) {
+                  arr.push({ id: apiID, name: apiName, type: typeVal });
+                }
+              });
+            });
+            console.log(arr, `${textMap[typeKey]}-${typeKey}---------------`);
+          },
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>

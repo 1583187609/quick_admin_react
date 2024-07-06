@@ -13,7 +13,7 @@ import { Button, Form, Col } from "antd";
 import { CSSProperties } from "react";
 import BaseFormItem, { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { RedoOutlined, SearchOutlined, DownOutlined } from "@ant-design/icons";
-import { getMaxLength, getScreenSizeType } from "@/utils";
+import { getMaxLength, getScreenSizeType } from "@/components/_utils";
 import { useEventListener } from "@/hooks";
 import { CommonObj } from "@/vite-env";
 import { useInitForm } from "@/components/form/_hooks";

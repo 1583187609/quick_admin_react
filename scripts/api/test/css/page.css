@@ -1,0 +1,72 @@
+[v-cloak] {
+  display: none;
+}
+
+.navs {
+  height: 100vh;
+  background: #ddd;
+  width: 300px;
+  overflow: auto;
+}
+
+.navs .type {
+  height: 50px;
+  line-height: 50px;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  background: #ccc;
+}
+
+.navs .ul {
+  overflow: auto;
+}
+
+.navs .ul .li {
+  cursor: pointer;
+  padding: 0 16px;
+  height: 40px;
+  line-height: 40px;
+}
+
+.navs .ul .li:hover {
+  background: #ccc;
+}
+
+.navs .ul .li.active {
+  background: #fff;
+}
+
+.main {
+  height: 100vh;
+}
+
+.main .header {
+  padding: 0 16px;
+  height: 50px;
+  line-height: 50px;
+  background: #ddd;
+}
+
+.main .header .btn {
+  height: 32px;
+  line-height: 32px;
+  border-radius: 8px;
+  padding: 0 16px;
+}
+
+.main .header .btn:not(:last-child) {
+  margin-right: 16px;
+}
+
+.main .header .btn.active {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 0 16px;
+  background: #ccc;
+}
+
+.main .bodyer {
+  padding: 8px 16px 100px;
+  overflow: auto;
+}

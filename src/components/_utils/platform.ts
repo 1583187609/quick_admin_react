@@ -7,7 +7,7 @@
 // import type { MessageParams, TableColumnCtx } from "element-plus";
 import cssVars from "@/assets/styles/_css_var.module.less";
 import { message } from "antd";
-import { getChinaCharLength, typeOf } from "@/utils";
+import { getChinaCharLength, storage, typeOf } from "@/components/_utils";
 import { PopoverAttrs } from "@/components/BaseFormItem";
 import { CommonObj, TostMessageType } from "@/vite-env";
 import type { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
@@ -306,9 +306,16 @@ export function getMaxLength(fields: FormFieldAttrs[] = [], num = 2): number {
       console.error(`暂未处理类型为${typeOf(label)}的label`);
     }
     if (children) {
-      const _max = getMaxLength(children, 0);
+      const _max = getMaxLength(children.filter(it => !!it) as FormFieldAttrs[], 0);
       if (_max > max) max = _max;
     }
   });
   return max + num;
+}
+
+//获取用户信息
+export function getUserInfo(): CommonObj | null {
+  const info = storage.getItem("userInfo");
+  if (!info) showMessage("检测到未登录异常", "error");
+  return info;
 }

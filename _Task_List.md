@@ -1,10 +1,12 @@
+# 任务清单列表
+
 ::: tips 注意事项
 已实现的功能大都没记录在下方列表中。以下清单是为了记录平时开发中临时发现（或想到的）的 bug、优化、功能点等。正持续完善中……
 :::
 
-# 一、功能清单
+## 一、功能清单
 
-## 待完善
+### 待完善
 
 7、BaseCrud 表格列显隐设置功能
 9、封装 PieChart、BarChart、LineChart 组件
@@ -17,7 +19,7 @@
 20、让所有的组件实现全继承属性参数
 21、使用状态管理 redux
 
-## 待实现
+### 待实现
 
 2、BaseCrud 表格排序功能
 8、BaseCrud 打印设置功能
@@ -43,10 +45,11 @@
 ~~25、完善缺省页：404，403，500~~
 ~~28、顶部导航及页签，左侧菜单，三方联动~~
 29、切换路由时增加过渡动画
+30、工程量大了后，全局字典，以及命名是否会重复的优化处理手段
 
-# 二、优化清单
+## 二、优化清单
 
-## 待完善
+### 待完善
 
 3、BaseFormItem 密码框默认配置显示是否可见按钮
 6、左侧折叠菜单时的动画优化
@@ -54,8 +57,17 @@
 ~~1、动态路由 vite 懒加载警告处理~~
 ~~3、去掉 moment 包~~
 ~~4、页面右键菜单添加图标~~
+5、vite 打包配置优化（参照 vue 版的）
+5、工程 Eslint、Prettier、husky、ls-lint 配置处理
+6、实现 Select 公司下拉项的自定义
+7、菜单选中后，自动跳转到第一级子菜单处理
+8、PathBreadcrumb 点击某一级后跳转到对应页面处理
+9、页签采用 Tabs 处理，并实现缓存功能
+10、仅开发环境下查看的页面，发布到生产环境之后，跳转到 403（未授权）页面进行提示
+11、BaseNumberRange 组件功能完善
+12、BaseCrud 显示/隐藏列功能存在 Bug
 
-## 待实现
+### 待实现
 
 1、BaseCrud 点击更多按钮，点击启用，弹出 popconfirm 后，滚动表单，popconfirm 会错位的问题处理
 4、BaseDrawer 延迟关闭，让过渡动画完毕后再关闭弹窗
@@ -71,88 +83,31 @@
 ~~2、自定义年龄范围组件自动动触发表单校验 【最小值不能超过最大值】~~
 ~~7、layout TheHead 监听路由变化来选中指定菜单~~
 8、全局 drawer、modal 区分关闭之后是否销毁弹出层
+9、封装的表单组件，对于区间类型的，dataIndex 可以传一个字段或两个字段（数组）处理
+10、表单组件封装完善，参照 Vue 版本的
+11、全局 Ts 命名语义化，从 UI 库中继承，从当前工程定义好的基础类型继承
+12、auth 权限处理
+13、基础组件配置提取
 
-# 三、Bug 清单
+## 三、Bug 清单
 
 ~~1、处理新增窗口提交后，不能关闭 Drawer 的问题~~
 ~~2、处理页面中点击刷新按钮后，右键菜单未自动关闭的 bug~~
 
-# 四、React 极致优化清单：
+## 四、React 极致优化清单：
 
 1、useCallback 和 useMemo 配合使用优化所有组件:
 参考：https://www.jianshu.com/p/78a8ee86742d
 2、React 嵌套路由优化：
 
-# 五、Mock 清单
+## 五、Mock 清单
 
 ~~1、完善省市区联动的接口~~
 
-# 六、工程处理清单
+## 六、工程处理清单
 
 1、整个工程的逻辑低耦合、高内聚、高可配置性处理
 2、env 类环境文件配置
 3、提取所有基础组件配置到统一的配置文件中
 4、ts 类型优化
 5、vite 打包配置优化
-
-# 十、文件目录组织规则清单（待完善）
-
-1、有路由对应的叫页面，否则都叫组件；
-2、命名风格：
-
-```
-- 页面：page-name
-- 组件：ComponentName
-- 全局组件：src/components
-- 全局基础组件：src/components/BaseCrud //Base 开头，绝大多数情况都会用到的
-- src/pages-data/user/account
-  ├── _components //局部组件（下划线开始有助于和其他文件夹区分开，同时置顶
-  │   ├── AddEdit.tsx //大驼峰命名（组件）  简单组件：代码少，单个页面可写完
-  │   ├── OtherComplex.tsx //大驼峰命名（组件）  复杂组件：代码多，拆分成多个文件写
-  │         ├── _help.tsx //类似于utils文件，以下滑线开头，会被置顶，用于区分其他文件
-  │         ├── fileds.tsx
-  │         ├── index.tsx
-  │── fields.tsx
-  │── index.tsx 小写短横线链接命名（页面）
-```
-
-# 文件目录结构（部分）
-
-    ├── .vscode // 本地vscode配置
-    │   └── settings.json
-    ├── mock //mock 数据相关
-    ├── node_modules
-    ├── public // 公共资源
-    │   ├── favicon.ico
-    │   └── vite.svg
-    ├── src //项目主要逻辑代码均在里面
-    │   ├── api // API 目录
-    │   ├── api-mock // MOCK API 目录
-    │   ├── assets //静态资源 css 图片等
-    │   ├── components //全局基础组件
-    │   ├── config //全局配置
-    │   ├── hooks //全局hooks
-    │   ├── http //请求方法体封装（一个项目可能需要多个封装类型，所以单独提取成一个文件夹）
-    │   ├── layout //后台管理的页面布局
-    │   ├── pages-auth //权限管理模块页面
-    │   ├── pages-data //业务数据模块页面
-    │   ├── pages-public //任意项目公用页面：登录、缺省页（403、404、500等）
-    │   ├── pages-test //测试专用页面
-    │   │  └── index.tsx  // 首页
-    │   ├── utils //常用工具方法
-    │   ├── App.tsx //
-    │   ├── main.tsx //入口文件配置
-    │   └── vite-env.d.ts //全局ts类型
-    ├── .env  //环境变量配置
-    ├── .env.dev
-    ├── .env.local
-    ├── .env.prod
-    ├── .env.test
-    ├── .eslintrc.json // ESlint 配置
-    ├── .gitnore
-    ├── .prettierrc // Prettier 配置
-    ├── package-lock.json
-    ├── package.json
-    ├── tsconfig.json  //ts 配置
-    ├── Zlist.md  //任务清单：功能、优化、bug等
-    └── README.md

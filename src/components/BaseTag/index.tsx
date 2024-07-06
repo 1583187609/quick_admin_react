@@ -7,7 +7,7 @@ import { CommonObj, StrNum } from "@/vite-env";
 import { Tag } from "antd";
 import { CSSProperties, useMemo } from "react";
 import { useDictMap } from "@/hooks";
-import { emptyVals } from "@/utils";
+import { emptyVals } from "@/components/_utils";
 import s from "./index.module.less";
 
 interface Props {

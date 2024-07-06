@@ -2,7 +2,7 @@
 /*************** 为Base*.vue正常执行逻辑提供的常用的方法 ***************/
 /********************************************************************/
 
-import { regexp, showMessage, toCamelCase } from "@/utils";
+import { regexp, showMessage, toCamelCase } from "@/components/_utils";
 import { merge } from "lodash";
 import config, { ConfigMergeStrategy } from "@/config";
 import { CommonObj, StrNum } from "@/vite-env";

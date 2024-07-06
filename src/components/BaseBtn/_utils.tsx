@@ -1,4 +1,4 @@
-import { typeOf } from "@/utils";
+import { typeOf } from "@/components/_utils";
 import { merge } from "lodash";
 import { btnsMap } from "./btns";
 import { BaseBtnType, BtnItem, BtnName, BtnFn } from "./_types";

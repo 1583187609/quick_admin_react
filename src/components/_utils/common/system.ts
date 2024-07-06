@@ -2,7 +2,7 @@
 /**************** 系统级别的方法，可能因工程改变而改变 ****************/
 /********************************************************************/
 
-import { typeOf } from "@/utils";
+import { typeOf } from "@/components/_utils";
 import { FormFieldAttrs } from "@/components/BaseFormItem";
 import { CommonObj, OptionItem, StrNum } from "@/vite-env";
 import { emptyVals, emptyTime } from "./consts";

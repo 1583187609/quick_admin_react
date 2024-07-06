@@ -1,4 +1,4 @@
-import { typeOf, getTextFromOpts } from "@/utils";
+import { typeOf, getTextFromOpts } from "@/components/_utils";
 import { merge } from "lodash";
 import { defaultFieldAttrs } from "./_config";
 import { ColAttrs, FormFieldAttrs } from "./_types";

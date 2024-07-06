@@ -3,7 +3,7 @@
  */
 
 import BaseBtn, { BtnItem, BtnName } from "@/components/BaseBtn";
-import { sortObjArrByKey } from "@/utils";
+import { sortObjArrByKey } from "@/components/_utils";
 import { CSSProperties, useContext, useEffect } from "react";
 import {
   PrinterTwoTone,

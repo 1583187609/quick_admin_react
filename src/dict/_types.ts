@@ -1,11 +1,11 @@
 import dict from ".";
-import colors from "./colors";
+import { tagColorMap } from "./_config";
 import { ReactNode } from "react";
 
 export type DictName = keyof typeof dict;
-export type TagColorName = keyof typeof colors;
+export type TagColorName = keyof typeof tagColorMap;
 // export type DictName = keyof InstanceType<typeof dict>;
-// export type TagColorName = keyof InstanceType<typeof colors>;
+// export type TagColorName = keyof InstanceType<typeof tagColorMap>;
 
 export interface DictItemProps {
   text: string;

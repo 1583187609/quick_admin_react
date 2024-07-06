@@ -6,7 +6,7 @@ import { useContext, useImperativeHandle, forwardRef, useState, useCallback } fr
 import { Form } from "antd";
 import { CSSProperties } from "react";
 import { FormField } from "@/components/BaseFormItem";
-import { getMaxLength, convertDateField, debounce } from "@/utils";
+import { getMaxLength, convertDateField, debounce } from "@/components/_utils";
 import { merge } from "lodash";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { SizeType } from "antd/es/config-provider/SizeContext";

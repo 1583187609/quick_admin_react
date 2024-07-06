@@ -1,5 +1,5 @@
-//自定义标签颜色
-export default {
+// 自定义标签颜色风格
+export const tagColorMap = {
   green: {
     color: "#81B337",
     style: {

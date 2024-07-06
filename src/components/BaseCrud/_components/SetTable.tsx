@@ -5,7 +5,7 @@ import { Switch } from "antd";
 import { PopupContext } from "@/components/provider/PopupProvider";
 import { useLocation } from "react-router-dom";
 import { TableColAttrs } from "@/components/table/_types";
-import { showMessage, storage } from "@/utils";
+import { showMessage, storage } from "@/components/_utils";
 import { CommonObj } from "@/vite-env";
 
 export interface SetTableRowItem {
