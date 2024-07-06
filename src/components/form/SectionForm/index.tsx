@@ -17,14 +17,14 @@ import { useInitForm } from "../_hooks";
 import BaseQuestionPopover from "@/components/BaseQuestionPopover";
 import s from "./index.module.less";
 
-export interface SectionFormItemAttrs {
+export interface SectionFormFieldAttrs {
   name?: string;
   title: string;
   fields: FormField[];
   popover?: ReactNode;
 }
 
-export type SectionFormItem = BaseDataType | SectionFormItemAttrs;
+export type SectionFormField = BaseDataType | SectionFormFieldAttrs;
 interface Props {
   /**
    * 以下是继承 antd 的属性
@@ -39,7 +39,7 @@ interface Props {
   /**
    * 以下是自定义的属性
    */
-  sections?: SectionFormItem[];
+  sections?: SectionFormField[];
   submitButton?: string | BtnAttrs;
   resetButton?: string | BtnAttrs;
   readOnly?: boolean;
@@ -76,7 +76,7 @@ export default forwardRef((props: Props, ref: any) => {
   return (
     <Form className={`${className} ${s["section-form"]} f-fs-s-c`} {...formAttrs}>
       <div className={`${s.bodyer} all-hide-scroll`}>
-        {sections.map((sItem: SectionFormItemAttrs, sInd: number) => {
+        {sections.map((sItem: SectionFormFieldAttrs, sInd: number) => {
           const { title, fields, popover } = sItem;
           const labelWidth = getMaxLength(fields as FormFieldAttrs[]) + "em";
           return (

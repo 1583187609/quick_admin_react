@@ -2,7 +2,7 @@
  * 系统设置
  */
 
-import SectionForm, { SectionFormItem } from "@/components/form/SectionForm";
+import SectionForm, { SectionFormField } from "@/components/form/SectionForm";
 import { CSSProperties, useState } from "react";
 import LayoutStyle from "./_components/LayoutStyle";
 import { CommonObj, FinallyNext, OptionItem } from "@/vite-env";
@@ -27,7 +27,7 @@ const languageOpts: OptionItem[] = [
   { label: "简体中文", value: "zh" },
   { label: "英文", value: "en" },
 ];
-const getSections = (args: CommonObj): SectionFormItem[] => {
+const getSections = (args: CommonObj): SectionFormField[] => {
   const { bread, page_tag } = args;
   return [
     {

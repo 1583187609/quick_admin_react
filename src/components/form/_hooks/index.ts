@@ -2,7 +2,7 @@ import { Form } from "antd";
 import { useCallback, useContext, useEffect, useImperativeHandle, useState } from "react";
 import { CommonObj } from "@/vite-env";
 import { convertDateField, debounce, emptyVals, omitAttrs, printLog, showMessage } from "@/components/_utils";
-import { SectionFormItem, SectionFormItemAttrs } from "../SectionForm";
+import { SectionFormField, SectionFormFieldAttrs } from "../SectionForm";
 import { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import { defaultFormProps } from "../_config";
@@ -10,7 +10,7 @@ import { getBtnProps } from "../_utils";
 import { BtnAttrs } from "../_types";
 
 // 获取未填写完毕的分组的下标
-const getUnFilledInds = (sections: SectionFormItem[], args: CommonObj) => {
+const getUnFilledInds = (sections: SectionFormField[], args: CommonObj) => {
   const inds: number[] = [];
   const getUnFilled = (fields: FormFieldAttrs[]) => {
     if (!fields?.length) return false;
@@ -19,9 +19,9 @@ const getUnFilledInds = (sections: SectionFormItem[], args: CommonObj) => {
       return required && emptyVals.includes(args[name]);
     });
   };
-  sections.forEach((sItem: SectionFormItem, sInd: number) => {
+  sections.forEach((sItem: SectionFormField, sInd: number) => {
     if (!sItem) return;
-    if (getUnFilled((sItem as SectionFormItemAttrs).fields.filter(it => !!it) as FormFieldAttrs[])) inds.push(sInd);
+    if (getUnFilled((sItem as SectionFormFieldAttrs).fields.filter(it => !!it) as FormFieldAttrs[])) inds.push(sInd);
     const maxInd = sections.length - 1;
     if (sInd === maxInd && !inds.length) inds.push(maxInd);
   });
@@ -39,10 +39,37 @@ export interface UseInitFormReturns {
   submitButton: string | BtnAttrs;
   resetButton: string | BtnAttrs;
   fields?: FormFieldAttrs[];
-  sections?: SectionFormItemAttrs[];
+  sections?: SectionFormFieldAttrs[];
   formAttrs: CommonObj;
   [key: string]: any;
 }
+
+function getFilterSections(sections: SectionFormField[]): SectionFormFieldAttrs[] {
+  return sections?.filter((sItem: SectionFormField) => {
+    if (!sItem) return false;
+    const { fields } = sItem as SectionFormFieldAttrs;
+    (sItem as SectionFormFieldAttrs).fields = fields.filter((fItem: FormField) => !!fItem) as FormFieldAttrs[];
+    return true;
+  }) as SectionFormFieldAttrs[];
+}
+
+function getFilterFields(fields: FormField[], newSections: SectionFormFieldAttrs[]): FormFieldAttrs[] {
+  return newSections?.length
+    ? (newSections.map((it: SectionFormFieldAttrs) => it.fields).flat(1) as FormFieldAttrs[])
+    : (fields.filter((it: FormField) => !!it) as FormFieldAttrs[]);
+}
+
+function getInfo(fields: FormField[], sections: SectionFormField[], initVals: CommonObj) {
+  const newSections: SectionFormFieldAttrs[] = getFilterSections(sections);
+  const newFields: FormFieldAttrs[] = getFilterFields(fields, newSections);
+  const newInitVals = convertDateField(newFields, initVals, "set");
+  return {
+    initVals: newInitVals,
+    sections: newSections,
+    fields: newFields,
+  };
+}
+
 export const useInitForm = (props: CommonObj, ref: any): UseInitFormReturns => {
   const {
     className = "",
@@ -69,16 +96,8 @@ export const useInitForm = (props: CommonObj, ref: any): UseInitFormReturns => {
   const [loading, setLoading] = useState(false);
   const { closePopup } = useContext(PopupContext);
   const isSectionForm = !!sections;
-  const newSections: SectionFormItemAttrs[] = sections?.filter((sItem: SectionFormItem) => {
-    if (!sItem) return false;
-    const { fields } = sItem as SectionFormItemAttrs;
-    (sItem as SectionFormItemAttrs).fields = fields.filter((fItem: FormField) => !!fItem) as FormFieldAttrs[];
-    return true;
-  });
-  const newFields: FormFieldAttrs[] = isSectionForm
-    ? newSections.map((it: SectionFormItemAttrs) => it.fields).flat(1)
-    : fields.filter((it: FormField) => !!it);
-  const initVals = convertDateField(newFields, initialValues, "set");
+
+  const { initVals, sections: newSections, fields: newFields } = getInfo(fields, sections, initialValues);
 
   useImperativeHandle(ref, () => ({ form }), [form]);
 

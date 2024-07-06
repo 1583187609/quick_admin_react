@@ -3,12 +3,12 @@
  */
 
 import React, { useContext } from "react";
-import SectionForm, { SectionFormItem } from "@/components/form/SectionForm";
+import SectionForm, { SectionFormField } from "@/components/form/SectionForm";
 interface Props {
   className?: string;
 }
 const isRequired = false;
-const sections: SectionFormItem[] = [
+const sections: SectionFormField[] = [
   {
     title: "基础信息",
     fields: [

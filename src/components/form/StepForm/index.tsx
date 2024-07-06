@@ -9,7 +9,7 @@ import { FormField } from "@/components/BaseFormItem";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { CommonObj, FetchType, FinallyNext } from "@/vite-env";
 import { BtnAttrs } from "@/components/form/_types";
-import SectionForm, { SectionFormItem, SectionFormItemAttrs } from "../SectionForm";
+import SectionForm, { SectionFormField, SectionFormFieldAttrs } from "../SectionForm";
 import s from "./index.module.less";
 
 interface Props {
@@ -47,9 +47,9 @@ export default forwardRef(({ className = "", stepsAttrs, ...restProps }: Props, 
   const [currStep, setCurrStep] = useState(0);
   const newStepAttrs = Object.assign({}, defaultStepAttrs, stepsAttrs);
   const isVertical = newStepAttrs.direction === "vertical";
-  const steps = restProps?.sections?.map((item: SectionFormItem) => {
+  const steps = restProps?.sections?.map((item: SectionFormField) => {
     if (!item) return false;
-    const { title, popover } = item as SectionFormItemAttrs;
+    const { title, popover } = item as SectionFormFieldAttrs;
     return { title, description: popover };
   });
   function handleGetInds(inds: number[]) {

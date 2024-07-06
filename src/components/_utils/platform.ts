@@ -232,9 +232,9 @@ export function getPopoverAttrs(popover?: string | PopoverAttrs): PopoverAttrs |
  * 过滤筛选日期字段
  * @param fields 字段数组
  */
-function getDateFields(fields: FormField[]): FormFieldAttrs[] {
-  return fields.filter((field: FormField) => {
-    if (!field) return false;
+function getDateFields(fields: FormFieldAttrs[]): FormFieldAttrs[] {
+  return fields.filter((field: FormFieldAttrs) => {
+    if (!field) throw new Error("上级应该过滤掉");
     const { type } = field as FormFieldAttrs;
     if (!type) return false;
     return type.includes("Date") || type.includes("Time");
@@ -267,11 +267,11 @@ export function convertDateField(fields: FormField[], params: CommonObj = {}, ty
     const format = getDateFormat(dateFields, key);
     const val = params[key];
     const isArr = typeOf(val) === "Array";
-    let date: any = isArr ? val.map((it: string) => dayjs(it, format)) : dayjs(val, format);
     if (type === "get") {
-      date = isArr ? date.map((it: any) => it.format(format)) : date.format(format);
+      params[key] = isArr ? val.map((it: any) => it.format(format)) : val?.format(format);
+    } else if (type === "set") {
+      params[key] = isArr ? val.map((it: string) => dayjs(it, format)) : dayjs(val, format);
     }
-    params[key] = date;
   }
   return params;
 }

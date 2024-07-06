@@ -7,19 +7,20 @@ import { Tabs, Select } from "antd";
 import { UserOutlined, UnlockOutlined } from "@ant-design/icons";
 import { PostMockCommon } from "@/api-mock";
 import BaseForm from "@/components/form/BaseForm";
-import SectionForm, { SectionFormItem, SectionFormItemAttrs } from "@/components/form/SectionForm";
+import SectionForm, { SectionFormField, SectionFormFieldAttrs } from "@/components/form/SectionForm";
 import StepForm from "@/components/form/StepForm";
 import { CommonObj } from "@/vite-env";
 import { useState } from "react";
 import Setting from "./_components/Setting";
 
+let isRequired = false;
 export const getFields = (args: CommonObj): FormField[] => {
   const { hasChildren, showDate, isAgree, childSubFieldsShowTypes } = args;
   return [
     {
       name: "name",
       label: "姓名",
-      required: true,
+      required: isRequired,
       extra: "设置 maxLength 属性后，则触发 showCount 属性值为true",
       colAttrs: 12,
       attrs: {
@@ -124,7 +125,7 @@ export const getFields = (args: CommonObj): FormField[] => {
       label: "搜索",
       type: "Search",
       colAttrs: 12,
-      required: true,
+      required: isRequired,
       extra: "colAttrs为Col的属性，值可为数字或对象",
       attrs: { placeholder: "请输入搜索内容" },
     },
@@ -194,7 +195,7 @@ export const getFields = (args: CommonObj): FormField[] => {
             name: "attendDate",
             label: "参加活动的日期",
             type: "DatePicker",
-            required: true,
+            required: isRequired,
           },
           {
             name: "attendTime",
@@ -203,13 +204,22 @@ export const getFields = (args: CommonObj): FormField[] => {
           },
           {
             name: "signUpDateRange",
+            // name: ["signUpDateStart", "signUpDateEnd"],
             label: "报名日期",
             type: "DateRangePicker",
+            extra: `name传数组["signUpDateStart", "signUpDateEnd"]`,
+            otherAttrs: {
+              popover: "传入数组时，将拆成两个字段传给后端",
+            },
           },
           {
             name: "signUpTimeRange",
             label: "报名时间",
             type: "TimeRangePicker",
+            extra: `name传字符串"signUpTimeRange"`,
+            otherAttrs: {
+              popover: "传入字符串时，将用一个数组传给后端",
+            },
           },
         ]
       : []),
@@ -241,7 +251,7 @@ export const getFields = (args: CommonObj): FormField[] => {
         {
           name: "childName",
           label: "姓名",
-          required: true,
+          required: isRequired,
           ...(childSubFieldsShowTypes === "custom"
             ? {
                 style: {
@@ -256,7 +266,7 @@ export const getFields = (args: CommonObj): FormField[] => {
           name: "childHeight",
           label: "身高",
           type: "InputNumber",
-          required: true,
+          required: isRequired,
           otherAttrs: {
             valid: "height",
           },
@@ -273,7 +283,7 @@ export const getFields = (args: CommonObj): FormField[] => {
           name: "childAge",
           label: "年龄",
           type: "InputNumber",
-          required: true,
+          required: isRequired,
           otherAttrs: {
             valid: "age",
           },
@@ -291,7 +301,7 @@ export const getFields = (args: CommonObj): FormField[] => {
           name: "childWeight",
           label: "体重",
           type: "InputNumber",
-          required: true,
+          required: isRequired,
           otherAttrs: {
             valid: "weight",
           },
@@ -347,7 +357,7 @@ export const initVals = {
   weight: 62,
   score: 3,
   intendedCity: [1, 2],
-  // attendDate: "2023-07-03",
+  attendDate: "2023-07-03",
   attendTime: "15:33:32",
   signUpDateRange: ["2023-06-01", "2023-06-30"],
   signUpTimeRange: ["09:00:00", "18:00:00"],
@@ -369,7 +379,7 @@ export default () => {
   const { showDate, hasChildren } = params;
   const addressEndInd = showDate ? 19 : 15;
   const childInfoEndInd = hasChildren ? addressEndInd + 3 : addressEndInd + 1;
-  const sections: SectionFormItem[] = [
+  const sections: SectionFormField[] = [
     {
       name: "baseInfo",
       title: "基本信息",

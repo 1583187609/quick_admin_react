@@ -6,7 +6,7 @@ import { Table } from "antd";
 import OperateBtns, { DefaultBaseBtnAttrs, btnGapMap, defaultBaseBtnAttrs } from "../OperateBtns";
 import { BtnName, BaseBtnType, BtnItem, getBtnObj } from "@/components/BaseBtn";
 import { btnsMap } from "@/components/BaseBtn";
-import { emptyVals, getChinaCharLength, isDev, showMessage } from "@/components/_utils";
+import { emptyVals, getChinaCharLength, isDev, propsJoinChar, showMessage } from "@/components/_utils";
 import { ClosePopupType, PopupContext } from "@/components/provider/PopupProvider";
 import { TableCol, TableColAttrs, RowKeyType, StandardTableColAttrs, SpecialColKeys } from "@/components/table/_types";
 import { defaultColumnAttrs, defaultTableAttrs, defaultPagination } from "@/components/table/_config";
@@ -66,8 +66,8 @@ const getIsHandle = (prop: string, rows: CommonObj[]) => {
   if (!isDev) return true; // 只允许开发环境下，存在未联调的状态，然后进行表格头部标红处理
   if (!rows?.length || prop.startsWith("$")) return true;
   const row = rows[0];
-  if (!prop.includes(",")) return row[prop] !== undefined;
-  return prop.split(",").some((key: string) => row[key] !== undefined);
+  if (!prop.includes(propsJoinChar)) return row[prop] !== undefined;
+  return prop.split(propsJoinChar).some((key: string) => row[key] !== undefined);
 };
 export default forwardRef(
   (
@@ -115,7 +115,7 @@ export default forwardRef(
         let dataKey = restCol.dataIndex ?? (specialCol?.dataIndex as string);
         if (Array.isArray(dataKey)) {
           dateKeysArr.push(dataKey);
-          dataKey = dataKey.join(",");
+          dataKey = dataKey.join(propsJoinChar);
         }
         colKeys.push(dataKey as string);
         const col = Object.assign(
@@ -154,7 +154,7 @@ export default forwardRef(
     const newRows = dataSource.map((item: CommonObj, ind: number) => {
       if (!item[rowKey]) item[rowKey] = ind;
       dateKeysArr.forEach((arr: [string, string]) => {
-        item[arr.join(",")] = [item[arr[0]], item[arr[1]]];
+        item[arr.join(propsJoinChar)] = [item[arr[0]], item[arr[1]]];
         delete item[arr[0]];
         delete item[arr[1]];
       });

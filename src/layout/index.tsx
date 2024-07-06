@@ -13,6 +13,7 @@ import BaseIcon from "@/components/BaseIcon";
 import logoImg from "@/assets/images/logo.svg";
 import useMenu from "@/layout/_hooks";
 import { ResponseMenuItem } from "@/layout/_types";
+import cssVars from "@/assets/styles/_var.module.less";
 import s from "./index.module.less";
 
 interface Props {
@@ -23,6 +24,7 @@ const { VITE_APP_NAME } = import.meta.env;
 
 export default ({ className = "" }: Props) => {
   const { layout } = useStoreSlice("set");
+  const { isFold } = useStoreSlice("base");
   const { allMenus, activeIndex } = useStoreSlice("menu");
   const { changeActiveIndex } = useMenu();
   const [show, setShow] = useState(true);
@@ -63,7 +65,12 @@ export default ({ className = "" }: Props) => {
         )}
         <div className={`${s.right} f-1 f-fs-s-c`}>
           <TheHead className="f-0" />
-          <div className={`${s.main} f-1 f-fs-s-c`}>
+          <div
+            className={`${s.main} f-1 f-fs-s-c`}
+            style={{
+              maxWidth: `calc(100vw - ${cssVars.mainMenuWidth} - ${isFold ? cssVars.asiderWidthFold : cssVars.asiderWidth})`,
+            }}
+          >
             {/* 需要使用Suspense包裹，不然会出现闪屏现象 */}
             <Suspense
               fallback={

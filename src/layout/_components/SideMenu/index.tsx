@@ -61,8 +61,10 @@ export default ({ className = "", theme = "dark", ...restProps }: Props) => {
               if (target?.children?.length) {
                 openKeys = [target.path];
                 seledKeys = [target.children[0]?.path];
+                // console.log(openKeys, seledKeys, "seledKeys---------------------1");
               } else {
                 seledKeys = [target.path];
+                // console.log(openKeys, seledKeys, "seledKeys---------------------2");
               }
             } else {
               openKeys = [target.path];
@@ -78,13 +80,21 @@ export default ({ className = "", theme = "dark", ...restProps }: Props) => {
             document.title = label;
             updateMenuState({ updatedTitle: true });
             if (level === 0) rootInd = ind;
-            children?.length ? (openKeys = [path]) : (seledKeys = [path]);
+            if (children?.length) {
+              openKeys = [path];
+            } else {
+              seledKeys = [path];
+            }
+            // console.log(openKeys, seledKeys, "seledKeys---------------------3");
           }
           return isFind;
         }
       });
     }
     const target = findTarget(menus);
+    // seledKeys = ["/test/10/3"];
+    // openKeys = ["/test/10/two"];
+    // seledKeys = ["/test/10/two/one"];
     changeActiveIndex(rootInd, false);
     updateMenuState({ openKeys, seledKeys });
     return target?.path; // rootPath

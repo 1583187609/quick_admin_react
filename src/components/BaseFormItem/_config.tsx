@@ -28,6 +28,7 @@ import {
   RadioGroupAttrs,
   StandFieldAttrs,
   DefaultFieldAttrs,
+  StandardFormFieldAttrs,
 } from "./_types";
 import AddDelList from "./_components/AddDelList";
 import BaseNumberRange from "../BaseNumberRange";
@@ -48,7 +49,7 @@ const dateRangePresets: TimeRangePickerProps["presets"] = [
   { label: "近90天", value: [dayjs().add(-90, "d"), dayjs()] },
 ];
 
-export const fieldMap: CommonObj = {
+export const fieldMap: { [key: string]: (...args: any) => ReactNode } = {
   Input: (attrs: StandFieldAttrs) => <Input {...attrs} />,
   Password: (attrs: StandFieldAttrs) => <Input.Password {...attrs} />,
   TextArea: (attrs: StandFieldAttrs) => <Input.TextArea {...attrs} />,

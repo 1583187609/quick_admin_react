@@ -1,9 +1,9 @@
-import SectionForm, { SectionFormItem } from "@/components/form/SectionForm";
+import SectionForm, { SectionFormField } from "@/components/form/SectionForm";
 import { name, version, scripts, dependencies, devDependencies } from "#/package.json";
 import { FormField } from "@/components/BaseFormItem";
 import { CommonObj } from "@/vite-env";
 
-const sections: SectionFormItem[] = [
+const sections: SectionFormField[] = [
   {
     title: "基础信息",
     fields: [
