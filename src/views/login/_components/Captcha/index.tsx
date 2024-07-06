@@ -18,18 +18,12 @@ export default ({ name, formRef }: Props) => {
     });
   }
   function handleChange(e: any) {
-    formRef?.current?.setFieldValue("captcha", e.target.value);
+    formRef?.current?.setFieldValue?.("captcha", e.target.value);
   }
   return (
     <div className="f-sb-fs">
       <Form.Item className="mb-0" name={name}>
-        <Input
-          className="f-1"
-          maxLength={4}
-          placeholder="请输入验证码"
-          onChange={handleChange}
-          allowClear
-        />
+        <Input className="f-1" maxLength={4} placeholder="请输入验证码" onChange={handleChange} allowClear />
       </Form.Item>
       <div onClick={getCaptcha} className={`${s.captcha} ml-16 f-0 f-c-c`}>
         {captcha}

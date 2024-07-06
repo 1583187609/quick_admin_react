@@ -69,6 +69,7 @@
 11、BaseNumberRange 组件功能完善
 12、BaseCrud 显示/隐藏列功能存在 Bug
 13、完善 router 路由系统
+14、表单提交时候，给 switch 的值做 true 和 false 的值映射处理
 
 ### 待实现
 

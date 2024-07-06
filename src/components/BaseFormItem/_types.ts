@@ -110,5 +110,6 @@ export interface DefaultFieldAttrs {
       getAttrs?: (field: FormFieldAttrs) => FieldAttrs | undefined;
       [key: string]: any;
     };
+    otherAttrs?: CommonObj;
   };
 }

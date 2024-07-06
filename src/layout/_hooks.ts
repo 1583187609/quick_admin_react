@@ -15,6 +15,7 @@ export default () => {
   function toFirstPath(menu: ResponseMenuItem) {
     if (!menu?.children?.length) return;
     const { children = [], path, label, link_type } = menu?.children[0];
+    // 0 | 1 | 2; //1 内部iframe渲染； 2, 新打开一个浏览器标签页展示
     if (link_type) {
       // router.push({ name: "innerLink", query: { url: path } });
       // if (link_type === 1) {
@@ -32,13 +33,11 @@ export default () => {
           const { path, label } = children[0];
           document.title = label || VITE_APP_NAME;
           updateMenuState({ seledKeys: [path], updatedTitle: true });
-          console.log(path, "path---------------------1");
           router.push(path);
         }
       } else {
         document.title = label || VITE_APP_NAME;
         updateMenuState({ seledKeys: [path], updatedTitle: true });
-        console.log(path, "path---------------------2");
         router.push(path);
       }
     }

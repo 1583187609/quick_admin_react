@@ -7,10 +7,10 @@ import { useRoutes, Navigate } from "react-router-dom";
 import React, { ReactNode, useEffect, useState } from "react";
 import Layout from "@/layout";
 import { ResponseMenuItem } from "@/layout/_types";
-import Login from "@/views/login";
 import { CommonObj } from "@/vite-env";
 import { useStoreSlice } from "@/hooks";
 import { camelCase } from "lodash";
+import Login from "@/views/login";
 
 export interface RouteItem {
   name: string; // 路由名称
@@ -42,14 +42,12 @@ function getFlatRoutes(menus: ResponseMenuItem[]): RouteItem[] {
     const { children } = menu;
     children?.forEach(child => pushRoutes(child));
     function pushRoutes(menu: ResponseMenuItem) {
-      const { label, path, component, children } = menu;
+      const { label, path, component, children, link_type } = menu;
       const route: RouteItem = {
-        name: camelCase(path),
+        name: link_type ? "" : camelCase(path), //外部连接不生成路由信息
         path,
       };
       if (children?.length) {
-        // route.children = children.map(child => pushRoutes(child));
-        // route.children = getFlatRoutes(children);
         children.forEach(child => pushRoutes(child));
       } else {
         route.element = LazyLoad(component as string);
@@ -70,9 +68,23 @@ const notFoundRoute = {
   name: "notFound",
   element: LazyLoad("/error.tsx"),
 };
+
+// function getRoutesMap(routes: RouteItem[], map: CommonObj = {}) {
+//   routes.forEach((item: RouteItem) => {
+//     const { name, path, children } = item;
+//     if (!name) return; // 外部连接不生成路由信息
+//     if (!children?.length) {
+//       map[name] = path || "/";
+//     } else {
+//       getRoutesMap(children, map);
+//     }
+//   });
+//   return map;
+// }
+
 export default () => {
   const { allMenus } = useStoreSlice("menu");
-  // const { updateRouteState } = useStoreSlice("routes");
+  // const { updateRoutesState } = useStoreSlice("routes");
   const [routes, setRoutes] = useState<RouteItem[]>([
     {
       name: "root",
@@ -88,19 +100,16 @@ export default () => {
   useEffect(() => {
     createRoutes(allMenus);
   }, [allMenus]);
-  useEffect(() => {
-    if (routes.length > 2) {
-      // updateRouteState({ isCreatedRoute: true });
-    }
-  }, [routes]);
   function createRoutes(menus: ResponseMenuItem[]) {
     routes[0].children = [
       { path: "", name: "home", element: LazyLoad("/home/index.tsx") },
       ...getFlatRoutes(menus),
       notFoundRoute,
     ];
+    const newRoutes = [...routes, notFoundRoute];
+    // updateRoutesState({ routes: getRoutesMap(newRoutes) });
     //重置一下，解决刷新后，初次加载会白屏的问题
-    setRoutes([...routes, notFoundRoute]);
+    setRoutes(newRoutes);
   }
   return useRoutes(routes);
 };

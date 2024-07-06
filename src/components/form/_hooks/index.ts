@@ -112,10 +112,11 @@ export const useInitForm = (props: CommonObj, ref: any): UseInitFormReturns => {
         return showMessage(`暂未处理【${text}】事件`, "error");
       }
       if (onSubmit) {
-        onSubmit(newParams, (msg = `${text}成功！`) => {
+        onSubmit(newParams, (msg = `${text}成功！`, closeType?: ClosePopupType, cb?: () => void) => {
           showMessage(msg);
           setLoading(false);
-          closePopup?.();
+          closePopup?.(closeType);
+          cb?.();
         });
       } else {
         fetch(newParams)

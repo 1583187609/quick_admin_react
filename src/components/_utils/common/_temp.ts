@@ -100,9 +100,54 @@ export function checkFileChanged(e: any) {
 /**
  * 将浏览器路径参数转为对象
  * @param searchStr string 要转化的字符串
+ * @notice urlSearchToParams(`http://127.0.0.1:5174/test/10/3?id=3&age=&sex=&isAgree=true`)
+ * 解析有误=> {http://127.0.0.1:5174/test/10/3?id: '3', age: '', sex: '', isAgree: 'true'}
+ * 故暂时弃用
  */
-export function urlSearchToParams(searchStr = location.search.slice(1)) {
-  return Object.fromEntries(new URLSearchParams(searchStr));
+// export function urlSearchToParams(searchStr = location.search.slice(1)) {
+//   return Object.fromEntries(new URLSearchParams(searchStr));
+// }
+
+/**
+ * 将浏览器路径参数转为对象
+ * @param searchStr string 要转化的字符串
+ */
+export function urlSearchToParams(path: string, noHandleKeys?: string[]) {
+  if (!path) return "";
+  const str = path.split("?")[1];
+  const obj: CommonObj = {};
+  str.split("&").forEach((item: string) => {
+    let [key, val] = item.split("=");
+    if (!noHandleKeys?.includes(key) && val !== "") {
+      const num = Number(val);
+      if (!isNaN(num)) {
+        val = num as any;
+      } else {
+        if (val === "true") {
+          val = true as any;
+        } else if (val === "false") {
+          val = false as any;
+        }
+      }
+    }
+    obj[key] = val;
+  });
+  return obj;
+}
+
+/**
+ * 将浏览器路径对象转为参数
+ * @param params CommonObj 要转化的参数
+ */
+export function urlParamsToSearch(params?: CommonObj) {
+  if (!params) return "";
+  let str: string = "";
+  for (const key in params) {
+    const val = params[key] ?? "";
+    if (typeof val === "object") throw new Error("路由参数中不允许传入非基本数据类型的值");
+    str += `&${key}=${val}`;
+  }
+  return str.slice(1);
 }
 
 /**
@@ -112,15 +157,12 @@ export function urlSearchToParams(searchStr = location.search.slice(1)) {
  * @returns html字符串
  */
 export const getHtmlStr = (str: string, words: string) => {
-  return str;
-
   // 关键词高亮处理
   // const index = str.indexOf(words);
   // const beforeStr = str.substring(0, index);
   // const afterStr = str.slice(index + words.length);
   // if (index > -1) return `<span>${beforeStr}<span style="color:red">${words}</span>${afterStr}</span>`;
   // return `<span>${str}</span>`;
-
   // react tsx 写法
   // return index > -1 ? (
   //   <span>

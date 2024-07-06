@@ -1,4 +1,4 @@
-import Router from "@/router";
+import RouterView from "@/components/RouterView";
 import BaseProvider from "@/components/provider/BaseProvider";
 import PopupProvider from "@/components/provider/PopupProvider";
 
@@ -12,7 +12,7 @@ export default () => {
     <>
       <BaseProvider>
         <PopupProvider>
-          <Router />
+          <RouterView />
         </PopupProvider>
       </BaseProvider>
     </>
