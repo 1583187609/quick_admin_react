@@ -1,11 +1,3 @@
-```js
-// https://1583187609.github.io/quick_admin/react/preview/index.html
-// https://1583187609.github.io/quick_admin/react/preview/index.html#/login
-
-// https://1583187609.github.io/quick_admin/vue3/preview/index.html#/login
-// https://1583187609.github.io/quick_admin/react/preview/index.html#/login
-```
-
 # Quick Admin React
 
 ## 一、工程简介
@@ -14,12 +6,21 @@
 
 ## 二、地址链接
 
-1. 在线预览  
-   GitHub：[登录入口](https://1583187609.github.io/quick_admin/react/preview/index.html#/login)、[Vue 版](https://1583187609.github.io/quick_admin/vue3/preview/index.html#/login)  
-   Gitee：[登录入口](https://fanlichuan.gitee.io/management/vue/#/login)、[Vue 版](https://fanlichuan.gitee.io/management/vue/#/login)
-2. 说明文档  
-   [GitHub](https://1583187609.github.io/quick_admin/react/docs/index.html)、
-   [Gitee](https://fanlichuan.gitee.io/quick_admin/react/docs/index.html)
+### React 版（完善度约 80%）
+
+在线预览：[Github 地址](https://1583187609.github.io/quick_admin/react/preview/#/login)（国外服务，初次加载较慢）、~~[Gitee 地址](https://fanlichuan.gitee.io/quick_admin/react/preview/#/login)（暂不可用，服务维护升级）~~
+
+说明文档：[Github 地址](https://1583187609.github.io/quick_admin/react/docs)（国外服务，初次加载较慢）、~~[Gitee 地址](https://fanlichuan.gitee.io/quick_admin/react/docs)（暂不可用，服务维护升级）~~
+
+仓库地址：[Github](https://github.com/1583187609/quick_admin_react)、[Gitee](https://gitee.com/fanlichuan/quick_admin_react)
+
+### Vue3 版（已经过一个完整企业级项目验证）
+
+在线预览：[Github](https://1583187609.github.io/quick_admin/vue3/preview/#/login)（国外服务，初次加载较慢）、~~[Gitee](https://fanlichuan.gitee.io/quick_admin/vue3/preview/#/login)（暂不可用，服务维护升级）~~
+
+说明文档：[Github](https://1583187609.github.io/quick_admin/vue3/docs)（国外服务，初次加载较慢）、~~[Gitee](https://fanlichuan.gitee.io/quick_admin/vue3/docs)（暂不可用，服务维护升级）~~
+
+仓库地址：[Github](https://github.com/1583187609/quick_admin_vue3)、[Gitee](https://gitee.com/fanlichuan/quick_admin_vue3)
 
 ## 三、前言概述
 
@@ -72,7 +73,8 @@
 
 ## 四、图例简述
 
-1. 简述：
+1. 简述（此图已过时，后续更新）：
+
    ![示意图](./public/produce.png)
 
 ## 五、特点
@@ -86,8 +88,8 @@
 ## 七、其他后记
 
 1. 以上文字说明、图片示例，未完全呈现已有功能，因时间精力有限，后续再完善此文档。
-2. 自 2023-08-01 更新之后，由于工作生活繁忙，一直处于暂停中。
-3. [Vue 版仓库地址](https://gitee.com/fanlichuan/management/tree/master/quick-admin-vue3)
+2. Quick Admin React 核心代码（<span style="color:red;">src/components</span> 和 <span style="color:red;">src/config</span>），完善度约 <span style="color:red;">80%</span>。
+3. 欲知已完善或待完善某些功能，可查看任务清单（[Github](https://github.com/1583187609/quick_admin_react/blob/master/_Task_List.md) 或 [Gitee](https://gitee.com/fanlichuan/quick_admin_react/blob/dev/_Task_List.md)），清单未时时更新，有滞后情况
 
 ## 八、联系方式
 
