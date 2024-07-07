@@ -26,7 +26,9 @@ export default ({ mode, command }) => {
   // const env = loadEnv(mode, process.cwd(), ''); // 设置第三个参数为 '' 来加载所有环境变量，而不管是否有 `VITE_` 前缀。
   const env = loadEnv(mode, process.cwd());
   return defineConfig({
-    base: "./",
+    // base: "./", //表示应用程序的根目录。如果你的应用程序部署在域名的根目录下，你不需要修改 base 的值。
+    // root: "./src/pages", // 项目根目录（index.html 文件所在的位置）。可以是一个绝对路径，或者一个相对于该配置文件本身的相对路径。
+    base: "/", // 开发或生产环境服务的公共基础路径。合法的值包括以下几种
     plugins: [
       react(),
       //vite mock 参考地址：http://events.jianshu.io/p/8ce94077af2a
@@ -49,10 +51,15 @@ export default ({ mode, command }) => {
         optipng: { optimizationLevel: 5 }, // 配置 PNG 优化选项
         webp: { quality: 75 }, // 配置 WebP 转换选项
       }),
-      viteCompression({
-        ext: ".gz",
-        deleteOriginFile: false,
-      }),
+      // viteCompression({
+      //   ext: ".gz",
+      //   deleteOriginFile: false,
+      // }),
+      // viteCompression({
+      //   ext: '.br',
+      //   algorithm: 'brotliCompress',
+      //   deleteOriginFile: false,
+      // }),
       /**
        * 打包体积可视化面板
        * @link npm 文档链接：https://gitcode.com/btd/rollup-plugin-visualizer/overview

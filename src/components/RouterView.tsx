@@ -127,9 +127,9 @@ export default () => {
     setRoutes(newRoutes);
     setTimeout(() => {
       updateRoutesState({ isCreatedRoute: true });
-      const { pathname } = location;
-      const isAuth = getRouteIsAuth(pathname);
-      if (!isAuth) router.push(`/403?redirect=${pathname}`);
+      // const { pathname } = location;
+      // const isAuth = getRouteIsAuth(pathname);
+      // if (!isAuth) router.push(`/403?redirect=${pathname}`);
     });
   }
   return useRoutes(routes);

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import { Provider } from "react-redux";
 import App from "./App";
@@ -38,11 +38,13 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       //   return document.body;
       // }}
     >
-      <BrowserRouter>
+      {/* <BrowserRouter> */}
+      <HashRouter>
         <Provider store={store}>
           <App />
         </Provider>
-      </BrowserRouter>
+      </HashRouter>
+      {/* </BrowserRouter> */}
     </ConfigProvider>
   </Suspense>
   // </React.StrictMode>

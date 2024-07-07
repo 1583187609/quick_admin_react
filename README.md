@@ -6,7 +6,8 @@
 
 ## 二、在线预览
 
-暂无，可参见[Vue版登录入口](https://fanlichuan.gitee.io/management/vue/#/login)。
+GitHub：[登录入口](https://1583187609.github.io/quick_admin/react/preview/index.html)、[Vue 版](https://1583187609.github.io/quick_admin/vue3/preview/index.html#/login)  
+Gitee：[登录入口](https://fanlichuan.gitee.io/management/vue/#/login)、[Vue 版](https://fanlichuan.gitee.io/management/vue/#/login)
 
 ## 三、前言概述
 
