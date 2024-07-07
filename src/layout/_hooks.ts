@@ -5,7 +5,6 @@ const { VITE_APP_NAME } = import.meta.env;
 
 export default () => {
   const router = useRouter();
-  const { toggleFold } = useStoreSlice("base");
   const { allMenus, updateMenuState } = useStoreSlice("menu");
   /**
    * 路由跳转到子级第一个路径对应的页面
@@ -46,7 +45,9 @@ export default () => {
   function changeActiveIndex(ind: number, toFirst = true, menus = allMenus) {
     const subNavs = menus[ind]?.children ?? [];
     updateMenuState({ activeIndex: ind, sideMenus: subNavs });
-    toggleFold(!subNavs?.length);
+    if (subNavs?.length) {
+      updateMenuState({ isCollapse: false });
+    }
     if (subNavs?.length && toFirst) toFirstPath(menus[ind]);
   }
   return {

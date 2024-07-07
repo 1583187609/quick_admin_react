@@ -2,31 +2,56 @@
 /*************** 为Vue或React或各UI平台差异化单独写的方法 *************/
 /********************************************************************/
 
-// import { RendererElement, RendererNode, VNode, h } from "vue";
 import cssVars from "@/assets/styles/_var.module.less";
 import { message } from "antd";
 import { getChinaCharLength, storage, typeOf } from "@/components/_utils";
 import { PopoverAttrs } from "@/components/BaseFormItem";
 import { CommonObj, TostMessageType } from "@/vite-env";
 import type { FormField, FormFieldAttrs } from "@/components/BaseFormItem";
-import { merge, omitBy } from "lodash";
+import { merge } from "lodash";
 import dayjs from "dayjs";
 import { defaultFieldAttrs, FormItemType } from "@/components/BaseFormItem";
 import * as Icons from "@ant-design/icons";
+import { ReactNode, isValidElement } from "react";
+import { ArgsProps } from "antd/es/message";
+
+/**
+ * 获取 ReactNode 的文本字符串
+ * @param node ReactNode Rect的节点
+ */
+export function getTextFromReactNode(node: ReactNode): string {
+  if (!node) return "";
+  if (["string", "number"].includes(typeof node)) return String(node);
+  if (Array.isArray(node)) return node.map(getTextFromReactNode).join("");
+  if (typeof node === "object" && node !== null) {
+    if (node?.props?.children) return getTextFromReactNode(node.props.children); // 处理有可能有子节点的情况
+  }
+  return "";
+}
 
 /**
  * 展示message提示信息
  * @param hint string, MessageParams 提示内容
  * @description 默认展示成功通知
  */
-export function showMessage(hint: string, type: TostMessageType = "success") {
+export function showMessage(hint: ReactNode | ArgsProps, type: TostMessageType = "success", others?: ArgsProps) {
   if (!hint) return;
-  //   const speed = 7; //速度：7字/秒
-  //   let duration = (hint.length / speed) * 1000;
-  //   if (duration < 1500) {
-  //     duration = 1500;
-  //   }
-  message[type](hint);
+  let hintStr: string = "";
+  if (typeof hint === "string") {
+    hintStr = hint;
+  } else if (isValidElement(hint)) {
+    hintStr = getTextFromReactNode(hint);
+  } else if (typeOf(hint) === "Object") {
+    hintStr = getTextFromReactNode((hint as ArgsProps).content);
+  } else {
+    throw new Error(`暂未处理此种类型：${typeOf(hint)}`);
+  }
+  const speed = 7; //速度：9字/秒
+  let duration = hintStr.length / speed;
+  if (duration < 1.5) duration = 1.5;
+  const isObj = typeOf(hint) === "Object";
+  const cfg = isObj ? Object.assign({ duration }, hint as ArgsProps) : { content: hint, duration };
+  message[type](Object.assign(cfg, others));
 }
 
 /**
@@ -307,7 +332,8 @@ export function getMaxLength(fields: FormFieldAttrs[] = [], num = 2): number {
  */
 export function getUserInfo(): CommonObj | null {
   const info = storage.getItem("userInfo");
-  if (!info) showMessage("检测到未登录异常", "error");
+  // if (!info) showMessage("检测到未登录异常", "error");
+  if (!info) console.error("检测到未登录异常", "error");
   return info;
 }
 

@@ -39,9 +39,9 @@ interface Props {
 const { VITE_APP_NAME } = import.meta.env;
 
 export default ({ className = "", ...restProps }: Props) => {
-  const { isFold, toggleFold } = useStoreSlice("base");
   const { layout } = useStoreSlice("set");
   const { userInfo, handleLoginOut } = useStoreSlice("user");
+  const { isCollapse, updateMenuState } = useStoreSlice("menu");
   const router = useRouter();
   const location = useLocation();
   const { openPopup } = useContext(PopupContext);
@@ -69,11 +69,11 @@ export default ({ className = "", ...restProps }: Props) => {
           {layout.type === "horizontal" ? (
             <div onClick={() => router.push(defaultHomePath)} className={`${s.title} f-0 f-c-c`}>
               <BaseImg size={30} src={logoImg} />
-              <span className="line-2 ml-h">{isFold ? VITE_APP_NAME?.slice(0, 1) : VITE_APP_NAME}</span>
+              <span className="line-2 ml-h">{isCollapse ? VITE_APP_NAME?.slice(0, 1) : VITE_APP_NAME}</span>
             </div>
           ) : null}
-          <div className={`${s["toggle-btn"]} f-0`} onClick={() => toggleFold()}>
-            {isFold ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          <div className={`${s["toggle-btn"]} f-0`} onClick={() => updateMenuState({ isCollapse: !isCollapse })}>
+            {isCollapse ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           </div>
           {layout.type === "horizontal" ? <SideMenu className="f-1" mode="horizontal" /> : <PathBreadcrumb className="f-1" />}
 
@@ -126,7 +126,7 @@ export default ({ className = "", ...restProps }: Props) => {
                 </>
               }
             >
-              <BaseAvatar className="f-0 ml-h" size={40} round />
+              <BaseAvatar src={userInfo?.avatar} className="f-0 ml-h" size={40} preview={false} round />
             </Popover>
           </div>
         </div>

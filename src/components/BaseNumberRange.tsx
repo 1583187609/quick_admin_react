@@ -1,6 +1,5 @@
 import { CommonObj } from "@/vite-env";
 import { Form, InputNumber } from "antd";
-import { merge } from "lodash";
 import { showMessage } from "./_utils";
 
 export interface Props {

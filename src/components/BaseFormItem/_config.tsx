@@ -35,6 +35,7 @@ import BaseNumberRange from "../BaseNumberRange";
 import { Props as BaseNumberRangeAttrs } from "@/components/BaseNumberRange";
 import { CommonObj } from "@/vite-env";
 import BaseFormItem from ".";
+import UploadAvatar from "../upload/UploadAvatar";
 
 const datePresets: TimePickerProps["presets"] = [
   { label: "昨天", value: dayjs().add(-1, "d") },
@@ -70,6 +71,7 @@ export const fieldMap: { [key: string]: (...args: any) => ReactNode } = {
   Checkbox: (attrs: StandFieldAttrs) => <Checkbox {...attrs} />,
   CheckboxGroup: (attrs: CheckboxGroupAttrs) => <Checkbox.Group {...attrs} />,
   BaseNumberRange: (attrs: BaseNumberRangeAttrs) => <BaseNumberRange {...attrs} />,
+  UploadAvatar: (attrs: CommonObj) => <UploadAvatar {...attrs} />,
   Custom: (attrs: StandFieldAttrs, render: (attrs: StandFieldAttrs) => ReactNode) => render?.(attrs as StandFieldAttrs),
   Children: (field: FormFieldAttrs, childrenStyle: ChildrenStyle) => {
     const { children } = field;

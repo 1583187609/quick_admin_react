@@ -15,14 +15,14 @@ interface Props {
 const { VITE_APP_NAME } = import.meta.env;
 
 export default ({ className = "" }: Props) => {
-  const { isFold } = useStoreSlice("base");
+  const { isCollapse } = useStoreSlice("menu");
   const router = useRouter();
   return (
-    <div className={`${className} ${s.menu} ${isFold ? s.collapsed : ""} f-sb-s-c`}>
+    <div className={`${className} ${s.menu} ${isCollapse ? s.collapsed : ""} f-sb-s-c`}>
       <div onClick={() => router.push(defaultHomePath)} className={`${s.title} f-0 f-c-c line-2`}>
-        {isFold ? VITE_APP_NAME?.slice(0, 1) : VITE_APP_NAME}
+        {isCollapse ? VITE_APP_NAME?.slice(0, 1) : VITE_APP_NAME}
       </div>
-      <SideMenu className="f-1 all-hide-scroll" inlineCollapsed={isFold} mode="inline" />
+      <SideMenu className="f-1 all-hide-scroll" inlineCollapsed={isCollapse} mode="inline" />
     </div>
   );
 };

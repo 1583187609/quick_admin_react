@@ -3,14 +3,15 @@
  * @link 动态路由参考：https://juejin.cn/post/7132393527501127687 和 https://blog.csdn.net/Miketutu/article/details/130445743
  */
 
-import { useRoutes, Navigate } from "react-router-dom";
+import { useRoutes, Navigate, useLocation } from "react-router-dom";
 import React, { ReactNode, useEffect, useState } from "react";
 import Layout from "@/layout";
 import { ResponseMenuItem } from "@/layout/_types";
 import { CommonObj } from "@/vite-env";
-import { useStoreSlice } from "@/hooks";
+import { useRouter, useStoreSlice } from "@/hooks";
 import { camelCase } from "lodash";
 import Login from "@/views/login";
+import { getRouteIsAuth } from "./_hooks/router";
 
 export interface RouteItem {
   name: string; // 路由名称
@@ -63,11 +64,23 @@ function getFlatRoutes(menus: ResponseMenuItem[]): RouteItem[] {
   return routes;
 }
 
-const notFoundRoute = {
-  path: "*",
-  name: "notFound",
-  element: LazyLoad("/error.tsx"),
-};
+const errorRoutes = [
+  {
+    path: "/403",
+    name: "noAuth",
+    element: LazyLoad("/error/403.tsx"),
+  },
+  {
+    path: "*",
+    name: "notFound",
+    element: LazyLoad("/error/404.tsx"),
+  },
+  {
+    path: "/500",
+    name: "serverError",
+    element: LazyLoad("/error/500.tsx"),
+  },
+];
 
 // function getRoutesMap(routes: RouteItem[], map: CommonObj = {}) {
 //   routes.forEach((item: RouteItem) => {
@@ -84,7 +97,9 @@ const notFoundRoute = {
 
 export default () => {
   const { allMenus } = useStoreSlice("menu");
-  // const { updateRoutesState } = useStoreSlice("routes");
+  const { updateRoutesState } = useStoreSlice("routes");
+  const router = useRouter();
+  const location = useLocation();
   const [routes, setRoutes] = useState<RouteItem[]>([
     {
       name: "root",
@@ -95,6 +110,7 @@ export default () => {
     },
     // { path: "/login", element: LazyLoad("/views/login/index.tsx") }, //使用懒加载会一直执行，导致页面一直处在加载中状态
     { name: "login", path: "/login", element: <Login /> },
+    ...errorRoutes,
   ]);
 
   useEffect(() => {
@@ -104,12 +120,17 @@ export default () => {
     routes[0].children = [
       { path: "", name: "home", element: LazyLoad("/home/index.tsx") },
       ...getFlatRoutes(menus),
-      notFoundRoute,
+      ...errorRoutes,
     ];
-    const newRoutes = [...routes, notFoundRoute];
-    // updateRoutesState({ routes: getRoutesMap(newRoutes) });
+    const newRoutes = [...routes];
     //重置一下，解决刷新后，初次加载会白屏的问题
     setRoutes(newRoutes);
+    setTimeout(() => {
+      updateRoutesState({ isCreatedRoute: true });
+      const { pathname } = location;
+      const isAuth = getRouteIsAuth(pathname);
+      if (!isAuth) router.push(`/403?redirect=${pathname}`);
+    });
   }
   return useRoutes(routes);
 };

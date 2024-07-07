@@ -92,9 +92,6 @@ export default ({ className = "", theme = "dark", ...restProps }: Props) => {
       });
     }
     const target = findTarget(menus);
-    // seledKeys = ["/test/10/3"];
-    // openKeys = ["/test/10/two"];
-    // seledKeys = ["/test/10/two/one"];
     changeActiveIndex(rootInd, false);
     updateMenuState({ openKeys, seledKeys });
     return target?.path; // rootPath

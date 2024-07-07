@@ -2,13 +2,19 @@ import React from "react";
 import { ResponseMenuItem } from "@/layout/_types";
 import { AntdMenuItem } from "@/layout/_types";
 import { createSlice, current } from "@reduxjs/toolkit";
-import { storage } from "@/utils";
+import { getUserInfo, storage } from "@/utils";
 import { CommonObj } from "@/vite-env";
 import { updateState } from "../_utils";
 import * as Icons from "@ant-design/icons";
 
 export function convertToMenuNavs(menus: ResponseMenuItem[] = [], level = 0): AntdMenuItem[] {
-  const filterMenus = menus.filter((it: ResponseMenuItem) => it.type !== 2);
+  const user = getUserInfo();
+  const filterMenus = menus.filter((it: ResponseMenuItem) => {
+    const { type, auth_codes } = it;
+    if (!auth_codes?.length) return true;
+    return type !== 2 && auth_codes.includes(user?.type);
+    // return it.type !== 2;
+  });
   const antdMenus = filterMenus.map((item: ResponseMenuItem) => {
     let { path, icon = "TwitterOutlined", children, label, type } = item;
     const obj: CommonObj = {
@@ -29,6 +35,7 @@ const localMenus = storage.getItem("allMenus") || [];
 const menuSlice = createSlice({
   name: "menu",
   initialState: {
+    isCollapse: storage.getItem("isCollapse", "session") ?? false, //是否折叠菜单
     updatedTitle: false, // 是否已经更新了document.title
     openKeys: [], //打开的菜单项
     seledKeys: [], //选中的菜单项

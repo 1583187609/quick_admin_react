@@ -1,15 +1,11 @@
 import { storage } from "@/utils";
 import { createSlice } from "@reduxjs/toolkit";
+import { updateState } from "../_utils";
 
 export default createSlice({
   name: "base",
-  initialState: {
-    isFold: storage.getItem("isFold", "session") ?? false,
-  },
+  initialState: {},
   reducers: {
-    // 切换折叠状态
-    toggleFold: (state, { payload }) => {
-      state.isFold = payload ?? !state.isFold;
-    },
+    updateBaseState: updateState,
   },
 });

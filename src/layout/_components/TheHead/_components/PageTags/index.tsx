@@ -156,11 +156,7 @@ export default ({ className = "", reload }: Props) => {
   }
 
   return (
-    <div
-      className={`${className} ${["vertical", "horizontal"].includes(layout.type) ? s.white : ""} ${
-        s["page-tags"]
-      } page-tags f-sb-c`}
-    >
+    <div className={`${className} ${s["page-tags"]} f-sb-c`}>
       <PageTagItem
         onClick={() => router.push(defaultHomePath)}
         className={`${s["tag-item"]} f-0`}

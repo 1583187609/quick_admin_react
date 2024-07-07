@@ -5,6 +5,14 @@
 import { useRouter } from "@/hooks";
 import { CommonObj } from "@/vite-env";
 import { Button, Result } from "antd";
+import { CSSProperties } from "react";
+
+interface Props {
+  className?: string;
+  style?: CSSProperties;
+  status?: 403 | 404 | 500;
+  [key: string]: any;
+}
 
 const statusMap = {
   403: {
@@ -23,17 +31,20 @@ const statusMap = {
     subTitle: "服务器崩溃啦~",
   },
 };
-export default () => {
-  const props: CommonObj = statusMap[404];
+
+export default ({ className = "", status = 404, ...restProps }: Props) => {
+  const attrs: CommonObj = statusMap[status];
   const router = useRouter();
   return (
     <Result
-      {...props}
+      className={`${className}`}
       extra={
         <Button onClick={() => router.go(-1)} type="primary">
           返回上一页
         </Button>
       }
+      {...attrs}
+      {...restProps}
     />
   );
 };

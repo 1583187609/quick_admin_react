@@ -5,11 +5,13 @@ import { PostUserLogin, PostUserLogout } from "@/api-mock";
 import { notification } from "antd";
 import { CommonObj } from "@/vite-env";
 import menuStore from "@/store/modules/menu";
+import routesStore from "@/store/modules/routes";
 import dayjs from "dayjs";
 
 const expiration = 24 * 60 * 60 * 1000; // 过期时间，单位：秒，默认24小时不登录即会过期
 
 const { initMenus } = menuStore.actions;
+const { updateRoutesState } = routesStore.actions;
 
 function handleMenusIcon(navs: ResponseMenuItem[], level = 0): ResponseMenuItem[] {
   if (!navs) return [];
@@ -40,8 +42,9 @@ const handleLoginIn = createAsyncThunk("userLoginIn", async (payload: CommonObj,
     const filterNavs = navs.filter((it: ResponseMenuItem) => {
       const { auth_codes, path } = it;
       if (path === "demo") return false; // 过滤掉demo示例代码
-      if (!auth_codes) return true;
-      return auth_codes.includes(user.type);
+      return true;
+      // if (!auth_codes) return true;
+      // return auth_codes.includes(user.type);
     });
     const newNavs = handleMenusIcon(filterNavs);
     const { id = "", name = "", nickname = "", type_text = "" } = user;
@@ -52,23 +55,27 @@ const handleLoginIn = createAsyncThunk("userLoginIn", async (payload: CommonObj,
     storage.setItem("token", user?.token ?? "");
     storage.setItem("allMenus", newNavs);
     storage.setItem("expiredDate", expiredDate);
+    dispatch(initMenus(newNavs));
     // 等路由创建好了，再进入
-    setTimeout(() => {
-      let toPath = defaultHomePath;
-      if (location.search) toPath = location.search.slice(10);
-      router.push(toPath);
-      notification.success({
-        closeIcon: false,
-        style: { top: "36px" },
-        placement: "topRight",
-        message: "登录成功",
-        description: `欢迎回来，${user?.name ?? "XXX"}`,
-        duration: 3, //单位：秒
-      });
+    let toPath = defaultHomePath;
+    if (location.search) toPath = location.search.slice(10);
+    const timer = setInterval(() => {
+      const { isCreatedRoute } = getState().routes;
+      if (isCreatedRoute) {
+        router.push(toPath);
+        notification.success({
+          closeIcon: false,
+          style: { top: "36px" },
+          placement: "topRight",
+          message: "登录成功",
+          description: `欢迎回来，${user?.name ?? "XXX"}`,
+          duration: 3, //单位：秒
+        });
+        clearInterval(timer);
+      }
     });
     return {
       user,
-      navs: newNavs,
       expired,
       ...rest,
     };
@@ -77,11 +84,10 @@ const handleLoginIn = createAsyncThunk("userLoginIn", async (payload: CommonObj,
 const handleLoginInAfter = (builder: any) => {
   const { pending, fulfilled, rejected } = handleLoginIn;
   builder.addCase(fulfilled, (state: any, { payload }: CommonObj) => {
-    const { user, navs, expired } = payload as CommonObj;
+    const { user, expired } = payload as CommonObj;
     state.userInfo = user;
     state.isLogin = true;
     state.expired = expired;
-    initMenus(navs);
   });
 };
 
@@ -91,15 +97,13 @@ const handleLoginInAfter = (builder: any) => {
 const handleLoginOut = createAsyncThunk("userLoginOut", async (payload: CommonObj, { dispatch, getState, extra }) => {
   const { phone, isFetch = false } = payload.params;
   const { router, location } = payload.other;
-  console.log("退出登录-------------1");
   return await PostUserLogout({ phone }).then((res: any) => {
-    console.log("退出登录-------------2");
     storage.getKeys().forEach((key: string) => {
       const isRemove = !["rememberAccount", "set", "hasGuide"].includes(key);
       if (isRemove) storage.removeItem(key);
     });
     storage.clear("session"); //清除sessionStorage的数据
-    // changeActiveIndex(0);
+    // changeActiveIndex(0); //这个是hooks
     showMessage("退出成功！");
     const { pathname } = location;
     // const { path, fullPath, name } = route;
@@ -113,6 +117,7 @@ const handleLoginOut = createAsyncThunk("userLoginOut", async (payload: CommonOb
     let suffix = "";
     if (!["/login", defaultHomePath].includes(pathname)) suffix = `?redirect=${pathname}`;
     router.push(`/login${suffix}`);
+    dispatch(updateRoutesState({ isCreatedRoute: false }));
     return res;
   });
 });
@@ -120,9 +125,12 @@ const handleLoginOut = createAsyncThunk("userLoginOut", async (payload: CommonOb
 const handleLoginOutAfter = (builder: any) => {
   const { pending, fulfilled, rejected } = handleLoginOut;
   builder.addCase(fulfilled, (state: any, { payload }: CommonObj) => {
+    //等一秒后再清空，避免userInfo无值时，有些页面会报错
+    // setTimeout(() => {  //这样处理会报错
     state.isLogin = false;
     state.userInfo = null;
     state.expired = Date.now();
+    // }, 1000);
   });
 };
 
@@ -140,58 +148,11 @@ const initialState: UserInitState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-    // loginIn(state, { payload }) {
-    //   state.isLogin = true;
-    //   handleLoginOut(payload);
-    // },
-    // loginOut(state, { payload }) {
-    //   state.isLogin = false;
-    // },
-    // asyncLoginIn: createAsyncThunk(
-    //   "asyncLoginIn",
-    //   async (payload: CommonObj, { dispatch, getState, extra }) => {
-    //     // const state = getState();
-    //     const { remember, ...params } = payload;
-    //     if (remember) {
-    //       storage.setItem("rememberAccount", params);
-    //     } else {
-    //       storage.removeItem("rememberAccount");
-    //     }
-    //     return await PostUserLogin(params);
-    //   },
-    //   {
-    //     // 当首次调用 API 时运行此项
-    //     pending: (state) => {
-    //       console.log(state, "执行了pending---------------");
-    //     },
-    //     // 在出现错误时运行此项
-    //     rejected: (state, action) => {
-    //       console.log(state, "执行了rejected---------------");
-    //     },
-    //     // 成功时运行此项
-    //     fulfilled: (state, action) => {
-    //       console.log(state, "执行了fulfilled---------------");
-    //     },
-    //   }
-    // ),
-  },
-  //   extraReducers: {
-  //     [handleLoginIn.fulfilled]: (state, action) => {
-  //       state.posts = action.payload.data;
-  //     },
-  //     [handleLoginIn.rejected]: (state, action) => {
-  //      state.posts = [];
-  //     },
-  //   },
-  //  }),
+  reducers: {},
   extraReducers: builder => {
     handleLoginInAfter(builder);
     handleLoginOutAfter(builder);
   },
-  // selectors: {
-  //   getIsLogin: (state) => state.isLogin,
-  // },
 });
 
 export default userSlice;
@@ -200,11 +161,3 @@ export const userExpose: CommonObj = {
   handleLoginIn,
   handleLoginOut,
 };
-
-// 导出操作以在应用程序中使用
-// export const { addItem, removeItem, updateQuantity } = userSlice.actions;
-// // 导出减速器以添加到存储中（第一个示例）
-// export default userSlice.reducer;
-
-// 导出选择器
-// const { getIsLogin } = userSlice.selectors;

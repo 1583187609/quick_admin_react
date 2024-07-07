@@ -17,39 +17,20 @@ interface Props {
   fold?: boolean;
   children?: any;
 }
-export default ({
-  className = "",
-  style,
-  title,
-  right,
-  count = 0,
-  overflowCount = 99,
-  fold,
-  children,
-}: Props) => {
+export default ({ className = "", style, title, right, count = 0, overflowCount = 99, fold, children }: Props) => {
   const [isFold, setIsFold] = useState(false);
   return (
     <div style={style} className={`${className} ${s["base-section"]}`}>
       <header className={`${s.head} f-sb-c`}>
         <div className={`${s.title} f-fs-c`}>{title}</div>
-        {!!count && (
-          <Badge
-            className={s.badge}
-            count={count}
-            overflowCount={overflowCount}
-          ></Badge>
-        )}
+        {!!count && <Badge className={s.badge} count={count} overflowCount={overflowCount}></Badge>}
         {right}
         {fold && (
           <Button
             className={`${s["fold-btn"]} ml-h`}
             type="link"
             onClick={() => setIsFold(!isFold)}
-            icon={
-              <CaretDownOutlined
-                className={`${s["fold-icon"]} ${isFold ? "" : "rotate-180"}`}
-              />
-            }
+            icon={<CaretDownOutlined className={`${s["fold-icon"]} ${isFold ? "" : "rotate-180"}`} />}
           ></Button>
         )}
       </header>

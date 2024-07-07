@@ -17,6 +17,7 @@ interface Props {
   to?: string; //要跳转的页面地址
   round?: boolean;
   gender?: 0 | 1; //性别
+  preview?: boolean;
   [key: string]: any;
 }
 const avatarMap: Record<1 | 2, any> = {

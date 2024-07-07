@@ -7,6 +7,7 @@ import { Button, Form, Input, Select, Space, Tooltip, Typography, Row, Col, Date
 import { useRouter } from "@/hooks";
 import { CommonObj } from "@/vite-env";
 import dayjs from "dayjs";
+import { showMessage } from "@/utils";
 const { Option } = Select;
 // import s from "./index.module.less";
 
@@ -139,6 +140,19 @@ export default ({ className = "", ...restProps }: Props) => {
           }
         >
           跳转到登录页
+        </Button>
+        <Button onClick={() => router.push("/gis/demo-1")}>跳转到GIS示例1页面</Button>
+        <Button onClick={() => router.push("/test/10/3")}>跳转到测试10-3页面</Button>
+        <Button
+          onClick={() =>
+            showMessage(
+              <div>
+                测试内容<b>111111232312312312312311231231231</b>
+              </div>
+            )
+          }
+        >
+          showMessage测试
         </Button>
       </div>
     </>

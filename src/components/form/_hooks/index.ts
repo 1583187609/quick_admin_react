@@ -133,10 +133,9 @@ export const useInitForm = (props: CommonObj, ref: any): UseInitFormReturns => {
       if (onSubmit) {
         onSubmit(newParams, (msg = `${text}成功！`, closeType?: ClosePopupType, cb?: () => void) => {
           showMessage(msg);
-          setLoading(false);
           closePopup?.(closeType);
           cb?.();
-        });
+        }).finally(() => setLoading(false));
       } else {
         fetch(newParams)
           .then((res: any) => {

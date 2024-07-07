@@ -1,4 +1,3 @@
-import BaseAvatar from "@/components/BaseAvatar";
 import { FormField } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
 import { getUserInfo } from "@/utils";
@@ -9,6 +8,11 @@ interface Props {
   id: number;
 }
 const fields: FormField[] = [
+  {
+    name: "avatar",
+    label: "头像",
+    type: "UploadAvatar",
+  },
   {
     name: "nickname",
     label: "昵称",
@@ -94,7 +98,7 @@ export default ({ id }: Props) => {
   }
   return (
     <>
-      <BaseAvatar style={{ margin: "0 auto 32px" }} />
+      {/* <BaseAvatar size={120} className="ml-a mr-a"  round/> */}
       {initVals && <BaseForm initialValues={initVals} style={{ width: "450px" }} fields={fields} />}
     </>
   );
