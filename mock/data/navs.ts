@@ -1,7 +1,7 @@
 import { ResponseMenuItem } from "@/layout/_components/SideMenu/_types";
 import Mock from "mockjs";
-import { getBasePath } from "../utils";
 import platformCfg from "../_platform";
+import { getBasePath } from "../_platform/_utils";
 
 const { fileSuffix, menuIcons } = platformCfg;
 const { Random } = Mock;

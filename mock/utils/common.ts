@@ -3,6 +3,7 @@ import dictMap from "../dict";
 import { getDictText } from "../dict";
 import { CommonObj, OptionItem } from "@/vite-env";
 import { typeOf } from "./base";
+import { getBasePath } from "../_platform/_utils";
 
 /**
  * 获取请求参数
@@ -258,19 +259,6 @@ export function findTreeNode(arr: any[], byId: string, propsMap: CommonObj = { i
   }
   getFindInfo(arr, byId);
   return node;
-}
-
-/**
- * 获取域名+pathname
- * @example 发布到gitee上的有效地址：https://fanlichuan.gitee.io/quick_admin_vue3/dist/static/imgs/girl-1.jpg
- * @example VsCode Live Sever打开的有效地址：http://127.0.0.1:5500/dist/static/imgs/boy-6.jpg
- */
-export function getBasePath(projectName = "quick_admin_vue3", rootPath = "/dist") {
-  const isDev = process.env.NODE_ENV === "development";
-  if (isDev) return ""; //开发模式
-  const { origin, host } = location;
-  const isLiveSever = host.startsWith("127");
-  return `${origin}/${isLiveSever ? "" : projectName}${rootPath}`;
 }
 
 /**
