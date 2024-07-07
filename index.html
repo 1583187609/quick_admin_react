@@ -5,9 +5,51 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>%VITE_APP_NAME%</title>
+    <style>
+      .init-loading {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: fit-content;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      .init-loading .img {
+        height: 50px;
+        width: 50px;
+        animation: zoom 1s linear infinite;
+      }
+      .init-loading .text {
+        margin-top: 32px;
+        font-size: 20px;
+      }
+      @keyframes zoom {
+        0% {
+          transform: scale(1);
+        }
+        25% {
+          transform: scale(2);
+        }
+        50% {
+          transform: scale(1);
+        }
+        75% {
+          transform: scale(0.5);
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root">加载中……</div>
+    <div id="root">
+      <div class="init-loading">
+        <h1>%VITE_APP_NAME%</h1>
+        <img class="img" src="/vite.svg" />
+        <div class="text">载入中……</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

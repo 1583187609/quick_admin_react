@@ -73,7 +73,7 @@ const handleLoginIn = createAsyncThunk("userLoginIn", async (payload: CommonObj,
         });
         clearInterval(timer);
       }
-    });
+    }, 100);
     return {
       user,
       expired,

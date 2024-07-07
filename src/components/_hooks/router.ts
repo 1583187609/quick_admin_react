@@ -1,8 +1,9 @@
 import { CommonObj } from "@/vite-env";
 import { NavigateOptions, useNavigate } from "react-router-dom";
-import { defaultHomePath, getUserInfo, storage, urlParamsToSearch } from "../_utils";
+import { defaultHomePath, getUserInfo, showMessage, storage, urlParamsToSearch } from "../_utils";
 import routes from "@/router/routes";
 import { ResponseMenuItem } from "@/layout/_types";
+import { useStoreSlice } from "@/hooks";
 
 export interface RouteProps {
   name: string;
@@ -51,28 +52,41 @@ export function getRouteIsAuth(path: string, allNavs: ResponseMenuItem[] = stora
 
 export default () => {
   const navigate = useNavigate();
+  const { userInfo } = useStoreSlice("user");
+
+  function autoNavigateTo(path: string | RouteProps, other?: CommonObj) {
+    if (!path) return navigate(defaultHomePath);
+    const newPath = toPathStr(path);
+    const noAuthPaths = ["/login"];
+    if (noAuthPaths.some((it: string) => newPath.startsWith(it))) return navigate(newPath, other);
+    if (userInfo) {
+      if (getRouteIsAuth(newPath)) return navigate(newPath, other);
+      // navigate(`/403?redirect=${newPath}`, { replace: true });
+      navigate(newPath, other);
+    } else {
+      // showMessage("请登录", "warning");
+      // navigate(`/login?redirect=${newPath}`, { replace: true });
+      navigate(newPath, other);
+    }
+  }
+  function go(num: number) {
+    navigate(num);
+  }
+  function push(path: string | RouteProps) {
+    autoNavigateTo(path);
+  }
+  function replace(path: string | RouteProps) {
+    autoNavigateTo(path, { replace: true });
+  }
+  function redirect(path: string | RouteProps) {
+    console.error("暂未处理重定向路由");
+    if (!path) return navigate(defaultHomePath);
+  }
   return {
-    go(num: number) {
-      navigate(num);
-    },
-    push(path: string | RouteProps) {
-      if (!path) return navigate(defaultHomePath);
-      const newPath = toPathStr(path);
-      const isAuth = getRouteIsAuth(newPath);
-      navigate(isAuth ? newPath : `/403?redirect=${newPath}`);
-    },
-    replace(path: string | RouteProps) {
-      if (!path) return navigate(defaultHomePath);
-      const newPath = toPathStr(path);
-      const isAuth = getRouteIsAuth(newPath);
-      navigate(isAuth ? newPath : `/403?redirect=${newPath}`, { replace: isAuth });
-    },
-    redirect(path: string | RouteProps) {
-      console.error("暂未处理重定向路由");
-      if (!path) return navigate(defaultHomePath);
-      // if (!path) return;
-      // const newPath = toPathStr(path);
-      // navigate(newPath, { redirect: true } as NavigateOptions); // 不存在 redirect 属性
-    },
+    go,
+    push,
+    replace,
+    redirect,
+    autoNavigateTo,
   };
 };

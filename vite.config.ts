@@ -100,19 +100,27 @@ export default ({ mode, command }) => {
     },
     server: {
       open: true,
-      //   port: 8080, //启动端口
-      //   hmr: {
-      //     host: "127.0.0.1",
-      //     port: 8080,
+      // port: 5180, //启动端口
+      // hmr: {
+      //   host: "127.0.0.1",
+      //   port: 5180,
+      // },
+      // // 设置 https 代理
+      // proxy: {
+      //   "/api": {
+      //     target: env.VITE_APP_API_BASEURL, //http://127.0.0.1:5500
+      //     // target: "http://127.0.0.1:5180",
+      //     // target: "https://fanlichuan.gitee.io",
+      //     changeOrigin: true, //是否跨域
+      //     ws: true, //是否代理 websockets
+      //     secure: false, //是否https接口
+      //     rewrite: (path: string) => path.replace(/^\/api/, ""),
+      //     bypass(req, res, options: any) {
+      //       const proxyURL = options.target + options.rewrite(req.url);
+      //       res.setHeader("x-req-proxyURL", proxyURL); // 设置响应头可以在浏览器中看到实际请求地址
+      //     },
       //   },
-      //   // 设置 https 代理
-      //   // proxy: {
-      //   //   "/api": {
-      //   //     target: "your https address",
-      //   //     changeOrigin: true,
-      //   //     rewrite: (path: string) => path.replace(/^\/api/, ""),
-      //   //   },
-      //   // },
+      // },
     },
     //vite构建时默认使用Esbuild，打包速度是其他打包工具的十几倍，但是缺点也很明显，不具备操作AST的能力，所以需要通过terser去除console.log
     build: {

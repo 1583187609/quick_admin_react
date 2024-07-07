@@ -27,25 +27,6 @@ export function checkObjKeyError(obj_1: CommonObj = {}, obj_2: CommonObj = {}) {
 }
 
 /**
- * 计算src/components下开发的有效页面
- * @return
- */
-export function getDevelopComponents() {
-  const comps = import.meta.glob("@/components/**/**/*.vue");
-  const allNames = Object.keys(comps);
-  const unValidNames: string[] = []; //无效页面
-  //有效页面
-  const valideNames = allNames.filter((key: string) => {
-    if (key.includes(" ")) unValidNames.push(key);
-    return !key.includes(" ");
-  });
-  return {
-    valideNames,
-    unValidNames,
-  };
-}
-
-/**
  * @description 全局代码错误捕捉
  * */
 export function handleError(error: any) {

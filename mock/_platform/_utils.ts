@@ -9,5 +9,5 @@ export function getBasePath(projectName = "quick_admin", rootPath = "/react/prev
   if (isDev) return ""; //开发模式
   const { origin, host } = location;
   const isLiveSever = host.startsWith("127");
-  return `${origin}/${isLiveSever ? "" : projectName}${rootPath}`;
+  return `${origin}/${isLiveSever ? "" : projectName}${isLiveSever ? "/dist" : rootPath}`;
 }

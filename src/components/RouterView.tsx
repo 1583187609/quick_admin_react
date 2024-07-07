@@ -11,7 +11,6 @@ import { CommonObj } from "@/vite-env";
 import { useRouter, useStoreSlice } from "@/hooks";
 import { camelCase } from "lodash";
 import Login from "@/views/login";
-import { getRouteIsAuth } from "./_hooks/router";
 
 export interface RouteItem {
   name: string; // 路由名称
@@ -128,8 +127,7 @@ export default () => {
     setTimeout(() => {
       updateRoutesState({ isCreatedRoute: true });
       // const { pathname } = location;
-      // const isAuth = getRouteIsAuth(pathname);
-      // if (!isAuth) router.push(`/403?redirect=${pathname}`);
+      // router.autoNavigateTo(pathname);
     });
   }
   return useRoutes(routes);
