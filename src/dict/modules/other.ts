@@ -99,15 +99,16 @@ export default {
     },
   },
   // 测试用的请求下拉项
-  TestFetchAsync: await GetMockCommonList().then((res: CommonObj) => {
-    const obj: CommonObj = {};
-    Array(3)
-      .fill("")
-      .forEach((item: string, ind: number) => {
-        obj[ind] = {
-          text: `请求下拉项${ind}`,
-        };
-      });
-    return obj;
-  }),
+  TestFetchAsync: {},
+  // await GetMockCommonList().then((res: CommonObj) => {
+  //   const obj: CommonObj = {};
+  //   Array(3)
+  //     .fill("")
+  //     .forEach((item: string, ind: number) => {
+  //       obj[ind] = {
+  //         text: `请求下拉项${ind}`,
+  //       };
+  //     });
+  //   return obj;
+  // }),
 };

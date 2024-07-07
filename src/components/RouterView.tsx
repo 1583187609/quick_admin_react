@@ -110,7 +110,7 @@ export default () => {
     },
     // { path: "/login", element: LazyLoad("/views/login/index.tsx") }, //使用懒加载会一直执行，导致页面一直处在加载中状态
     { name: "login", path: "/login", element: <Login /> },
-    ...errorRoutes,
+    // ...errorRoutes,
   ]);
 
   useEffect(() => {
