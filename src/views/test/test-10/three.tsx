@@ -4,7 +4,7 @@
 
 import { CSSProperties } from "react";
 import { Button, Form, Input, Select, Space, Tooltip, Typography, Row, Col, DatePicker, TimePicker } from "antd";
-import { useRouter } from "@/hooks";
+import { useRouter, useStoreSlice } from "@/hooks";
 import { CommonObj } from "@/vite-env";
 import dayjs from "dayjs";
 import { showMessage } from "@/utils";
@@ -31,6 +31,7 @@ const initVals = {
 };
 export default ({ className = "", ...restProps }: Props) => {
   const router = useRouter();
+  const { updateMenuState } = useStoreSlice("menu");
   return (
     <>
       <Form
@@ -44,58 +45,6 @@ export default ({ className = "", ...restProps }: Props) => {
         style={{ maxWidth: 800 }}
         initialValues={initVals}
       >
-        {/* <Form.Item label="Username">
-          <Space>
-            <Form.Item name="username" noStyle rules={[{ required: true, message: "Username is required" }]}>
-              <Input style={{ width: 160 }} placeholder="Please input" />
-            </Form.Item>
-            <Tooltip title="Useful information">
-              <Typography.Link href="#API">Need Help?</Typography.Link>
-            </Tooltip>
-          </Space>
-        </Form.Item>
-        <Form.Item label="Address">
-          <Space.Compact>
-            <Form.Item name={["address", "province"]} noStyle rules={[{ required: true, message: "Province is required" }]}>
-              <Select placeholder="Select province">
-                <Option value="Zhejiang">Zhejiang</Option>
-                <Option value="Jiangsu">Jiangsu</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name={["address", "street"]} noStyle rules={[{ required: true, message: "Street is required" }]}>
-              <Input style={{ width: "50%" }} placeholder="Input street" />
-            </Form.Item>
-          </Space.Compact>
-        </Form.Item> */}
-        {/* <Form.Item label="BirthDate" style={{ marginBottom: 0 }}>
-          <Form.Item name="year" rules={[{ required: true }]} style={{ display: "inline-block", width: "calc(50% - 8px)" }}>
-            <Input placeholder="Input birth year" />
-          </Form.Item>
-          <Form.Item
-            name="month"
-            rules={[{ required: true }]}
-            style={{ display: "inline-block", width: "calc(50% - 8px)", margin: "0 8px" }}
-          >
-            <Input placeholder="Input birth month" />
-          </Form.Item>
-        </Form.Item> */}
-        {/* <Form.Item label="BirthDate" style={{ marginBottom: 0 }} required>
-          <Space.Compact>
-            <Form.Item
-              name="year"
-              rules={[{ required: true }]}
-              tooltip={<div className="color-danger">"提示信息"</div>}
-            >
-              <Input placeholder="请输入年份" />
-            </Form.Item>
-            <Form.Item
-              name="month"
-              rules={[{ required: true }]}
-            >
-              <Input placeholder="Input birth month" />
-            </Form.Item>
-          </Space.Compact>
-        </Form.Item> */}
         <Form.Item label="时间" name="sj">
           <TimePicker format="HH:mm:ss" />
         </Form.Item>
@@ -154,6 +103,7 @@ export default ({ className = "", ...restProps }: Props) => {
         >
           showMessage测试
         </Button>
+        <Button onClick={() => updateMenuState({ isFold: false })}>更新菜单State错误key值示例</Button>
       </div>
     </>
   );

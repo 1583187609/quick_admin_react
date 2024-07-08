@@ -5,25 +5,11 @@
  * @notice 处理了当失去或聚焦焦点时，会触发onChange事件的第三方bug
  */
 
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  CSSProperties,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useMemo, CSSProperties, useRef, useCallback } from "react";
 import { debounce, merge } from "lodash";
 import { IDomEditor, IToolbarConfig, IEditorConfig } from "@wangeditor/editor";
 import { Editor, Toolbar } from "@wangeditor/editor-for-react";
-import {
-  toFileSizeStr,
-  getIsEmpty,
-  getUploadImageConfig,
-  textToHtmlWithWords,
-  htmlToText,
-  cssObjToCssStr,
-} from "./_help";
+import { toFileSizeStr, getIsEmpty, getUploadImageConfig, textToHtmlWithWords, htmlToText, cssObjToCssStr } from "./_help";
 import { useEventListener } from "@/hooks";
 
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
@@ -109,20 +95,13 @@ const defaultEditorConfig: Partial<IEditorConfig> = {
     try {
       const fragmentNode = editor.getFragment();
       // table 粘贴单独处理
-      if (
-        Array.isArray(fragmentNode) &&
-        fragmentNode.some((item: CommonObj) => item.type === "table")
-      ) {
+      if (Array.isArray(fragmentNode) && fragmentNode.some((item: CommonObj) => item.type === "table")) {
         editor.insertText(text);
         event.preventDefault();
         return false;
       }
       const textArray = text.split("\r");
-      const formatedText = textArray
-        .map(
-          (item) => `<div>${(item || "").replace(/([]|\r|\n)/g, "")}</div>`
-        )
-        .join("");
+      const formatedText = textArray.map(item => `<div>${(item || "").replace(/([]|\r|\n)/g, "")}</div>`).join("");
       // 新版本应该已修复 https://github.com/wangeditor-team/wangEditor/commit/8b549f480434782107eda3412bf6530d0d7eb9ba
       editor.dangerouslyInsertHtml(formatedText);
     } catch (error) {
@@ -160,23 +139,12 @@ export default ({
   const [htmlValue, setHtmlValue] = useState("");
   const isCtrlZ = useRef(false);
   const [editor, setEditor] = useState<IDomEditor | null>(null); // editor 实例
-  const { wrong: wrongStyle, sens: sensStyle } = merge(
-    {},
-    defaultWordsStyle,
-    wordsStyle
-  );
+  const { wrong: wrongStyle, sens: sensStyle } = merge({}, defaultWordsStyle, wordsStyle);
   const uploadImageCfg = getUploadImageConfig(); //上传图片的配置
-  const imgTypesStr = uploadImageCfg?.allowedFileTypes
-    .map((it: string) => it.split("/")[1])
-    .join("、");
+  const imgTypesStr = uploadImageCfg?.allowedFileTypes.map((it: string) => it.split("/")[1]).join("、");
   const imgMaxSize = toFileSizeStr(uploadImageCfg?.maxFileSize);
   //工具栏配置 因为toolbarKeys配置使用频繁，所以单独预留一个属性直接配置它
-  const toolbarDefaultConfig: Partial<IToolbarConfig> = merge(
-    {},
-    defaultToolbarConfig,
-    toolbarConfig,
-    { toolbarKeys }
-  );
+  const toolbarDefaultConfig: Partial<IToolbarConfig> = merge({}, defaultToolbarConfig, toolbarConfig, { toolbarKeys });
   // 编辑器配置
   const editorDefaultConfig: Partial<IEditorConfig> = merge(
     {},
@@ -228,13 +196,7 @@ export default ({
       if (wordsList && !isFocus) {
         const { wrong: wrongWords, sens: sensWords } = wordsList;
         value = htmlToText(value);
-        value = textToHtmlWithWords(
-          value,
-          wrongWords,
-          sensWords,
-          cssObjToCssStr(wrongStyle),
-          cssObjToCssStr(sensStyle)
-        );
+        value = textToHtmlWithWords(value, wrongWords, sensWords, cssObjToCssStr(wrongStyle), cssObjToCssStr(sensStyle));
       }
       if (!value.startsWith("<p>")) value = "<p>" + value; //当传入html文本时，需要p标签包裹行内元素，否则编辑器会显示不正常
       if (!value.endsWith("</p>")) value += "</p>";
@@ -262,11 +224,9 @@ export default ({
       // editor.setHtml(_html);
       if (isCtrlZ.current) {
         setTimeout(() => {
-          console.log("onChange--------------------Z");
           onChange?.(_html, _text, editor);
         }, 50);
       } else {
-        console.log("onChange--------------------");
         onChange?.(_html, _text, editor);
       }
     }
@@ -298,13 +258,12 @@ export default ({
           {...editorProps}
         />
       </div>
-      {showImgTips &&
-        toolbarDefaultConfig?.toolbarKeys?.includes("uploadImage") && (
-          <div className={s.tips}>
-            注：{imgTypesStr === "*" ? "" : `图片只能上传${imgTypesStr}格式，`}
-            每张图片大小不能超过{imgMaxSize}。
-          </div>
-        )}
+      {showImgTips && toolbarDefaultConfig?.toolbarKeys?.includes("uploadImage") && (
+        <div className={s.tips}>
+          注：{imgTypesStr === "*" ? "" : `图片只能上传${imgTypesStr}格式，`}
+          每张图片大小不能超过{imgMaxSize}。
+        </div>
+      )}
       {!!wordsList && (
         <div className="f-sb-c mt-8">
           <div className="f-1">

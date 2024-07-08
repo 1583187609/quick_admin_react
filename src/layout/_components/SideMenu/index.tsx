@@ -34,15 +34,12 @@ export default ({ className = "", theme = "dark", ...restProps }: Props) => {
   const isSubMenu = layout.type === "columns";
   useEffect(() => {
     setOpenAndSeledKeys(allMenus, pathname);
-  }, [allMenus, pathname]);
+  }, [allMenus]);
   const handleSelect = useCallback((info: CommonObj) => {
     const { key, selectedKeys, keyPath } = info;
     const openKeys = keyPath.slice(1).reverse();
     updateMenuState({ seledKeys: selectedKeys, openKeys });
     router.push(key);
-  }, []);
-  const handleOpenChange = useCallback((openKeys: string[]) => {
-    updateMenuState({ openKeys });
   }, []);
   // 设置打开的菜单、被选中的菜单keys
   function setOpenAndSeledKeys(menus: ResponseMenuItem[], pathName: string) {
@@ -61,10 +58,8 @@ export default ({ className = "", theme = "dark", ...restProps }: Props) => {
               if (target?.children?.length) {
                 openKeys = [target.path];
                 seledKeys = [target.children[0]?.path];
-                // console.log(openKeys, seledKeys, "seledKeys---------------------1");
               } else {
                 seledKeys = [target.path];
-                // console.log(openKeys, seledKeys, "seledKeys---------------------2");
               }
             } else {
               openKeys = [target.path];
@@ -85,7 +80,6 @@ export default ({ className = "", theme = "dark", ...restProps }: Props) => {
             } else {
               seledKeys = [path];
             }
-            // console.log(openKeys, seledKeys, "seledKeys---------------------3");
           }
           return isFind;
         }
@@ -101,7 +95,7 @@ export default ({ className = "", theme = "dark", ...restProps }: Props) => {
       style={{ overflow: "auto" }}
       className={`${className}`}
       onSelect={handleSelect}
-      onOpenChange={handleOpenChange}
+      onOpenChange={(openKeys: string[]) => updateMenuState({ openKeys })}
       openKeys={openKeys}
       selectedKeys={seledKeys}
       theme={theme}

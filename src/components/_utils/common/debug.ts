@@ -4,6 +4,7 @@
 
 import { CommonObj } from "@/vite-env";
 import { isDev } from "./consts";
+import { showMessage } from "../platform";
 // import { ElNotification } from "element-plus";
 
 /**
@@ -20,8 +21,10 @@ export function needParam(name: string = "") {
 export function checkObjKeyError(obj_1: CommonObj = {}, obj_2: CommonObj = {}) {
   if (!isDev) return;
   for (const key in obj_2) {
-    if (obj_1[key] === undefined) {
-      throw new Error(`不存在属性名：${key}，请检查`);
+    if (typeof obj_1[key] === "undefined") {
+      const msg = `属性名 ${key} 不存在目标对象上`;
+      showMessage(msg, "error");
+      throw new Error(msg);
     }
   }
 }

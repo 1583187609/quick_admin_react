@@ -3,7 +3,7 @@
  */
 
 import { typeOf } from "#/mock/utils";
-import { CSSProperties, useMemo } from "react";
+import { CSSProperties } from "react";
 import s from "./index.module.less";
 
 interface Props {
@@ -40,17 +40,10 @@ export default ({
   const valText = getText(children, value);
   return (
     <div style={style} className={`${className} ${s["base-key-val"]} f-fs-fs`}>
-      <div
-        style={labelStyle}
-        className={`${s.key} ${colon ? s.colon : ""} f-0`}
-      >
+      <div style={labelStyle} className={`${s.key} ${colon ? s.colon : ""} f-0`}>
         {label}
       </div>
-      <div
-        className={`${s.val} ${colon ? s.colon : ""} ${
-          valClass ? s[valClass] : ""
-        } ${s[`line-${lineNum}`]} f-1`}
-      >
+      <div className={`${s.val} ${colon ? s.colon : ""} ${valClass ? s[valClass] : ""} ${s[`line-${lineNum}`]} f-1`}>
         {valText}
       </div>
     </div>

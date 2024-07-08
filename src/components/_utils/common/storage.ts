@@ -42,6 +42,7 @@ const storageMap: StorageMap = {
   localStorage,
   sessionStorage,
 };
+
 export default {
   /**
    * 存数据
@@ -51,9 +52,7 @@ export default {
    * @param hours {Number} cookie的过期时间，只有当type为cookie时，才会用到这个参数
    */
   setItem(key: string, val: any, type: StorageType = "local", hours?: number) {
-    if (typeof val === "object") {
-      val = JSON.stringify(val);
-    }
+    if (typeof val === "object") val = JSON.stringify(val);
     return storageMap[type + "Storage"].setItem(key, val, hours);
   },
   /**
@@ -67,9 +66,7 @@ export default {
     if (val === "undefined") return;
     if (val === "false") return false;
     if (val === "true") return true;
-    if (val.startsWith("{") || val.startsWith("[")) {
-      val = JSON.parse(val);
-    }
+    if (val.startsWith("{") || val.startsWith("[")) val = JSON.parse(val);
     return val;
   },
   /**
@@ -84,9 +81,7 @@ export default {
    * 删除所有存储数据
    * @param type
    */
-  clear(type: StorageType = "local") {
-    return storageMap[type + "Storage"].clear();
-  },
+  clear(type: StorageType = "local") {},
   /**
    * 删除所有存储的键名
    * @param type

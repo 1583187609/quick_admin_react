@@ -45,7 +45,7 @@ export default ({ className = "", value, onChange, children, ...restProps }: Pro
   function handleSelected(val: LayoutType) {
     setType(val);
     onChange?.(val);
-    updateSetState(["layout", { type: val }, "set"]);
+    updateSetState(["layout", { type: val }]);
   }
   return (
     <div className={`${className} ${s["layout-style"]} f-sb-fs-w`} {...restProps}>
