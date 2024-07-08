@@ -7,12 +7,11 @@ import { CommonObj } from "@/vite-env";
 import { updateState } from "../_utils";
 import * as Icons from "@ant-design/icons";
 
-export function convertToMenuNavs(menus: ResponseMenuItem[] = [], level = 0): AntdMenuItem[] {
-  const user = getUserInfo();
+export function convertToMenuNavs(menus: ResponseMenuItem[] = [], userType = getUserInfo()?.type, level = 0): AntdMenuItem[] {
   const filterMenus = menus.filter((it: ResponseMenuItem) => {
     const { type, auth_codes } = it;
     if (!auth_codes?.length) return true;
-    return type !== 2 && auth_codes.includes(user?.type);
+    return type !== 2 && auth_codes.includes(userType);
     // return it.type !== 2;
   });
   const antdMenus = filterMenus.map((item: ResponseMenuItem) => {
@@ -24,7 +23,7 @@ export function convertToMenuNavs(menus: ResponseMenuItem[] = [], level = 0): An
       type,
     };
     if (children?.length) {
-      obj.children = convertToMenuNavs(children, level + 1);
+      obj.children = convertToMenuNavs(children, userType, level + 1);
     }
     return obj as AntdMenuItem;
   });
@@ -50,15 +49,6 @@ const menuSlice = createSlice({
     initMenus: (state, { payload = [] }) => {
       state.allMenus = payload;
     },
-  },
-  selectors: {
-    // state: state => state,
-    // getActiveKeysTest(state, args) {
-    //   console.log(state, args, "args------------");
-    //   let openKeys: string[] = [];
-    //   let seledKeys: string[] = [];
-    //   return { openKeys, seledKeys };
-    // },
   },
 });
 

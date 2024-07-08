@@ -2,22 +2,23 @@
  * 布局Layout文件
  */
 
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import TheMenu from "./_components/TheMenu";
 import TheHead from "./_components/TheHead";
 import { Suspense, useEffect, useState } from "react";
 import { Spin, Watermark } from "antd";
 import { useStoreSlice } from "@/hooks";
 import BaseImg from "@/components/BaseImg";
-import BaseIcon from "@/components/BaseIcon";
 import logoImg from "@/assets/images/logo.svg";
 import useMenu from "@/layout/_hooks";
 import { AntdMenuItem, ResponseMenuItem } from "@/layout/_types";
 import cssVars from "@/assets/styles/_var.module.less";
 import { CommonObj } from "@/vite-env";
-import s from "./index.module.less";
 import { convertToMenuNavs } from "@/store/modules/menu";
 import BaseEmpty from "@/components/BaseEmpty";
+import { defaultHomePath, errorPaths, getUserInfo, showMessage } from "@/utils";
+import { hasRouteAuth } from "@/components/_hooks/router";
+import s from "./index.module.less";
 
 interface Props {
   className?: string;
@@ -26,12 +27,33 @@ interface Props {
 let reloadCb: undefined | (() => void);
 const { VITE_APP_NAME } = import.meta.env;
 const { mainMenuWidth, asiderWidth, asiderWidthFold } = cssVars;
+function getIsExist(byPath: string, allMenus: ResponseMenuItem[]) {
+  function getIsFound(menus: ResponseMenuItem[]): boolean {
+    return !!menus.find((item: ResponseMenuItem) => {
+      const { path, children, link_type } = item;
+      if (children?.length) {
+        return getIsFound(children);
+      } else {
+        if (link_type) return false;
+        return path === byPath;
+      }
+    });
+  }
+  return getIsFound(allMenus);
+}
 
 export default ({ className = "" }: Props) => {
   const { layout } = useStoreSlice("set");
-  const { isCollapse, updateMenuState, allMenus, activeIndex } = useStoreSlice("menu");
+  const { isCollapse, allMenus, activeIndex } = useStoreSlice("menu");
   const { changeActiveIndex } = useMenu();
   const [show, setShow] = useState(true);
+  const location = useLocation();
+  const items = convertToMenuNavs(allMenus);
+  const navigate = useNavigate();
+  const { pathname } = location;
+  useEffect(() => {
+    watchToErrorRoute(pathname);
+  }, [pathname]);
   useEffect(() => {
     if (!show) {
       setShow(true);
@@ -44,7 +66,24 @@ export default ({ className = "" }: Props) => {
     vertical: `calc(100vw - ${isCollapse ? asiderWidthFold : asiderWidth})`,
     horizontal: `100vw`,
   };
-  const items = convertToMenuNavs(allMenus);
+
+  /***
+   * 检测并自动跳转到对应的错误页（403,404等）
+   */
+  function watchToErrorRoute(path?: string) {
+    if (!path) return;
+    if (errorPaths.some((it: string) => path.startsWith(it)) || defaultHomePath === path) return;
+    const userInfo = getUserInfo();
+    if (userInfo) {
+      const isExist = getIsExist(pathname, allMenus);
+      if (!isExist) return navigate(`/404?redirect=${path}`);
+      if (hasRouteAuth(path, userInfo.type)) return;
+      navigate(`/403?redirect=${path}`, { replace: true });
+    } else {
+      showMessage("请登录", "warning");
+      navigate(`/login?redirect=${path}`);
+    }
+  }
   return (
     <Watermark content={VITE_APP_NAME} gap={[80, 80]}>
       <div className={`${className} ${s.layout} f-sb-s`}>

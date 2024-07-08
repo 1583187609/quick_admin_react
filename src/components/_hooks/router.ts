@@ -1,9 +1,8 @@
 import { CommonObj } from "@/vite-env";
 import { NavigateOptions, useNavigate } from "react-router-dom";
-import { defaultHomePath, getUserInfo, showMessage, storage, urlParamsToSearch } from "../_utils";
-import routes from "@/router/routes";
+import { defaultHomePath, getUserInfo, noAuthPaths, showMessage, storage, urlParamsToSearch } from "../_utils";
+import routes from "@/router";
 import { ResponseMenuItem } from "@/layout/_types";
-import { useStoreSlice } from "@/hooks";
 
 export interface RouteProps {
   name: string;
@@ -22,71 +21,69 @@ function toPathStr(path: string | RouteProps = "") {
 /***
  * 获取当前路由页面是否授权
  */
-const whiteList = ["/login", "/403", "/404", "/500"];
-export function getRouteIsAuth(path: string, allNavs: ResponseMenuItem[] = storage.getItem("allMenus"), type?: number) {
-  if (whiteList.some((it: string) => path.startsWith(it))) return true;
-  const userType = type ?? getUserInfo()?.type;
-  if (!allNavs?.length) return false;
+
+export function hasRouteAuth(
+  path: string,
+  type = getUserInfo()?.type,
+  allNavs: ResponseMenuItem[] = storage.getItem("allMenus")
+) {
+  if (path === defaultHomePath || path === "") return true;
+  if (!allNavs?.length) return true;
   let isAuth = false;
   const newPath = path.split("?")[0];
-  function cycleIsFind(arr: ResponseMenuItem[]): boolean {
+  function getIsFind(arr: ResponseMenuItem[]): boolean {
     if (!arr) return false;
     return !!arr.find((item: ResponseMenuItem) => {
       const { path, children, auth_codes } = item;
       if (children?.length) {
-        isAuth = auth_codes?.length ? auth_codes.includes(userType) : true;
-        if (isAuth) return cycleIsFind(children);
+        const isMenuAuth = auth_codes?.length ? auth_codes.includes(type) : true;
+        if (isMenuAuth) return getIsFind(children);
         return false;
       } else {
         const isFind = path === newPath;
-        if (isFind) {
-          isAuth = auth_codes?.length ? auth_codes.includes(userType) : true;
-        }
+        if (isFind) isAuth = auth_codes?.length ? auth_codes.includes(type) : true;
         return isFind;
       }
     });
   }
-  cycleIsFind(allNavs);
+  getIsFind(allNavs);
   return isAuth;
 }
 
 export default () => {
   const navigate = useNavigate();
-  const { userInfo } = useStoreSlice("user");
-
-  function autoNavigateTo(path: string | RouteProps, other?: CommonObj) {
+  /**
+   * 路由跳转处理，拦截并跳转到错误页（403,404等）
+   */
+  function handleNavTo(path?: string | RouteProps, cfg?: NavigateOptions) {
     if (!path) return navigate(defaultHomePath);
-    const newPath = toPathStr(path);
-    const noAuthPaths = ["/login"];
-    if (noAuthPaths.some((it: string) => newPath.startsWith(it))) return navigate(newPath, other);
+    const pathStr = toPathStr(path);
+    const noAuth = noAuthPaths.some((it: string) => pathStr.startsWith(it));
+    if (noAuth) return navigate(pathStr, cfg);
+    const userInfo = getUserInfo();
     if (userInfo) {
-      if (getRouteIsAuth(newPath)) return navigate(newPath, other);
-      // navigate(`/403?redirect=${newPath}`, { replace: true });
-      navigate(newPath, other);
+      if (hasRouteAuth(pathStr, userInfo.type)) return navigate(pathStr, cfg);
+      const redirectStr = pathStr.split("?")[1];
+      navigate(`/403?${redirectStr || `redirect=${pathStr}`}`, { replace: true });
     } else {
-      // showMessage("请登录", "warning");
-      // navigate(`/login?redirect=${newPath}`, { replace: true });
-      navigate(newPath, other);
+      const redirectStr = pathStr.split("?")[1];
+      showMessage("请登录", "warning");
+      navigate(`/login?${redirectStr || `redirect=${pathStr}`}`);
     }
   }
   function go(num: number) {
     navigate(num);
   }
-  function push(path: string | RouteProps) {
-    autoNavigateTo(path);
+  function push(path: string | RouteProps, cfg?: NavigateOptions) {
+    handleNavTo(path, cfg);
   }
-  function replace(path: string | RouteProps) {
-    autoNavigateTo(path, { replace: true });
-  }
-  function redirect(path: string | RouteProps) {
-    console.error("暂未处理重定向路由");
-    if (!path) return navigate(defaultHomePath);
+  function replace(path: string | RouteProps, cfg?: NavigateOptions) {
+    handleNavTo(path, Object.assign({ replace: true }, cfg));
   }
   return {
     go,
     push,
     replace,
-    redirect,
-    autoNavigateTo,
+    handleNavTo,
   };
 };

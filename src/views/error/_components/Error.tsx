@@ -35,11 +35,15 @@ const statusMap = {
 export default ({ className = "", status = 404, ...restProps }: Props) => {
   const attrs: CommonObj = statusMap[status];
   const router = useRouter();
+  function handleBack() {
+    const isReplace = status == 403;
+    router.go(isReplace ? -1 : -2);
+  }
   return (
     <Result
       className={`${className}`}
       extra={
-        <Button onClick={() => router.go(-1)} type="primary">
+        <Button onClick={handleBack} type="primary">
           返回上一页
         </Button>
       }

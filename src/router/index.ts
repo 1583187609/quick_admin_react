@@ -3,8 +3,10 @@
  */
 
 import { CommonObj } from "@/vite-env";
+import base from "./modules/base";
+import system from "./modules/system";
 
 export default {
-  home: "/",
-  login: "/login",
+  ...base,
+  ...system,
 } as CommonObj;

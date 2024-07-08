@@ -1,17 +1,15 @@
-import { storage, defaultHomePath, defaultIconName, showMessage } from "@/utils";
+import { storage, defaultHomePath, defaultIconName, showMessage, errorPaths } from "@/utils";
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import { ResponseMenuItem } from "@/layout/_types";
 import { PostUserLogin, PostUserLogout } from "@/api-mock";
 import { notification } from "antd";
 import { CommonObj } from "@/vite-env";
 import menuStore from "@/store/modules/menu";
-import routesStore from "@/store/modules/routes";
 import dayjs from "dayjs";
 
 const expiration = 24 * 60 * 60 * 1000; // 过期时间，单位：秒，默认24小时不登录即会过期
 
 const { initMenus } = menuStore.actions;
-const { updateRoutesState } = routesStore.actions;
 
 function handleMenusIcon(navs: ResponseMenuItem[], level = 0): ResponseMenuItem[] {
   if (!navs) return [];
@@ -59,21 +57,15 @@ const handleLoginIn = createAsyncThunk("userLoginIn", async (payload: CommonObj,
     // 等路由创建好了，再进入
     let toPath = defaultHomePath;
     if (location.search) toPath = location.search.slice(10);
-    const timer = setInterval(() => {
-      const { isCreatedRoute } = getState().routes;
-      if (isCreatedRoute) {
-        router.push(toPath);
-        notification.success({
-          closeIcon: false,
-          style: { top: "36px" },
-          placement: "topRight",
-          message: "登录成功",
-          description: `欢迎回来，${user?.name ?? "XXX"}`,
-          duration: 3, //单位：秒
-        });
-        clearInterval(timer);
-      }
-    }, 100);
+    router.push(toPath);
+    notification.success({
+      closeIcon: false,
+      style: { top: "36px" },
+      placement: "topRight",
+      message: "登录成功",
+      description: `欢迎回来，${user?.name ?? "XXX"}`,
+      duration: 2, //单位：秒
+    });
     return {
       user,
       expired,
@@ -114,10 +106,9 @@ const handleLoginOut = createAsyncThunk("userLoginOut", async (payload: CommonOb
     //       ? { redirect: fullPath }
     //       : undefined,
     // });
-    let suffix = "";
-    if (!["/login", defaultHomePath].includes(pathname)) suffix = `?redirect=${pathname}`;
+    const needRedirect = !["/login", ...errorPaths].some((it: string) => pathname.startsWith(it)) && pathname !== defaultHomePath;
+    const suffix = needRedirect ? `?redirect=${pathname}` : "";
     router.push(`/login${suffix}`);
-    dispatch(updateRoutesState({ isCreatedRoute: false }));
     return res;
   });
 });

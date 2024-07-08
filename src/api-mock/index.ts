@@ -1,5 +1,5 @@
-export * from "./auth";
-export * from "./base";
+export * from "./modules/auth";
+export * from "./modules/base";
 // export * from "./demo";
-export * from "./mock";
-export * from "./user";
+export * from "./modules/mock";
+export * from "./modules/user";

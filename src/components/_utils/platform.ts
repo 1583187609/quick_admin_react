@@ -15,6 +15,9 @@ import * as Icons from "@ant-design/icons";
 import { ReactNode, isValidElement } from "react";
 import { ArgsProps } from "antd/es/message";
 
+export const noAuthPaths = ["/login"]; //不需要授权就能登录的页面
+export const errorPaths = ["/403", "/404", "/500"];
+
 /**
  * 获取 ReactNode 的文本字符串
  * @param node ReactNode Rect的节点
@@ -330,10 +333,13 @@ export function getMaxLength(fields: FormFieldAttrs[] = [], num = 2): number {
  * 获取用户信息
  * @returns
  */
-export function getUserInfo(): CommonObj | null {
+export function getUserInfo(id = ""): CommonObj | null {
   const info = storage.getItem("userInfo");
-  // if (!info) showMessage("检测到未登录异常", "error");
-  if (!info) console.error("检测到未登录异常", "error");
+  const path = location.hash.slice(1);
+  if (!noAuthPaths.some((it: string) => path.startsWith(it)) && !info) {
+    // if (!info) showMessage("检测到未登录异常", "error");
+    console.error(`检测到未登录异常，在${location.pathname}：${id}处执行`);
+  }
   return info;
 }
 

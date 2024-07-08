@@ -1,11 +1,12 @@
 import { FormField } from "@/components/BaseFormItem";
 import BaseForm from "@/components/form/BaseForm";
-import { getUserInfo } from "@/utils";
-import { CommonObj } from "@/vite-env";
-import { useEffect, useState } from "react";
+import { useStoreSlice } from "@/hooks";
+import { CSSProperties } from "react";
 
 interface Props {
-  id: number;
+  className?: string;
+  style?: CSSProperties;
+  [key: string]: any;
 }
 const fields: FormField[] = [
   {
@@ -86,20 +87,7 @@ const fields: FormField[] = [
     },
   },
 ];
-export default ({ id }: Props) => {
-  useEffect(() => {
-    getDetail(id);
-  }, []);
-  const [initVals, setInitVals] = useState<CommonObj | null>(null);
-  function getDetail(id: number) {
-    setTimeout(() => {
-      setInitVals(getUserInfo());
-    }, 500);
-  }
-  return (
-    <>
-      {/* <BaseAvatar size={120} className="ml-a mr-a"  round/> */}
-      {initVals && <BaseForm initialValues={initVals} style={{ width: "450px" }} fields={fields} />}
-    </>
-  );
+export default ({ className = "", ...restProps }: Props) => {
+  const { userInfo } = useStoreSlice("user");
+  return userInfo && <BaseForm initialValues={userInfo} style={{ width: "450px" }} fields={fields} {...restProps} />;
 };

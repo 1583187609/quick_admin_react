@@ -3,19 +3,21 @@
  * @link 动态路由参考：https://juejin.cn/post/7132393527501127687 和 https://blog.csdn.net/Miketutu/article/details/130445743
  */
 
-import { useRoutes, Navigate, useLocation } from "react-router-dom";
+import { useRoutes } from "react-router-dom";
 import React, { ReactNode, useEffect, useState } from "react";
 import Layout from "@/layout";
 import { ResponseMenuItem } from "@/layout/_types";
 import { CommonObj } from "@/vite-env";
-import { useRouter, useStoreSlice } from "@/hooks";
+import { useStoreSlice } from "@/hooks";
 import { camelCase } from "lodash";
 import Login from "@/views/login";
+import { defaultHomePath } from "./_utils";
 
 export interface RouteItem {
   name: string; // 路由名称
   path: string;
   element?: ReactNode;
+  // redirect?: string;
   children?: RouteItem[];
   meta?: {
     title?: string;
@@ -51,6 +53,7 @@ function getFlatRoutes(menus: ResponseMenuItem[]): RouteItem[] {
         children.forEach(child => pushRoutes(child));
       } else {
         route.element = LazyLoad(component as string);
+        // route.redirect = ""
         route.meta = {
           title: label,
           // cache: true,
@@ -81,24 +84,21 @@ const errorRoutes = [
   },
 ];
 
-// function getRoutesMap(routes: RouteItem[], map: CommonObj = {}) {
-//   routes.forEach((item: RouteItem) => {
-//     const { name, path, children } = item;
-//     if (!name) return; // 外部连接不生成路由信息
-//     if (!children?.length) {
-//       map[name] = path || "/";
-//     } else {
-//       getRoutesMap(children, map);
-//     }
-//   });
-//   return map;
-// }
+function getRoutesMap(routes: RouteItem[], map: CommonObj = {}) {
+  routes.forEach((item: RouteItem) => {
+    const { name, path, children } = item;
+    if (!name) return; // 外部连接不生成路由信息
+    if (!children?.length) {
+      map[name] = path || defaultHomePath;
+    } else {
+      getRoutesMap(children, map);
+    }
+  });
+  return map;
+}
 
 export default () => {
   const { allMenus } = useStoreSlice("menu");
-  const { updateRoutesState } = useStoreSlice("routes");
-  const router = useRouter();
-  const location = useLocation();
   const [routes, setRoutes] = useState<RouteItem[]>([
     {
       name: "root",
@@ -124,11 +124,7 @@ export default () => {
     const newRoutes = [...routes];
     //重置一下，解决刷新后，初次加载会白屏的问题
     setRoutes(newRoutes);
-    setTimeout(() => {
-      updateRoutesState({ isCreatedRoute: true });
-      // const { pathname } = location;
-      // router.autoNavigateTo(pathname);
-    });
+    // const routeMap = getRoutesMap(newRoutes); //暂时不删除，后面可能会用到
   }
   return useRoutes(routes);
 };

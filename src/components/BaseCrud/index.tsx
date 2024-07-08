@@ -76,7 +76,7 @@ export default forwardRef(
       resMap = {},
       log = true,
       children,
-      filterByAuth = (auth: number[]) => auth.includes(getUserInfo()?.type),
+      filterByAuth = (auth: number[]) => auth.includes(getUserInfo("baseCrud")?.type),
     }: Props,
     ref: any
   ) => {
