@@ -31,7 +31,7 @@ interface Props {
   onValuesChange?: (changedVals: CommonObj, allVals: CommonObj) => void;
   onFieldsChange?: (changedVals: CommonObj, allVals: CommonObj) => void;
   onSubmit?: (data: CommonObj, cb: () => void) => void;
-  onReset?: () => void;
+  afterReset?: () => void;
   [key: string]: any;
 }
 const colSpanAttrs: CommonObj = {
@@ -54,7 +54,7 @@ export default forwardRef((props: Props, ref: any) => {
   const {
     className,
     rowNum = 2,
-    onReset,
+    afterReset,
     loading,
     submitButton,
     resetButton,
@@ -70,7 +70,7 @@ export default forwardRef((props: Props, ref: any) => {
   useEventListener("resize", () => setColNum(getColNum()), [], true);
   function handleReset() {
     formAttrs.form.resetFields();
-    onReset?.();
+    afterReset?.();
   }
   return (
     <>

@@ -107,7 +107,7 @@ export default forwardRef((props: Props, ref: any) => {
           submitButton={submitButton}
           resetButton={resetButton}
           readOnly={readOnly}
-          onReset={() => setFolds(initFolds)}
+          afterReset={() => setFolds(initFolds)}
         />
       ) : (
         footer
