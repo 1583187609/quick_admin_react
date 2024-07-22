@@ -11,17 +11,17 @@ interface Props {
   resetButton?: string | BtnAttrs;
   readOnly: boolean;
   form?: any;
-  onReset?: () => void;
+  afterReset?: () => void;
 }
 
-export default ({ className = "", loading, submitButton = "提交", resetButton = "重置", readOnly, form, onReset }: Props) => {
+export default ({ className = "", loading, submitButton = "提交", resetButton = "重置", readOnly, form, afterReset }: Props) => {
   const submitBtn = getBtnProps(submitButton);
   const resetBtn = getBtnProps(resetButton);
   //点击重置按钮
   function handleReset() {
     if (readOnly) return showMessage("只读模式-不可重置", "info");
     form.resetFields();
-    onReset?.();
+    afterReset?.();
   }
   return (
     <div className={`${className} pt-h pb-h f-c-c f-0`}>

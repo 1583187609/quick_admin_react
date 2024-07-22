@@ -230,7 +230,7 @@ export default forwardRef(
           extraParams={extraParams}
           onValuesChange={handleValuesChange}
           onSubmit={handleSubmit}
-          onReset={initFetch}
+          afterReset={initFetch}
           {...formAttrs}
           ref={formRef}
         />
