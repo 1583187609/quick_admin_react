@@ -88,7 +88,6 @@ export const getFields = (args: CommonObj): FormField[] => {
       name: "phone",
       label: "电话",
       colAttrs: 12,
-      // extra: `设置 {valid: "phone"} 实现电话号码长度限制、正则校验`,
       extra: `设置prefix、addonAfter属性`,
       attrs: {
         prefix: <UserOutlined />,
@@ -373,6 +372,7 @@ const stepAttrs: CommonObj = {
   // direction: "horizontal",
 };
 const isVertical = stepAttrs.direction !== "horizontal";
+
 export default () => {
   const [params, setParams] = useState<CommonObj>(initVals);
   const fields = getFields(params);
@@ -456,5 +456,5 @@ export default () => {
       ),
     },
   ];
-  return <Tabs items={items} defaultActiveKey="2" tabBarExtraContent={<Setting />} />;
+  return <Tabs items={items} defaultActiveKey="1" tabBarExtraContent={<Setting />} />;
 };

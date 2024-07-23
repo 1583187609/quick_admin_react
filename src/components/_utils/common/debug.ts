@@ -22,9 +22,10 @@ export function checkObjKeyError(obj_1: CommonObj = {}, obj_2: CommonObj = {}) {
   if (!isDev) return;
   for (const key in obj_2) {
     if (typeof obj_1[key] === "undefined") {
+      // showMessage(msg, "error");
       const msg = `属性名 ${key} 不存在目标对象上`;
-      showMessage(msg, "error");
-      throw new Error(msg);
+      console.error(msg, obj_1);
+      // throw new Error(msg);
     }
   }
 }
