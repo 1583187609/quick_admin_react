@@ -37,5 +37,10 @@ export function getKeyVal(field: FormFieldAttrs, val: any) {
 
 export function getColAttrs(col?: number | ColAttrs) {
   if (typeof col === "number") return { span: col };
+  if (typeof col === "string") {
+    const colNum = Number(col);
+    if (isNaN(colNum)) throw new Error(`请传入数字类型`);
+    return { span: colNum };
+  }
   return col;
 }
