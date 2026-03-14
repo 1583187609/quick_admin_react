@@ -9,12 +9,10 @@ export default () => {
   // const { token } = useToken();
   // console.log(token, "token-----------------");
   return (
-    <>
-      <BaseProvider>
-        <PopupProvider>
-          <RouterView />
-        </PopupProvider>
-      </BaseProvider>
-    </>
+    <BaseProvider>
+      <PopupProvider>
+        <RouterView />
+      </PopupProvider>
+    </BaseProvider>
   );
 };

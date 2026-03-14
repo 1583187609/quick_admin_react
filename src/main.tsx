@@ -1,11 +1,11 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
+import App from "./App";
 import { BrowserRouter, HashRouter } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import { Provider } from "react-redux";
-import App from "./App";
 import zhCN from "antd/locale/zh_CN";
-import store from "./store";
+import store from "@/store";
 import BaseEmpty from "@/components/BaseEmpty";
 import FullLoading from "@/components/FullLoading";
 import { setupProdMockServer } from "./mockProdServer";
